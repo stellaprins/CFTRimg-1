@@ -6,49 +6,79 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
-%% CREATE DATA STRUCTURES OPTION 1
+%% TEST
 
-conditionsStr = {'WT','CF'};
+experiment = 'exp1';
+magnification = '60x';
 
-conds = createConditions(conditionsStr);
+
+% Set the directory in which data is stored
+fileFolder = fullfile('~','Desktop','data',experiment,magnification);
+
+dirOutput = dir(fullfile(fileFolder,'exp1_60x_B02_s*_w2.TIF'));
+fileNames = {dirOutput.name}';
+imageN = numel(fileNames);
+
+Ired = imread(fileNames{1});
+sequence = zeros([size(Ired) imageN],'double');
+sequence(:,:,1) = Ired;
+
+for p = 2:imageN
+    sequence(:,:,p) = imread(fileNames{p});
+end
+
+%% CREATE DATA STRUCTURES
+
+conditionsStr = {'WT','F508del','R1070W'};
+
+conditions = createConditions(conditionsStr);
 
 % set the wells for each condition
-conds(1).wells = {'B05','B06'};
-conds(2).wells = {'B07','B08'};
+conditions(1).wells = {'B02','C02','D02','E02','F02','G02'};
+conditions(2).wells = {'B03','C03','D03','E03','F03','G03'};
+conditions(3).wells = {'B04','C04','D04','E04','F04','G04'};
 
-conditionsN = length(conds);
+conditionsN = length(conditions);
 
 %% IMPORT THE DATA
 
 experiment = 'exp1';
+magnification = '60x';
+filePrefix = strcat(experiment,'_',magnification,'_');
 
 % Set the directory in which data is stored
-directory = strcat('~/Desktop/data/',experiment,'/');
+directory = fullfile('~','Desktop','data',experiment,'/',magnification,'/');
 
-% automatically create the filenames for importing
-% how many sites how been collected per well
-sitesN = 9;
-sites = cell(1,9);
-for i=1:sitesN
-   sites(i) = {strcat('s',num2str(i))};
-end
+conditions(i).redFiles = {};
+conditions(i).yelFiles = {};
 
 for i=1:conditionsN
-	for j=1:length(conds(i).wells)
-		for k=1:sitesN
-			
-			conds(i).redFiles((j-1)*sitesN + k) = ...
-				strcat(directory,experiment,'_',conds(i).wells(j),'_',sites(k),'_w2.TIF');
-			conds(i).yelFiles((j-1)*sitesN + k) = ...
-				strcat(directory,experiment,'_',conds(i).wells(j),'_',sites(k),'_w1.TIF');
-			
-			conds(i).redImages((j-1)*sitesN + k) = ...
-				{imread(conds(i).redFiles{(j-1)*sitesN+k})};
-			conds(i).yelImages((j-1)*sitesN + k) = ...
-				{imread(conds(i).yelFiles{(j-1)*sitesN+k})};
+	for j=1:length(conditions(i).wells)
 		
-		end
+		% red
+		filename = strcat(filePrefix,conditions(i).wells{j},'_s*_w2.TIF');
+		dirOutput = dir(fullfile(directory,filename));
+		conditions(i).redFiles = ...
+			vertcat(conditions(i).redFiles,{dirOutput.name}');
+		
+		% yellow
+		filename = strcat(filePrefix,conditions(i).wells{j},'_s*_w1.TIF');
+		dirOutput = dir(fullfile(directory,filename));
+		conditions(i).yelFiles = ...
+			vertcat(conditions(i).yelFiles,{dirOutput.name}');
+		
 	end
+	
+	conditions(i).imageN = numel(conditions(i).redFiles);
+	
+	Ired = imread(conditions(i).redFiles{1});
+	conditions(i).redImages = zeros([size(Ired) conditions(i).imageN],'double');
+	conditions(i).redImages(:,:,1) = Ired;
+	
+	Iyel = imread(conditions(i).yelFiles{1});
+	conditions(i).yelImages = zeros([size(Iyel) conditions(i).imageN],'double');
+	conditions(i).yelImages(:,:,1) = Iyel;
+	
 end
 
 %% PROCESSING
