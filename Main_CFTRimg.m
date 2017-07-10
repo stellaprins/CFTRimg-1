@@ -83,6 +83,14 @@ end
 
 %% PROCESSING
 
+close all
 
+image = sequence(:,:,1);
+
+out = imgSegment(image);
+
+figure
+
+imshow(out,[])
 
 %% RESULTS

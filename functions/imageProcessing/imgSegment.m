@@ -1,8 +1,14 @@
-function [ boxes ] = imgSegment( image )
+function [ bw ] = imgSegment( image )
 %IMGSEGMENT Summary of this function goes here
 %   Detailed explanation goes here
 
-bw = imbinarize(image);
+gray = mat2gray(image,[min(image(:)) max(image(:))]);
+
+adjusted = imadjust(gray,[],[],0.7);
+
+bw = imbinarize(adjusted);
+
+filled = imfill(bw);
 
 end
 
