@@ -31,14 +31,14 @@ end
 
 conditionsStr = {'WT','F508del','R1070W'};
 
-conditions = createConditions(conditionsStr);
+cond = createConditions(conditionsStr);
 
 % set the wells for each condition
-conditions(1).wells = {'B02','C02','D02','E02','F02','G02'};
-conditions(2).wells = {'B03','C03','D03','E03','F03','G03'};
-conditions(3).wells = {'B04','C04','D04','E04','F04','G04'};
+cond(1).wells = {'B02','C02','D02','E02','F02','G02'};
+cond(2).wells = {'B03','C03','D03','E03','F03','G03'};
+cond(3).wells = {'B04','C04','D04','E04','F04','G04'};
 
-conditionsN = length(conditions);
+conditionsN = length(cond);
 
 %% IMPORT THE DATA
 
@@ -49,35 +49,36 @@ filePrefix = strcat(experiment,'_',magnification,'_');
 % Set the directory in which data is stored
 directory = fullfile('~','Desktop','data',experiment,'/',magnification,'/');
 
-conditions(i).redFiles = {};
-conditions(i).yelFiles = {};
+cond(i).redFiles = {};
+cond(i).yelFiles = {};
 
 for i=1:conditionsN
-	for j=1:length(conditions(i).wells)
+	for j=1:length(cond(i).wells)
 		
 		% red
-		filename = strcat(filePrefix,conditions(i).wells{j},'_s*_w2.TIF');
+		filename = strcat(filePrefix,cond(i).wells{j},'_s*_w2.TIF');
 		dirOutput = dir(fullfile(directory,filename));
-		conditions(i).redFiles = ...
-			vertcat(conditions(i).redFiles,{dirOutput.name}');
+		
+		cond(i).redFiles = ...
+			vertcat(cond(i).redFiles,{dirOutput.name}');
 		
 		% yellow
-		filename = strcat(filePrefix,conditions(i).wells{j},'_s*_w1.TIF');
+		filename = strcat(filePrefix,cond(i).wells{j},'_s*_w1.TIF');
 		dirOutput = dir(fullfile(directory,filename));
-		conditions(i).yelFiles = ...
-			vertcat(conditions(i).yelFiles,{dirOutput.name}');
+		cond(i).yelFiles = ...
+			vertcat(cond(i).yelFiles,{dirOutput.name}');
 		
 	end
 	
-	conditions(i).imageN = numel(conditions(i).redFiles);
+	cond(i).imageN = numel(cond(i).redFiles);
 	
-	Ired = imread(conditions(i).redFiles{1});
-	conditions(i).redImages = zeros([size(Ired) conditions(i).imageN],'double');
-	conditions(i).redImages(:,:,1) = Ired;
+	Ired = imread(cond(i).redFiles{1});
+	cond(i).redImages = zeros([size(Ired) cond(i).imageN],'double');
+	cond(i).redImages(:,:,1) = Ired;
 	
-	Iyel = imread(conditions(i).yelFiles{1});
-	conditions(i).yelImages = zeros([size(Iyel) conditions(i).imageN],'double');
-	conditions(i).yelImages(:,:,1) = Iyel;
+	Iyel = imread(cond(i).yelFiles{1});
+	cond(i).yelImages = zeros([size(Iyel) cond(i).imageN],'double');
+	cond(i).yelImages(:,:,1) = Iyel;
 	
 end
 
@@ -87,10 +88,9 @@ close all
 
 image = sequence(:,:,1);
 
-out = imgSegment(image);
+[out] = imgSegment(image);
 
-figure
-
-imshow(out,[])
+% figure
+% imtool(out,[])
 
 %% RESULTS
