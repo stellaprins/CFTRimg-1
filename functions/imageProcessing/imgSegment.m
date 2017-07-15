@@ -1,6 +1,10 @@
-function [ cells ] = imgSegment( image )
+function [ imageStruct ] = imgSegment( imageStruct )
 %IMGSEGMENT Summary of this function goes here
 %   Detailed explanation goes here
+
+image = imread(imageStruct.path);
+
+image = double(image);
 
 gray = mat2gray(image,[min(image(:)) max(image(:))]);
 
@@ -12,23 +16,14 @@ filled = imfill(bw,'holes');
 
 [labelled, ~] = bwlabel(filled,8);
 
-properties = regionprops(labelled, 'Image','BoundingBox'...
+properties = regionprops(labelled,'BoundingBox'...
 						,'MajorAxisLength','MinorAxisLength'); 
 
-					
-cellLength = [properties.MajorAxisLength]';
-cellWidth = [properties.MinorAxisLength]';
+imageStruct.boundingBox = {properties.BoundingBox}';
+imageStruct.cellLength = [properties.MajorAxisLength]';
+imageStruct.cellWidth = [properties.MinorAxisLength]';
+imageStruct.cellN(1,1) = length(properties);
 
-cellsLogical = 100 < cellLength  & cellLength < 300 & ...
-	80 < cellWidth  & cellWidth < 200;
 
-sum(cellsLogical);
 
-counter=1;
-for i=1:length(cellsLogical)
-	if cellsLogical(i) ==1
-		cells(counter) = properties(i);
-		counter = counter + 1;
-	end
-end
 
