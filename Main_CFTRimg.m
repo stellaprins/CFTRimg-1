@@ -35,7 +35,7 @@ close all
 
 for i=1:imageN
 	
-	images(i) = imgSegment(images(i));
+	images(i) = imgSegmentWatershed(images(i));
 	
 	images(i) = imgFilterCellSize(images(i));
 	
@@ -45,10 +45,10 @@ end
 
 imgDisplay(images(3))
 
-% for i=1:images(3).cellN(end)
-% 	figure
-% 	cellDisplay(images(3),i)
-% end
+for i=1:images(3).cellN(end)
+	figure
+	cellDisplay(images(3),i)
+end
 
 
 %% RESULTS
