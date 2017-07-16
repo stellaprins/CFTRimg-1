@@ -2,12 +2,14 @@ function [ imageStruct ] = imgFilter( imageStruct )
 %IMGFILTER Summary of this function goes here
 %   Detailed explanation goes here
 
+global BINNING
+
 cellLength	= imageStruct.cellLength;
 cellWidth	= imageStruct.cellWidth;
 boundingBox = imageStruct.boundingBox;
 
-cellLogical = 100 < cellLength & cellLength < 300 & ...
-	80 < cellWidth & cellWidth < 200;
+cellLogical = 100*BINNING < cellLength & cellLength < 300*BINNING & ...
+	80*BINNING < cellWidth & cellWidth < 200*BINNING;
 
 cellN = sum(cellLogical);
 newBoundingBox = cell(cellN,1);

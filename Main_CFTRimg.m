@@ -6,6 +6,10 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
+global BINNING
+
+BINNING = 1 / 1;
+
 %% TEST
 
 experiment = 'exp1';
@@ -37,8 +41,8 @@ for i=1:imageN
 	
 end
 
-% figure
-% imtool(out,[])
+imgDisplay(images(3))
+
 
 %% RESULTS
 
