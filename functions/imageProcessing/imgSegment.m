@@ -19,10 +19,17 @@ filled = imfill(bw,'holes');
 properties = regionprops(labelled,'BoundingBox'...
 						,'MajorAxisLength','MinorAxisLength'); 
 
-imageStruct.boundingBox = {properties.BoundingBox}';
+for i=1:length(properties)
+	
+	imageStruct.boundingBox(i,:) = properties(i).BoundingBox;
+	
+end
+
 imageStruct.cellLength = [properties.MajorAxisLength]';
 imageStruct.cellWidth = [properties.MinorAxisLength]';
 imageStruct.cellN(1,1) = length(properties);
+
+end
 
 
 

@@ -37,7 +37,9 @@ for i=1:imageN
 	
 	images(i) = imgSegment(images(i));
 	
-	images(i) = imgFilter(images(i));
+	images(i) = imgFilterCellSize(images(i));
+	
+	images(i) = imgFilterEdges(images(i));
 	
 end
 
