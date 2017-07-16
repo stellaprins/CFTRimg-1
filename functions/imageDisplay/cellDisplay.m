@@ -3,7 +3,7 @@ function cellDisplay(imageStruct, boundingBox_idx )
 %   Detailed explanation goes here
 
 image = imread(imageStruct.path);
-boundingBox = imageStruct.boundingBox{boundingBox_idx};
+boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
 
 xmin = ceil(boundingBox(1));
 xmax = floor(boundingBox(1)) + boundingBox(3);

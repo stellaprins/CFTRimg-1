@@ -45,6 +45,11 @@ end
 
 imgDisplay(images(3))
 
+% for i=1:images(3).cellN(end)
+% 	figure
+% 	cellDisplay(images(3),i)
+% end
+
 
 %% RESULTS
 

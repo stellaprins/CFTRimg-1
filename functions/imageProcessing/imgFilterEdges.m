@@ -16,7 +16,7 @@ ymin = ceil(boundingBox(:,2));
 ymax = floor(boundingBox(:,2)) + boundingBox(:,4);
 
 cellLogical = xmin ~= 1 & ymin ~= 1 & ...
-	xmax ~= imageDim & xmax ~= imageDim;
+	xmax ~= imageDim & ymax ~= imageDim;
 
 cellN = sum(cellLogical);
 newBoundingBox = zeros(cellN,4);
