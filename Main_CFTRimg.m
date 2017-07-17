@@ -6,11 +6,12 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
-global BINNING
+global BINNING EXTRA
 
 BINNING = 1 / 1;
+EXTRA = ceil(BINNING*15);
 
-%% TEST
+%% TEST IMPORT
 
 experiment = 'exp1';
 magnification = '60x';
@@ -29,28 +30,38 @@ end
 
 images = createImageStruct(pathArray);
 
-%% PROCESSING
+%% SEGMENTATION
 
 close all
 
 for i=1:imageN
 	
-	images(i) = imgSegmentWatershed(images(i));
+	images(i).cellN = [];
 	
-	images(i) = imgFilterCellSize(images(i));
+	images(i) = imgSegment(images(i));
 	
 	images(i) = imgFilterEdges(images(i));
 	
+	images(i) = cellBinarize(images(i));
+	
+ 	images(i) = imgFilterCellSize(images(i));
+	
+% 	images(i).cellN
+	
 end
 
-imgDisplay(images(3))
 
-for i=1:images(3).cellN(end)
-	figure
-	cellDisplay(images(3),i)
-end
+%% PROCESSING
+
 
 
 %% RESULTS
 
+close all
 
+images(2).cellN
+imgDisplay(images(2))
+for i=1:images(2).cellN(end)
+	figure
+	cellDisplay(images(2),i)
+end
