@@ -2,7 +2,7 @@ function [ imageStruct ] = imgSegment( imageStruct )
 %IMGSEGMENT Summary of this function goes here
 %   Detailed explanation goes here
 
-image = imread(imageStruct.path);
+image = imread(imageStruct.redPath);
 
 image = double(image);
 

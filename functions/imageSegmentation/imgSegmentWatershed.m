@@ -4,7 +4,7 @@ function [ imageStruct ] = imgSegmentWatershed( imageStruct )
 
 global BINNING
 
-I = imread(imageStruct.path);
+I = imread(imageStruct.redPath);
 doubleI = im2double(I);
 adjustedI = imadjust(doubleI,[min(doubleI(:)); max(doubleI(:))]...
 	,[0; 1]);

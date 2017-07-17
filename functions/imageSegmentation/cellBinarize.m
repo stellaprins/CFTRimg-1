@@ -4,7 +4,7 @@ function [ imageStruct ] = cellBinarize( imageStruct )
 
 global BINNING EXTRA
 
-image = imread(imageStruct.path);
+image = imread(imageStruct.redPath);
 
 counter = 1;
 for idx=1:imageStruct.cellN(end)

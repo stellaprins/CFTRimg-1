@@ -4,7 +4,7 @@ function [ imageStruct ] = distanceMap( imageStruct,boundingBox_idx)
 
 global BINNING
 
-image = imread(imageStruct.path);
+image = imread(imageStruct.redPath);
 boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
 
 extra = 20*BINNING;

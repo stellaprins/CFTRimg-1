@@ -19,16 +19,21 @@ magnification = '60x';
 % Set the directory in which data is stored
 fileFolder = fullfile('~','Desktop','data',experiment,magnification);
 
-dirOutput = dir(fullfile(fileFolder,'exp1_60x_B02_s*_w2.TIF'));
-fileNames = {dirOutput.name}';
-imageN = numel(fileNames);
+redDirOutput = dir(fullfile(fileFolder,'exp1_60x_B02_s*_w2.TIF'));
+yelDirOutput = dir(fullfile(fileFolder,'exp1_60x_B02_s*_w1.TIF'));
+redFileNames = {redDirOutput.name}';
+yelFileNames = {yelDirOutput.name}';
 
-pathArray = cell(9,1);
+imageN = numel(redFileNames);
+
+redPathArray = cell(9,1);
+yelPathArray = cell(9,1);
 for p = 1:imageN
-	pathArray{p} = fullfile(fileFolder,fileNames{p});
+	redPathArray{p} = fullfile(fileFolder,redFileNames{p});
+	yelPathArray{p} = fullfile(fileFolder,yelFileNames{p});
 end
 
-images = createImageStruct(pathArray);
+images = createImageStruct(redPathArray,yelPathArray);
 
 %% SEGMENTATION
 

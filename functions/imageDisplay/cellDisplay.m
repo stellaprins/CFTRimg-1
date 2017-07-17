@@ -2,7 +2,7 @@ function cellDisplay(imageStruct, boundingBox_idx )
 %CELLDISPLAY Summary of this function goes here
 %   Detailed explanation goes here
 
-image = imread(imageStruct.path);
+image = imread(imageStruct.redPath);
 boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
 
 xmin = ceil(boundingBox(1));

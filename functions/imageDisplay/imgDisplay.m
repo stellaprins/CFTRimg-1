@@ -2,7 +2,7 @@ function imgDisplay( imageStruct )
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
-image = imread(imageStruct.path);
+image = imread(imageStruct.redPath);
 
 doubleImage = im2double(image);
 
