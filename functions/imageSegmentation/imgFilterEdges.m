@@ -5,7 +5,6 @@ function [ imageStruct ] = imgFilterEdges( imageStruct )
 global BINNING EXTRA
 
 boundingBox = imageStruct.boundingBox;
-cellN = imageStruct.cellN(1);
 
 imageDim = 2160*BINNING;
 
@@ -19,8 +18,6 @@ cellLogical = xmin > 1 & ymin > 1 & ...
 
 cellN = sum(cellLogical);
 newBoundingBox = zeros(cellN,4);
-newCellWidth = zeros(cellN,1);
-newCellLength = zeros(cellN,1);
 
 counter=1;
 for i=1:length(cellLogical)

@@ -5,12 +5,7 @@ function cellDisplay(imageStruct, boundingBox_idx )
 image = imread(imageStruct.redPath);
 boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
 
-xmin = ceil(boundingBox(1));
-xmax = floor(boundingBox(1)) + boundingBox(3);
-ymin = ceil(boundingBox(2));
-ymax = floor(boundingBox(2)) + boundingBox(4);
-
-cropped = image(ymin:ymax,xmin:xmax);
+cropped = boundingBoxToCroppedImage(image,boundingBox);
 
 doubleImage = im2double(cropped);
 

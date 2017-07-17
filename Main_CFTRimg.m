@@ -9,7 +9,7 @@ addpath(genpath('functions'));
 global BINNING EXTRA
 
 BINNING = 1 / 1;
-EXTRA = ceil(BINNING*15);
+EXTRA = ceil(BINNING*20);
 
 %% TEST IMPORT
 
@@ -47,7 +47,7 @@ for i=1:imageN
 	
 	images(i) = imgFilterEdges(images(i));
 	
-	images(i) = cellBinarize(images(i));
+	images(i) = findCellDimensions(images(i));
 	
  	images(i) = imgFilterCellSize(images(i));
 	
@@ -64,9 +64,11 @@ end
 
 close all
 
-images(2).cellN
-imgDisplay(images(2))
-for i=1:images(2).cellN(end)
+x=3;
+
+images(x).cellN
+imgDisplay(images(x))
+for i=1:images(x).cellN(end)
 	figure
-	cellDisplay(images(2),i)
+	cellDisplay(images(x),i)
 end

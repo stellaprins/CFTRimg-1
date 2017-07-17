@@ -1,8 +1,6 @@
-function [ imageStruct ] = cellBinarize( imageStruct )
+function [ imageStruct ] = findCellDimensions( imageStruct )
 %UNTITLED8 Summary of this function goes here
 %   Detailed explanation goes here
-
-global BINNING EXTRA
 
 image = imread(imageStruct.redPath);
 
@@ -11,24 +9,11 @@ for idx=1:imageStruct.cellN(end)
 	
 	boundingBox = imageStruct.boundingBox(idx,:);
 
-	xmin = ceil(boundingBox(1)) - EXTRA;
-	xmax = floor(boundingBox(1)) + boundingBox(3) + EXTRA;
-	ymin = ceil(boundingBox(2)) - EXTRA;
-	ymax = floor(boundingBox(2)) + boundingBox(4) + EXTRA;
+	cropped = boundingBoxToCroppedImage(image,boundingBox);
 
-	cropped = image(ymin:ymax,xmin:xmax);
+	bw = cellBinarize(cropped);
 
-	bw = imbinarize(cropped);
-
-	seErode = strel('disk',floor(5*BINNING));
-	seDilate = strel('disk',floor(10*BINNING));
-	eroded = imerode(bw,seErode);
-	% cleared = imclearborder(eroded,8);
-	dilated = imdilate(eroded,seDilate);
-
-	% imshow(dilated,[])
-
-	[labelled, ~] = bwlabel(dilated,8);
+	[labelled, ~] = bwlabel(bw,8);
 	properties = regionprops(labelled ...
 		,'MinorAxisLength','MajorAxisLength');
 	
