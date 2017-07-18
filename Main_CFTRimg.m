@@ -80,7 +80,7 @@ for j=1:conditionN
 
 		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
 
-		cond(j).images(i) = findCellDimensions(cond(j).images(i));
+		cond(j).images(i) = imgFindCellDimensions(cond(j).images(i));
 
 		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
 
