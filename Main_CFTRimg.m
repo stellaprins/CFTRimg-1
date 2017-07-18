@@ -11,64 +11,108 @@ global BINNING EXTRA
 BINNING = 1 / 1;
 EXTRA = ceil(BINNING*20);
 
-%% TEST IMPORT
+siteN = 9;
+
+%% TEST DATA
 
 experiment = 'exp1';
 magnification = '60x';
+conditionsStr = {'WT'};
+cond = createConditions(conditionsStr);
+cond(1).wells = {'B02'};
 
-% Set the directory in which data is stored
+%% RUN DATA
+
+experiment = 'exp1';
+magnification = '60x';
+conditionsStr = {'WT','F508del','R1070W'};
+cond = createConditions(conditionsStr);
+cond(1).wells = {'B02','C02','D02','E02','F02','G02'};
+cond(2).wells = {'B03','C03','D03','E03','F03','G03'};
+cond(3).wells = {'B04','C04','D04','E04','F04','G04'};
+
+
+%% IMPORT THE DATA
+
 fileFolder = fullfile('~','Desktop','data',experiment,magnification);
+filePrefix = strcat(experiment,'_',magnification,'_');
 
-redDirOutput = dir(fullfile(fileFolder,'exp1_60x_B02_s*_w2.TIF'));
-yelDirOutput = dir(fullfile(fileFolder,'exp1_60x_B02_s*_w1.TIF'));
-redFileNames = {redDirOutput.name}';
-yelFileNames = {yelDirOutput.name}';
+conditionN = length(cond);
 
-imageN = numel(redFileNames);
+for i=1:conditionN
+	
+	cond(i).imageN = length(cond(i).wells)*siteN;
+	
+	redPathArray = cell(length(cond(i).wells)*siteN,1);
+	yelPathArray = cell(length(cond(i).wells)*siteN,1);
+	
+	for j=1:length(cond(i).wells)
+		
+		% red
+		filename = strcat(filePrefix,cond(i).wells{j},'_s*_w2.TIF');
+		redDirOutput = dir(fullfile(fileFolder,filename));
+		
+		% yellow
+		filename = strcat(filePrefix,cond(i).wells{j},'_s*_w1.TIF');
+		yelDirOutput = dir(fullfile(fileFolder,filename));
 
-redPathArray = cell(9,1);
-yelPathArray = cell(9,1);
-for p = 1:imageN
-	redPathArray{p} = fullfile(fileFolder,redFileNames{p});
-	yelPathArray{p} = fullfile(fileFolder,yelFileNames{p});
+		for p = 1:siteN
+			redPathArray{(j-1)*siteN + p} = fullfile(fileFolder,redDirOutput(p).name);
+			yelPathArray{(j-1)*siteN + p} = fullfile(fileFolder,yelDirOutput(p).name);
+		end
+		
+	end
+	
+	cond(i).images = createImageStruct(redPathArray,yelPathArray);
+	
 end
-
-images = createImageStruct(redPathArray,yelPathArray);
 
 %% SEGMENTATION
 
 close all
+for j=1:conditionN
+	for i=1:cond(j).imageN
 
-for i=1:imageN
-	
-	images(i).cellN = [];
-	
-	images(i) = imgSegment(images(i));
-	
-	images(i) = imgFilterEdges(images(i));
-	
-	images(i) = findCellDimensions(images(i));
-	
- 	images(i) = imgFilterCellSize(images(i));
-	
-% 	images(i).cellN
-	
+		cond(j).images(i).cellN = [];
+
+		cond(j).images(i) = imgSegment(cond(j).images(i));
+
+		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
+
+		cond(j).images(i) = findCellDimensions(cond(j).images(i));
+
+		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
+
+% 	 	cond(j).images(i).cellN
+
+	end
 end
-
 
 %% PROCESSING
 
+for j=1:conditionN
+	for i=1:cond(j).imageN
+
+		cond(j).images(i) = distanceMap(cond(j).images(i));
+
+	end
+end
 
 
 %% RESULTS
 
-close all
-
-x=3;
-
-images(x).cellN
-imgDisplay(images(x))
-for i=1:images(x).cellN(end)
-	figure
-	cellDisplay(images(x),i)
-end
+% close all
+% 
+% x=1;
+% 
+% images(x).cellN
+% figure
+% imgDisplay(images(x))
+% for i=1:images(x).cellN(end)
+% 	figure
+% 	cellDisplay(images(x),'yel',i)
+% 	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
+% 		,round(images(x).meanInsideCell(i),4)...
+% 		,round(images(x).meanOutsideCell(i),4)...
+% 		,round(images(x).meanMembrane(i),4)))
+% end

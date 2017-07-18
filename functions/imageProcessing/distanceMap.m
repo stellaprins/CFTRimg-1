@@ -1,20 +1,41 @@
-function [ imageStruct ] = distanceMap( imageStruct,boundingBox_idx)
+function [ imageStruct ] = distanceMap( imageStruct )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
-image = imread(imageStruct.redPath);
-boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
+redImage = imread(imageStruct.redPath);
+yelImage = imread(imageStruct.yelPath);
+cellN = imageStruct.cellN(end);
 
-cropped = boundingBoxToCroppedImage(image,boundingBox);
+meanInsideCell = zeros(cellN,1);
+meanOutsideCell = zeros(cellN,1);
+meanMembrane = zeros(cellN,1);
 
-bw = cellBinarize(cropped);
+for i=1:cellN
+	
+	boundingBox = imageStruct.boundingBox(i,:);
 
-pixelCount = sum(bw(:));
+	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
+	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
+	yelCropped = im2double(yelCropped);
 
-bwoutline = bwperim(dilated);
-cropped(bwoutline) = 255;
+	BW = cellBinarize(redCropped);
+	
+	positiveDistanceMap = ceil(bwdist(~BW));
+	
+	membraneBW = positiveDistanceMap > 0 & positiveDistanceMap <= 10;
+	
+% 	showDistanceMapProcess(...
+% 		redCropped,yelCropped,BW,positiveDistanceMap,membraneBW);
+	
+	meanInsideCell(i) = sum(BW .* yelCropped) / sum(BW);
+	meanOutsideCell(i) = sum(~BW .* yelCropped) / sum(~BW);
+	meanMembrane(i) = sum(membraneBW .* yelCropped) / sum(membraneBW);
+	
+end
 
-imshow(cropped,[]) , title(sprintf('Pixel count is %d',pixelCount))
+imageStruct.meanInsideCell = meanInsideCell;
+imageStruct.meanOutsideCell = meanOutsideCell;
+imageStruct.meanMembrane = meanMembrane;
 
 
 end
