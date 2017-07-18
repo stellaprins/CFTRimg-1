@@ -102,18 +102,19 @@ end
 
 %% RESULTS
 
-% close all
-% 
-% x=1;
-% 
-% images(x).cellN
-% figure
-% imgDisplay(images(x))
-% for i=1:images(x).cellN(end)
-% 	figure
-% 	cellDisplay(images(x),'yel',i)
-% 	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
-% 		,round(images(x).meanInsideCell(i),4)...
-% 		,round(images(x).meanOutsideCell(i),4)...
-% 		,round(images(x).meanMembrane(i),4)))
-% end
+close all
+
+x=1;
+y=1;
+
+cond(x).images(y).cellN
+figure
+imgDisplay(cond(x).images(y))
+for i=1:cond(x).images(y).cellN(end)
+	figure
+	cellDisplay(cond(x).images(y),'yel',i)
+	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
+		,round(cond(x).images(y).meanInsideCell(i),4)...
+		,round(cond(x).images(y).meanOutsideCell(i),4)...
+		,round(cond(x).images(y).meanMembrane(i),4)))
+end
