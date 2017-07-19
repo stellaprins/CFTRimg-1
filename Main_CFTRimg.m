@@ -129,6 +129,8 @@ end
 
 %% ANALYSIS
 
+close all
+
 a=1;
 b=4;
 
