@@ -135,3 +135,5 @@ a=1;
 b=4;
 
 plotMeanIntensity(cond(a).images(b))
+
+
