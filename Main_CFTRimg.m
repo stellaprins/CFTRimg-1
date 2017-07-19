@@ -104,7 +104,7 @@ end
 
 %% DISPLAY
 
-% close all
+close all
 
 x=1;
 y=4;
@@ -123,8 +123,13 @@ for i=1:cond(x).images(y).cellN(end)
 	subplot(1,2,2)
 	cellDisplay(cond(x).images(y),'red',i)
 	
-	
 end
+
+
 
 %% ANALYSIS
 
+a=1;
+b=4;
+
+plotMeanIntensity(cond(a).images(b))
