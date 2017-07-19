@@ -100,21 +100,29 @@ for j=1:conditionN
 end
 
 
-%% RESULTS
+%% DISPLAY
 
-close all
+% close all
 
 x=1;
-y=1;
+y=4;
 
 cond(x).images(y).cellN
 figure
 imgDisplay(cond(x).images(y))
 for i=1:cond(x).images(y).cellN(end)
 	figure
+	subplot(1,2,1)
 	cellDisplay(cond(x).images(y),'yel',i)
 	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
 		,round(cond(x).images(y).meanInsideCell(i),4)...
 		,round(cond(x).images(y).meanOutsideCell(i),4)...
 		,round(cond(x).images(y).meanMembrane(i),4)))
+	subplot(1,2,2)
+	cellDisplay(cond(x).images(y),'red',i)
+	
+	
 end
+
+%% ANALYSIS
+
