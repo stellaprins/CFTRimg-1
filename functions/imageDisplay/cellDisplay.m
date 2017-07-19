@@ -11,17 +11,11 @@ else
 	image = [];
 end
 
-
 boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
 
 cropped = boundingBoxToCroppedImage(image,boundingBox);
 
-doubleImage = im2double(cropped);
-
-adjusted = imadjust(doubleImage,[min(doubleImage(:)); max(doubleImage(:))]...
-	,[0; 1]);
-
-imshow(adjusted)
+imshow(cropped,[],'InitialMagnification','fit')
 
 end
 
