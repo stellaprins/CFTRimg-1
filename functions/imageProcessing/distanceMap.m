@@ -26,10 +26,10 @@ for i=1:cellN
 	
 	membraneBW = positiveDistanceMap > 0 & positiveDistanceMap <= 10*BINNING;
 	
-	if i==1
-		showDistanceMapProcess(...
-			redCropped,yelCropped,BW,positiveDistanceMap,membraneBW);
-	end
+% 	if i==1
+% 		showDistanceMapProcess(...
+% 			redCropped,yelCropped,BW,positiveDistanceMap,membraneBW);
+% 	end
 	
 	meanInsideCell(i) = sum(BW .* yelCropped) / sum(BW);
 	meanOutsideCell(i) = sum(~BW .* yelCropped) / sum(~BW);

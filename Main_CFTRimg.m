@@ -93,6 +93,8 @@ end
 
 for j=1:conditionN
 	for i=1:cond(j).imageN
+		
+		cond(j).images(i) = imgFindBackground(cond(j).images(i));
 
 		cond(j).images(i) = distanceMap(cond(j).images(i));
 
