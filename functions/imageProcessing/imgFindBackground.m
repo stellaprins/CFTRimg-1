@@ -2,17 +2,23 @@ function [ imageStruct ] = imgFindBackground( imageStruct )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
-image = imread(imageStruct.yelPath);
+yelImage = imread(imageStruct.yelPath);
+redImage = imread(imageStruct.redPath);
 
-dImage = im2double(image);
+dYelImage = im2double(yelImage);
+dRedImage = im2double(redImage);
 
-thresh = 0.5*graythresh(dImage);
+yelThresh = 0.5*graythresh(dYelImage);
+redThresh = 0.5*graythresh(dRedImage);
 
-backgroundMask = dImage < thresh;
+yelBackgroundMask = dYelImage < yelThresh;
+redBackgroundMask = dRedImage < redThresh;
 
-meanBackground = sum(dImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));
+yelMeanBackground = sum(dYelImage(:) .* yelBackgroundMask(:)) / sum(yelBackgroundMask(:));
+redMeanBackground = sum(dRedImage(:) .* redBackgroundMask(:)) / sum(redBackgroundMask(:));
 
-imageStruct.yelBackground = meanBackground;
+imageStruct.yelBackground = yelMeanBackground;
+imageStruct.redBackground = redMeanBackground;
 
 
 end

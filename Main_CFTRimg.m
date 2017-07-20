@@ -13,7 +13,7 @@ EXTRA = ceil(BINNING*20);
 
 siteN = 9;
 
-runMode = 'test'; % 'test' OR 'full'
+runMode = 'full'; % 'test' OR 'full'
 
 %% CREATE DATA STRUCTURES
 
@@ -68,6 +68,8 @@ for i=1:conditionN
 	
 end
 
+disp('Completed importing data')
+
 %% SEGMENTATION
 
 close all
@@ -89,6 +91,8 @@ for j=1:conditionN
 	end
 end
 
+disp('Completed image segmentation')
+
 %% PROCESSING
 
 for j=1:conditionN
@@ -101,39 +105,48 @@ for j=1:conditionN
 	end
 end
 
+disp('Completed image processing')
 
 %% DISPLAY
 
-close all
-
-x=1;
-y=4;
-
-cond(x).images(y).cellN
-figure
-imgDisplay(cond(x).images(y))
-for i=1:cond(x).images(y).cellN(end)
-	figure
-	subplot(1,2,1)
-	cellDisplay(cond(x).images(y),'yel',i)
-	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
-		,round(cond(x).images(y).meanInsideCell(i),4)...
-		,round(cond(x).images(y).meanOutsideCell(i),4)...
-		,round(cond(x).images(y).meanMembrane(i),4)))
-	subplot(1,2,2)
-	cellDisplay(cond(x).images(y),'red',i)
-	
-end
+% close all
+% 
+% x=1;
+% y=4;
+% 
+% cond(x).images(y).cellN
+% figure
+% imgDisplay(cond(x).images(y))
+% for i=1:cond(x).images(y).cellN(end)
+% 	figure
+% 	subplot(1,2,1)
+% 	cellDisplay(cond(x).images(y),'yel',i)
+% 	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
+% 		,round(cond(x).images(y).yelInsideCell(i),4)...
+% 		,round(cond(x).images(y).yelOutsideCell(i),4)...
+% 		,round(cond(x).images(y).yelMembrane(i),4)))
+% 	subplot(1,2,2)
+% 	cellDisplay(cond(x).images(y),'red',i)
+% 	
+% end
 
 
 
 %% ANALYSIS
+
+for i=1:length(cond)
+	fullCellN = vertcat(cond(i).images.cellN);
+	cond(i).cellN = sum(fullCellN(:,end));
+end
 
 close all
 
 a=1;
 b=4;
 
-plotMeanIntensity(cond(a).images(b))
+% plotMeanIntensity(cond(a).images(b))
 
+for i=1:length(cond)
+	plotRedYelCorrelation(cond(i))
+end
 
