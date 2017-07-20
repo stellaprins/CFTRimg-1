@@ -13,7 +13,7 @@ EXTRA = ceil(BINNING*20);
 
 siteN = 9;
 
-runMode = 'full'; % 'test' OR 'full'
+runMode = 'test'; % 'test' OR 'full'
 
 %% CREATE DATA STRUCTURES
 

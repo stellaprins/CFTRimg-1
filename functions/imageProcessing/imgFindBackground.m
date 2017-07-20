@@ -8,14 +8,25 @@ redImage = imread(imageStruct.redPath);
 dYelImage = im2double(yelImage);
 dRedImage = im2double(redImage);
 
-yelThresh = 0.5*graythresh(dYelImage);
-redThresh = 0.5*graythresh(dRedImage);
+yelQuant = quantile(dYelImage(:),3);
+redQuant = quantile(dRedImage(:),3);
 
-yelBackgroundMask = dYelImage < yelThresh;
-redBackgroundMask = dRedImage < redThresh;
+yelThresh = yelQuant(1);
+redThresh = redQuant(1);
 
-yelMeanBackground = sum(dYelImage(:) .* yelBackgroundMask(:)) / sum(yelBackgroundMask(:));
-redMeanBackground = sum(dRedImage(:) .* redBackgroundMask(:)) / sum(redBackgroundMask(:));
+yelMask = dYelImage > yelThresh;
+redMask = dRedImage > redThresh;
+
+combinedMask = redMask & yelMask;
+
+seDilate = strel('disk',3);
+dilatedMask = imdilate(combinedMask,seDilate);
+filledMask = imfill(~dilatedMask,'holes');
+
+backgroundMask = filledMask;
+
+yelMeanBackground = sum(dYelImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));
+redMeanBackground = sum(dRedImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));
 
 imageStruct.yelBackground = yelMeanBackground;
 imageStruct.redBackground = redMeanBackground;

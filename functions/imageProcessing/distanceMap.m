@@ -28,8 +28,12 @@ for i=1:cellN
 
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
 	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
-	redCropAdj = im2double(redCropped) - redBackground;
-	yelCropAdj = im2double(yelCropped) - yelBackground;
+	
+	redMask = redCropped > redBackground;
+	yelMask = yelCropped > yelBackground;
+	
+	redCropAdj = redMask .* (im2double(redCropped) - redBackground);
+	yelCropAdj = yelMask .* (im2double(yelCropped) - yelBackground);
 	
 	cellMask = cellBinarize(redCropped);
 	
