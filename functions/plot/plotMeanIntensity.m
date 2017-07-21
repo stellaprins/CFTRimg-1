@@ -6,7 +6,8 @@ redImage = imread(imageStruct.redPath);
 yelImage = imread(imageStruct.yelPath);
 
 cellN = imageStruct.cellN(end);
-background = imageStruct.yelBackground;
+yelBackground = imageStruct.yelBackground;
+redBackground = imageStruct.redBackground;
 
 for i=1:cellN
 	
@@ -14,8 +15,9 @@ for i=1:cellN
 
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
 	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
-	redCropAdj = im2double(redCropped) - background;
-	yelCropAdj = im2double(yelCropped) - background;
+	
+	redCropAdj = im2double(redCropped) - redBackground;
+	yelCropAdj = im2double(yelCropped) - yelBackground;
 	
 	cellMask = cellBinarize(redCropped);
 	
@@ -41,7 +43,7 @@ for i=1:cellN
 	plot(distanceLabels, yelMeanData ...
 		,zeros(length(vertLine),1),vertLine ...
 		,10*ones(length(vertLine),1),vertLine ...
-		,horzLine,background*ones(length(horzLine),1))
+		,horzLine,zeros(length(horzLine),1))
 	xlim([xMin xMax])
 	ylim([yMinLeft yMaxLeft])
 	xlabel('Distance from the cell membrane (pixels)')

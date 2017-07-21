@@ -19,11 +19,10 @@ redMask = dRedImage > redThresh;
 
 combinedMask = redMask & yelMask;
 
-seDilate = strel('disk',3);
+seDilate = strel('disk',5);
 dilatedMask = imdilate(combinedMask,seDilate);
-filledMask = imfill(~dilatedMask,'holes');
 
-backgroundMask = filledMask;
+backgroundMask = ~dilatedMask;
 
 yelMeanBackground = sum(dYelImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));
 redMeanBackground = sum(dRedImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));

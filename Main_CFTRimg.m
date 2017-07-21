@@ -144,11 +144,11 @@ end
 close all
 
 a=3;
-b=4;
+b=2;
 
 plotMeanIntensity(cond(a).images(b))
 
-% for i=1:length(cond)
-% 	plotRedYelCorrelation(cond(i))
-% end
+for i=1:length(cond)
+	plotRedYelCorrelation(cond(i))
+end
 
