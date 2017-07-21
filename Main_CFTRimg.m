@@ -20,9 +20,11 @@ runMode = 'test'; % 'test' OR 'full'
 if strcmp(runMode,'test')
 	experiment = 'exp1';
 	magnification = '60x';
-	conditionsStr = {'WT'};
+	conditionsStr = {'WT','F508del','R1070W'};
 	cond = createConditions(conditionsStr);
 	cond(1).wells = {'B02'};
+	cond(2).wells = {'B03'};
+	cond(3).wells = {'B04'};
 elseif strcmp(runMode,'full')
 	experiment = 'exp1';
 	magnification = '60x';
@@ -141,12 +143,12 @@ end
 
 close all
 
-a=1;
+a=3;
 b=4;
 
-% plotMeanIntensity(cond(a).images(b))
+plotMeanIntensity(cond(a).images(b))
 
-for i=1:length(cond)
-	plotRedYelCorrelation(cond(i))
-end
+% for i=1:length(cond)
+% 	plotRedYelCorrelation(cond(i))
+% end
 
