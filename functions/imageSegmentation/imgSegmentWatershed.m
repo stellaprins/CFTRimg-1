@@ -5,122 +5,68 @@ function [ imageStruct ] = imgSegmentWatershed( imageStruct )
 global BINNING
 
 I = imread(imageStruct.redPath);
-doubleI = im2double(I);
-adjustedI = imadjust(doubleI,[min(doubleI(:)); max(doubleI(:))]...
-	,[0; 1]);
-% imshow(adjustedI)
-
+dI = im2double(I);
+% imshow(dI,[])
  
-hy = fspecial('sobel');
-hx = hy';
-Iy = imfilter(doubleI, hy, 'replicate');
-Ix = imfilter(doubleI, hx, 'replicate');
-gradmag = sqrt(Ix.^2 + Iy.^2);
+% hy = fspecial('sobel');
+% hx = hy';
+% Iy = imfilter(dI, hy, 'replicate');
+% Ix = imfilter(dI, hx, 'replicate');
+% gradmag = sqrt(Ix.^2 + Iy.^2);
 % figure
 % imshow(gradmag,[]), title('Gradient magnitude (gradmag)')
 
-x=30*BINNING;
-se = strel('disk', x);
-% Io = imopen(I, se);
-% doubleIo = im2double(Io);
-% adjustedIo = imadjust(doubleIo,[min(doubleIo(:)); max(doubleIo(:))],[0; 1]);
-% figure
-% imshow(adjustedIo), title('Opening (Io)')
+Ieq = adapthisteq(dI);
+% figure, imshow(Ieq,[])
 
+Ibw = imbinarize(Ieq,0.9*graythresh(Ieq));
+% figure, imshow(Ibw)
 
-Ie = imerode(I, se);
-Iobr = imreconstruct(Ie, I);
-% doubleIobr = im2double(Iobr);
-% adjustedIobr = imadjust(doubleIobr,[min(doubleIobr(:)); max(doubleIobr(:))],[0; 1]);
-% figure
-% imshow(adjustedIobr), title('Opening-by-reconstruction (Iobr)')
+Ifilled = imfill(Ibw,'holes');
+% figure, imshow(Ifilled)
 
+Iopened = imopen(Ifilled, ones(ceil(5*BINNING),ceil(5*BINNING)));
+% figure, imshow(Iopened)
 
-% Ioc = imclose(Io, se);
-% doubleIoc = im2double(Ioc);
-% adjustedIoc = imadjust(doubleIoc,[min(doubleIoc(:)); max(doubleIoc(:))],[0; 1]);
-% figure
-% imshow(adjustedIoc), title('Opening-closing (Ioc)')
+Icleared = bwareaopen(Iopened,ceil(40*BINNING));
+% figure, imshow(Icleared)
 
+IbwPerim = bwperim(Icleared);
+overlay = imoverlay(Ieq, IbwPerim, [.3 1 .3]);
+% figure, imshow(overlay)
 
-Iobrd = imdilate(Iobr, se);
-Iobrcbr = imreconstruct(imcomplement(Iobrd), imcomplement(Iobr));
-Iobrcbr = imcomplement(Iobrcbr);
-% doubleIobrcbr = im2double(Iobrcbr);
-% adjustedIobrcbr = imadjust(doubleIobrcbr...
-% 	,[min(doubleIobrcbr(:)); max(doubleIobrcbr(:))],[0; 1]);
-% figure
-% imshow(adjustedIobrcbr), title('Opening-closing by reconstruction (Iobrcbr)')
+quartiles = quantile(Ieq(:),3);
+maskEM = imextendedmax(Ieq, quartiles(1));
+% figure, imshow(maskEM)
 
+maskEM = imclose(maskEM, ones(5,5));
+maskEM = imfill(maskEM, 'holes');
+maskEM = bwareaopen(maskEM, 40);
+overlay2 = imoverlay(Ieq, IbwPerim | maskEM, [.3 1 .3]);
+% figure, imshow(overlay2)
 
-fgm = imregionalmax(Iobrcbr);
-% figure
-% imshow(fgm), title('Regional maxima of opening-closing by reconstruction (fgm)')
+IeqComplement = imcomplement(Ieq);
 
+Imod = imimposemin(IeqComplement, ~Icleared | maskEM);
 
-% I2 = adjustedI;
-% I2(fgm) = 255;
-% figure
-% imshow(I2), title('Regional maxima superimposed on original image (I2)')
+L = watershed(Imod);
+% figure, imshow(label2rgb(L))
 
+showWatershedProcess(dI,Icleared,overlay,maskEM,overlay2,label2rgb(L))
 
-se2 = strel(ones(ceil(x/4),ceil(x/4)));
-fgm2 = imclose(fgm, se2);
-fgm3 = imerode(fgm2, se2);
-fgm4 = bwareaopen(fgm3, x);
-% I3 = adjustedI;
-% I3(fgm4) = 255;
-% figure
-% imshow(I3)
-% title('Modified regional maxima superimposed on original image (fgm4)')
+properties = regionprops(L,'BoundingBox','Area');
 
-
-thresh=graythresh(I);
-bw = imbinarize(Iobrcbr,thresh*0.8);
-% figure
-% imshow(bw), title('Thresholded opening-closing by reconstruction (bw)')
-
-
-D = bwdist(bw);
-DL = watershed(D);
-bgm = DL == 0;
-% figure
-% imshow(bgm), title('Watershed ridge lines (bgm)')
-
-
-gradmag2 = imimposemin(gradmag, bgm | fgm4);
-
-L = watershed(gradmag2);
-properties = regionprops(L,'BoundingBox'...
-						,'MajorAxisLength','MinorAxisLength'); 
-
-
-% I4 = adjustedI;
-% I4(imdilate(L == 0, ones(ceil(x/6), ceil(x/6))) | bgm | fgm4) = 255;
-% figure
-% imshow(I4)
-% title('Markers and object boundaries superimposed on original image (I4)')
-
-% Lrgb = label2rgb(L, 'jet', 'w', 'shuffle');
-% figure
-% imshow(Lrgb)
-% title('Colored watershed label matrix (Lrgb)')
-
-% figure
-% imshow(adjustedI)
-% hold on
-% himage = imshow(Lrgb);
-% himage.AlphaData = 0.3;
-% title('Lrgb superimposed transparently on original image')
-
-
-
+counter = 1;
 for i=1:length(properties)
-	imageStruct.boundingBox(i,:) = properties(i).BoundingBox;
+	
+	if properties(i).Area > 100
+		imageStruct.boundingBox(counter,:) = properties(i).BoundingBox;
+		counter = counter + 1;
+	end
+	
 end
-imageStruct.cellLength = [properties.MajorAxisLength]';
-imageStruct.cellWidth = [properties.MinorAxisLength]';
-imageStruct.cellN(1,1) = length(properties);
+
+imageStruct.cellN(1,1) = counter - 1;
 
 end
 

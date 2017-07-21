@@ -80,7 +80,7 @@ for j=1:conditionN
 
 		cond(j).images(i).cellN = [];
 
-		cond(j).images(i) = imgSegment(cond(j).images(i));
+		cond(j).images(i) = imgSegmentWatershed(cond(j).images(i));
 
 		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
 
@@ -143,7 +143,7 @@ end
 
 close all
 
-a=3;
+a=1;
 b=2;
 
 plotMeanIntensity(cond(a).images(b))
