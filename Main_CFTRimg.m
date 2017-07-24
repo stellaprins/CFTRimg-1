@@ -26,13 +26,7 @@ if strcmp(runMode,'test')
 	cond(2).wells = {'B03'};
 	cond(3).wells = {'B04'};
 elseif strcmp(runMode,'full')
-	experiment = 'exp1';
-	magnification = '60x';
-	conditionsStr = {'WT','F508del','R1070W'};
-	cond = createConditions(conditionsStr);
-	cond(1).wells = {'B02','C02','D02','E02','F02','G02'};
-	cond(2).wells = {'B03','C03','D03','E03','F03','G03'};
-	cond(3).wells = {'B04','C04','D04','E04','F04','G04'};
+	input_data.m
 end
 
 %% IMPORT THE DATA
