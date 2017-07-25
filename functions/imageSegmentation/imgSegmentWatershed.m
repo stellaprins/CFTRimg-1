@@ -52,7 +52,7 @@ Imod = imimposemin(IeqComplement, ~Icleared | maskEM);
 L = watershed(Imod);
 % figure, imshow(label2rgb(L))
 
-showWatershedProcess(dI,Icleared,overlay,maskEM,overlay2,label2rgb(L))
+% showWatershedProcess(dI,Icleared,overlay,maskEM,overlay2,label2rgb(L))
 
 properties = regionprops(L,'BoundingBox','Area');
 

@@ -15,53 +15,29 @@ siteN = 9;
 
 runMode = 'test'; % 'test' OR 'full'
 
-%% CREATE DATA STRUCTURES
+%% IMPORT DATA
+
+baseFolder = fullfile('~','Desktop','data');
 
 if strcmp(runMode,'test')
-	experiment = 'exp1';
-	magnification = '60x';
-	conditionsStr = {'WT','F508del','R1070W'};
-	cond = createConditions(conditionsStr);
-	cond(1).wells = {'B02'};
-	cond(2).wells = {'B03'};
-	cond(3).wells = {'B04'};
+	experimentStr = {'exp4'};
+	exp = createExperimentStruct(experimentStr);
+
+	exp(1).expStr = 'exp4';
+	exp(1).local_quench = {'60x'};
+	exp(1).conditionStr = {'WT','F508del','R1070W'};
+	
+	exp(1).condWells(1,:) = {'B02'};
+	exp(1).condWells(2,:) = {'B03'};
+	exp(1).condWells(3,:) = {'B04'};
+		
+	cond = createConditionStruct(exp);
+	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
+		
 elseif strcmp(runMode,'full')
-	input_data.m
-end
-
-%% IMPORT THE DATA
-
-fileFolder = fullfile('~','Desktop','data',experiment,magnification);
-filePrefix = strcat(experiment,'_',magnification,'_');
-
-conditionN = length(cond);
-
-for i=1:conditionN
-	
-	cond(i).imageN = length(cond(i).wells)*siteN;
-	
-	redPathArray = cell(length(cond(i).wells)*siteN,1);
-	yelPathArray = cell(length(cond(i).wells)*siteN,1);
-	
-	for j=1:length(cond(i).wells)
-		
-		% red
-		filename = strcat(filePrefix,cond(i).wells{j},'_s*_w2.TIF');
-		redDirOutput = dir(fullfile(fileFolder,filename));
-		
-		% yellow
-		filename = strcat(filePrefix,cond(i).wells{j},'_s*_w1.TIF');
-		yelDirOutput = dir(fullfile(fileFolder,filename));
-
-		for p = 1:siteN
-			redPathArray{(j-1)*siteN + p} = fullfile(fileFolder,redDirOutput(p).name);
-			yelPathArray{(j-1)*siteN + p} = fullfile(fileFolder,yelDirOutput(p).name);
-		end
-		
-	end
-	
-	cond(i).images = createImageStruct(redPathArray,yelPathArray);
-	
+	inputData
+	cond = createConditionStruct(exp);
+	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
 end
 
 disp('Completed importing data')
@@ -69,6 +45,9 @@ disp('Completed importing data')
 %% SEGMENTATION
 
 close all
+
+conditionN = length(cond);
+
 for j=1:conditionN
 	for i=1:cond(j).imageN
 
@@ -140,7 +119,7 @@ close all
 a=1;
 b=2;
 
-plotMeanIntensity(cond(a).images(b))
+% plotMeanIntensity(cond(a).images(b))
 
 for i=1:length(cond)
 	plotRedYelCorrelation(cond(i))
