@@ -32,7 +32,7 @@ for i=1:cellN
 	redCropAdj = im2double(redCropped) - redBackground;
 	yelCropAdj = im2double(yelCropped) - yelBackground;
 	
-	cellMask = cellBinarize(redCropped);
+	cellMask = cellBinarize(redCropAdj);
 	
 	distanceMap = makeDistanceMap(cellMask);
 	
@@ -54,10 +54,10 @@ for i=1:cellN
 	redRatioMembraneInside(i) = redMeanMembrane(i) / redMeanInsideCell(i);
 	%%%%%%%
 	
-%  	if i==1
-% 		showDistanceMapProcess(...
-% 			redCropped,yelCropped,cellMask,distanceMap,membraneMask);
-% 	end
+ 	if i==1
+		showDistanceMapProcess(...
+			redCropped,yelCropped,cellMask,distanceMap,membraneMask);
+	end
 
 end
 

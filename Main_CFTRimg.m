@@ -53,62 +53,48 @@ close all
 conditionN = length(cond);
 
 for j=1:conditionN
-	for i=1:cond(j).imageN
-
-		cond(j).images(i).cellN = [];
+	for i=1:cond(j).imageN		
 
 		cond(j).images(i) = imgSegmentWatershed(cond(j).images(i));
-
-		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
-
-		cond(j).images(i) = imgFindCellDimensions(cond(j).images(i));
-
-		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
-
-% 	 	cond(j).images(i).cellN
 
 	end
 end
 
 disp('Completed image segmentation')
 
-%% PROCESSING
+%% FILTERING
 
 for j=1:conditionN
 	for i=1:cond(j).imageN
 		
+		cond(j).images(i).cellN = cond(j).images(i).cellN(1);
+		
+		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
+		
 		cond(j).images(i) = imgFindBackground(cond(j).images(i));
+		
+		cond(j).images(i) = imgFilterAbuttingCells(cond(j).images(i));
+		
+		cond(j).images(i) = imgFindCellDimensions(cond(j).images(i));
 
+		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
+		
+	end
+end
+
+disp('Completed image filtering')
+
+%% DISTANCE MAP
+
+for j=1:conditionN
+	for i=1:cond(j).imageN
+		
 		cond(j).images(i) = distanceMap(cond(j).images(i));
 
 	end
 end
 
 disp('Completed image processing')
-
-%% DISPLAY
-
-% close all
-% 
-% x=1;
-% y=4;
-% 
-% cond(x).images(y).cellN
-% figure
-% imgDisplay(cond(x).images(y))
-% for i=1:cond(x).images(y).cellN(end)
-% 	figure
-% 	subplot(1,2,1)
-% 	cellDisplay(cond(x).images(y),'yel',i)
-% 	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
-% 		,round(cond(x).images(y).yelInsideCell(i),4)...
-% 		,round(cond(x).images(y).yelOutsideCell(i),4)...
-% 		,round(cond(x).images(y).yelMembrane(i),4)))
-% 	subplot(1,2,2)
-% 	cellDisplay(cond(x).images(y),'red',i)
-% 	
-% end
-
 
 
 %% ANALYSIS
@@ -120,15 +106,39 @@ for i=1:length(cond)
 	cond(i).cellN = sum(fullCellN(:,end));
 end
 
-[cond.mutation]
-{cond.cellN}
+disp([cond.mutation])
+disp({cond.cellN})
 
-a=1;
-b=2;
+a=3;
+b=4;
 
-% plotMeanIntensity(cond(a).images(b))
+plotMeanIntensity(cond(a).images(b))
 
-for i=1:length(cond)
-	plotRedYelCorrelation(cond(i))
+% for i=1:length(cond)
+% 	plotRedYelCorrelation(cond(i))
+% end
+
+%% DISPLAY
+
+close all
+
+x=3;
+y=4;
+
+cond(x).images(y).cellN
+for i=1:cond(x).images(y).cellN(end)
+	figure
+	subplot(1,3,1)
+	cellDisplay(cond(x).images(y),'yel',i)
+	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
+		,round(cond(x).images(y).yelInsideCell(i),4)...
+		,round(cond(x).images(y).yelOutsideCell(i),4)...
+		,round(cond(x).images(y).yelMembrane(i),4)))
+	subplot(1,3,2)
+	cellDisplay(cond(x).images(y),'red',i)
+	subplot(1,3,3)
+	cellDisplay(cond(x).images(y),'bw',i)
+	
 end
+
 

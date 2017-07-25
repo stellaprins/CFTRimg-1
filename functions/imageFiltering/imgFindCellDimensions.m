@@ -3,15 +3,18 @@ function [ imageStruct ] = imgFindCellDimensions( imageStruct )
 %   Detailed explanation goes here
 
 image = imread(imageStruct.redPath);
+redBackground = imageStruct.redBackground;
 
 counter = 1;
 for idx=1:imageStruct.cellN(end)
 	
 	boundingBox = imageStruct.boundingBox(idx,:);
 
-	cropped = boundingBoxToCroppedImage(image,boundingBox);
+	redCropped = boundingBoxToCroppedImage(image,boundingBox);
+	
+	redCropAdj = im2double(redCropped) - redBackground;
 
-	bw = cellBinarize(cropped);
+	bw = cellBinarize(redCropAdj);
 
 	[labelled, ~] = bwlabel(bw,8);
 	properties = regionprops(labelled ...
