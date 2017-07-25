@@ -3,7 +3,7 @@ function [ conditionStruct ] = findImagePathsPerCondition( ...
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 
-siteN = 9;
+global SITEN
 
 conditionN = length(conditionStruct);
 experimentN = length(experimentStruct);
@@ -33,8 +33,8 @@ for i=1:conditionN
 			
 			wells = {experimentStruct(j).condWells{conditionLocation,:}};
 			
-			tmpRedPathArray = cell(length(wells)*siteN,1);
-			tmpYelPathArray = cell(length(wells)*siteN,1);
+			tmpRedPathArray = cell(length(wells)*SITEN,1);
+			tmpYelPathArray = cell(length(wells)*SITEN,1);
 			
 			for k=1:length(wells)
 
@@ -46,10 +46,10 @@ for i=1:conditionN
 				filename = strcat(filePrefix,wells{k},'_s*_w1.TIF');
 				yelDirOutput = dir(fullfile(fileFolder,filename));
 
-				for p = 1:siteN
-					tmpRedPathArray{(k-1)*siteN + p} = ...
+				for p = 1:SITEN
+					tmpRedPathArray{(k-1)*SITEN + p} = ...
 						fullfile(fileFolder,redDirOutput(p).name);
-					tmpYelPathArray{(k-1)*siteN + p} = ...
+					tmpYelPathArray{(k-1)*SITEN + p} = ...
 						fullfile(fileFolder,yelDirOutput(p).name);
 				end
 				

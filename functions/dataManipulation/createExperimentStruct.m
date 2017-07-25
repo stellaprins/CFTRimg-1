@@ -12,7 +12,7 @@ experimentTemplate = struct(...
 
 for i=1:experimentsN
 	exp(i) = experimentTemplate;
-	exp(i).expStr = experimentStr(i);
+	exp(i).expStr = experimentStr{i};
 	
 end
 

@@ -6,12 +6,9 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
-global BINNING EXTRA
+global SITEN
 
-BINNING = 1 / 1;
-EXTRA = ceil(BINNING*20);
-
-siteN = 9;
+SITEN = 9;
 
 runMode = 'test'; % 'test' OR 'full'
 
@@ -20,10 +17,9 @@ runMode = 'test'; % 'test' OR 'full'
 baseFolder = fullfile('~','Desktop','data');
 
 if strcmp(runMode,'test')
-	experimentStr = {'exp4'};
+	experimentStr = {'exp1'};
 	exp = createExperimentStruct(experimentStr);
 
-	exp(1).expStr = 'exp4';
 	exp(1).local_quench = {'60x'};
 	exp(1).conditionStr = {'WT','F508del','R1070W'};
 	
@@ -41,6 +37,14 @@ elseif strcmp(runMode,'full')
 end
 
 disp('Completed importing data')
+
+%% DECLARE GLOBAL VARIABLES
+
+global BINNING EXTRA
+
+BINNING = 1 / 1;
+EXTRA = ceil(BINNING*20);
+
 
 %% SEGMENTATION
 
@@ -109,12 +113,15 @@ disp('Completed image processing')
 
 %% ANALYSIS
 
+close all
+
 for i=1:length(cond)
 	fullCellN = vertcat(cond(i).images.cellN);
 	cond(i).cellN = sum(fullCellN(:,end));
 end
 
-close all
+[cond.mutation]
+{cond.cellN}
 
 a=1;
 b=2;
