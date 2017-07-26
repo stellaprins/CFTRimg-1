@@ -10,7 +10,7 @@ global SITEN
 
 SITEN = 9;
 
-runMode = 'full'; % 'test' OR 'full'
+runMode = 'test'; % 'test' OR 'full'
 
 %% IMPORT DATA
 

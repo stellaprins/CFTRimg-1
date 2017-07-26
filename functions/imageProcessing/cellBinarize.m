@@ -14,6 +14,5 @@ eroded = imerode(bw,seErode);
 filled = imfill(eroded,'holes');
 binaryImage = imdilate(filled,seDilate);
 
-
 end
 
