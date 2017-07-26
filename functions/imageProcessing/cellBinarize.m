@@ -4,15 +4,15 @@ function [ binaryImage ] = cellBinarize( croppedImage )
 
 global BINNING
 
-bw = imbinarize(croppedImage);
+thresh = 0.9*graythresh(croppedImage);
 
-seErode = strel('disk',floor(4*BINNING));
-% cleared = imclearborder(eroded,8);
-seDilate = strel('disk',floor(10*BINNING));
+bw = imbinarize(croppedImage, thresh);
+
+seErode = strel('disk',floor(5*BINNING));
+seDilate = strel('disk',floor(8*BINNING));
 eroded = imerode(bw,seErode);
 filled = imfill(eroded,'holes');
 binaryImage = imdilate(filled,seDilate);
-
 
 end
 

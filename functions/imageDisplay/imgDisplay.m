@@ -4,12 +4,7 @@ function imgDisplay( imageStruct )
 
 image = imread(imageStruct.redPath);
 
-doubleImage = im2double(image);
-
-adjusted = imadjust(doubleImage,[min(doubleImage(:)); max(doubleImage(:))]...
-	,[0; 1]);
-
-imshow(adjusted)
+imshow(image,[],'InitialMagnification','fit')
 
 end
 

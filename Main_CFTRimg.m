@@ -6,115 +6,142 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
+global SITEN
+
+SITEN = 9;
+
+runMode = 'test'; % 'test' OR 'full'
+
+%% IMPORT DATA
+
+baseFolder = fullfile('~','Desktop','data');
+
+if strcmp(runMode,'test')
+	experimentStr = {'exp1'};
+	exp = createExperimentStruct(experimentStr);
+
+	exp(1).local_quench = {'60x'};
+	exp(1).conditionStr = {'WT','F508del','R1070W'};
+	
+	exp(1).condWells(1,:) = {'B02'};
+	exp(1).condWells(2,:) = {'B03'};
+	exp(1).condWells(3,:) = {'B04'};
+		
+	cond = createConditionStruct(exp);
+	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
+		
+elseif strcmp(runMode,'full')
+	inputData
+	cond = createConditionStruct(exp);
+	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
+end
+
+disp('Completed importing data')
+
+%% DECLARE GLOBAL VARIABLES
+
 global BINNING EXTRA
 
 BINNING = 1 / 1;
 EXTRA = ceil(BINNING*20);
 
-siteN = 9;
-
-runMode = 'test'; % 'test' OR 'full'
-
-%% CREATE DATA STRUCTURES
-
-if strcmp(runMode,'test')
-	experiment = 'exp1';
-	magnification = '60x';
-	conditionsStr = {'WT'};
-	cond = createConditions(conditionsStr);
-	cond(1).wells = {'B02'};
-elseif strcmp(runMode,'full')
-	experiment = 'exp1';
-	magnification = '60x';
-	conditionsStr = {'WT','F508del','R1070W'};
-	cond = createConditions(conditionsStr);
-	cond(1).wells = {'B02','C02','D02','E02','F02','G02'};
-	cond(2).wells = {'B03','C03','D03','E03','F03','G03'};
-	cond(3).wells = {'B04','C04','D04','E04','F04','G04'};
-end
-
-%% IMPORT THE DATA
-
-fileFolder = fullfile('~','Desktop','data',experiment,magnification);
-filePrefix = strcat(experiment,'_',magnification,'_');
-
-conditionN = length(cond);
-
-for i=1:conditionN
-	
-	cond(i).imageN = length(cond(i).wells)*siteN;
-	
-	redPathArray = cell(length(cond(i).wells)*siteN,1);
-	yelPathArray = cell(length(cond(i).wells)*siteN,1);
-	
-	for j=1:length(cond(i).wells)
-		
-		% red
-		filename = strcat(filePrefix,cond(i).wells{j},'_s*_w2.TIF');
-		redDirOutput = dir(fullfile(fileFolder,filename));
-		
-		% yellow
-		filename = strcat(filePrefix,cond(i).wells{j},'_s*_w1.TIF');
-		yelDirOutput = dir(fullfile(fileFolder,filename));
-
-		for p = 1:siteN
-			redPathArray{(j-1)*siteN + p} = fullfile(fileFolder,redDirOutput(p).name);
-			yelPathArray{(j-1)*siteN + p} = fullfile(fileFolder,yelDirOutput(p).name);
-		end
-		
-	end
-	
-	cond(i).images = createImageStruct(redPathArray,yelPathArray);
-	
-end
 
 %% SEGMENTATION
 
 close all
+
+conditionN = length(cond);
+
 for j=1:conditionN
-	for i=1:cond(j).imageN
+	for i=1:cond(j).imageN		
 
-		cond(j).images(i).cellN = [];
-
-		cond(j).images(i) = imgSegment(cond(j).images(i));
-
-		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
-
-		cond(j).images(i) = imgFindCellDimensions(cond(j).images(i));
-
-		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
-
-% 	 	cond(j).images(i).cellN
+		cond(j).images(i) = imgSegmentWatershed(cond(j).images(i));
 
 	end
 end
 
-%% PROCESSING
+disp('Completed image segmentation')
+
+%% FILTERING
 
 for j=1:conditionN
 	for i=1:cond(j).imageN
+		
+		cond(j).images(i).cellN = cond(j).images(i).cellN(1);
+		
+		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
+		
+		cond(j).images(i) = imgFindBackground(cond(j).images(i));
+		
+		cond(j).images(i) = imgFilterAbuttingCells(cond(j).images(i));
+		
+		cond(j).images(i) = imgFindCellDimensions(cond(j).images(i));
 
+		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
+		
+	end
+end
+
+disp('Completed image filtering')
+
+%% DISTANCE MAP
+
+for j=1:conditionN
+	for i=1:cond(j).imageN
+		
 		cond(j).images(i) = distanceMap(cond(j).images(i));
 
 	end
 end
 
+disp('Completed image processing')
 
-%% RESULTS
+
+%% ANALYSIS
 
 close all
 
-x=1;
-y=1;
+for i=1:length(cond)
+	fullCellN = vertcat(cond(i).images.cellN);
+	cond(i).cellN = sum(fullCellN(:,end));
+	cond(i) = collectRatioData(cond(i));
+end
+
+disp([cond.mutation])
+disp([cond.hits])
+disp([cond.cellN])
+
+a=3;
+b=158;
+
+plotMeanIntensity(cond(a).images(b))
+
+for i=1:length(cond)
+	plotRedYelCorrelation(cond(i))
+end
+
+%% DISPLAY
+
+close all
+
+x=3;
+y=158;
 
 cond(x).images(y).cellN
-figure
 imgDisplay(cond(x).images(y))
 for i=1:cond(x).images(y).cellN(end)
 	figure
+	subplot(1,3,1)
 	cellDisplay(cond(x).images(y),'yel',i)
 	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
-		,round(cond(x).images(y).meanInsideCell(i),4)...
-		,round(cond(x).images(y).meanOutsideCell(i),4)...
-		,round(cond(x).images(y).meanMembrane(i),4)))
+		,round(cond(x).images(y).yelInsideCell(i),4)...
+		,round(cond(x).images(y).yelOutsideCell(i),4)...
+		,round(cond(x).images(y).yelMembrane(i),4)))
+	subplot(1,3,2)
+	cellDisplay(cond(x).images(y),'red',i)
+	subplot(1,3,3)
+	cellDisplay(cond(x).images(y),'bw',i)
+	
 end
+
+

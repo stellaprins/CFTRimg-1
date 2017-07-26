@@ -2,13 +2,25 @@ function [ imageStruct ] = distanceMap( imageStruct )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
+global BINNING
+
 redImage = imread(imageStruct.redPath);
 yelImage = imread(imageStruct.yelPath);
-cellN = imageStruct.cellN(end);
 
-meanInsideCell = zeros(cellN,1);
-meanOutsideCell = zeros(cellN,1);
-meanMembrane = zeros(cellN,1);
+cellN = imageStruct.cellN(end);
+redBackground = imageStruct.redBackground;
+yelBackground = imageStruct.yelBackground;
+
+yelMeanInsideCell		= zeros(cellN,1);
+yelMeanOutsideCell		= zeros(cellN,1);
+yelMeanMembrane			= zeros(cellN,1);
+yelRatioOutsideInside	= zeros(cellN,1);
+yelRatioMembraneInside	= zeros(cellN,1);
+redMeanInsideCell		= zeros(cellN,1);
+redMeanOutsideCell		= zeros(cellN,1);
+redMeanMembrane			= zeros(cellN,1);
+redRatioOutsideInside	= zeros(cellN,1);
+redRatioMembraneInside	= zeros(cellN,1);
 
 for i=1:cellN
 	
@@ -16,27 +28,50 @@ for i=1:cellN
 
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
 	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
-	yelCropped = im2double(yelCropped);
+	
+	redCropAdj = im2double(redCropped) - redBackground;
+	yelCropAdj = im2double(yelCropped) - yelBackground;
+	
+	cellMask = cellBinarize(redCropAdj);
+	
+	distanceMap = makeDistanceMap(cellMask);
+	
+	%%%%%%%
+	membraneMask = distanceMap >= 0 & distanceMap < 10*BINNING;
+	
+	yelMeanInsideCell(i) = sum(cellMask .* yelCropAdj) / sum(cellMask);
+	yelMeanOutsideCell(i) = sum(~cellMask .* yelCropAdj) / sum(~cellMask);
+	yelMeanMembrane(i) = sum(membraneMask .* yelCropAdj) / sum(membraneMask);
+	
+	yelRatioOutsideInside(i) = yelMeanOutsideCell(i) / yelMeanInsideCell(i);
+	yelRatioMembraneInside(i) = yelMeanMembrane(i) / yelMeanInsideCell(i);
+	
+	redMeanInsideCell(i) = sum(cellMask .* redCropAdj) / sum(cellMask);
+	redMeanOutsideCell(i) = sum(~cellMask .* redCropAdj) / sum(~cellMask);
+	redMeanMembrane(i) = sum(membraneMask .* redCropAdj) / sum(membraneMask);
+	
+	redRatioOutsideInside(i) = redMeanOutsideCell(i) / redMeanInsideCell(i);
+	redRatioMembraneInside(i) = redMeanMembrane(i) / redMeanInsideCell(i);
+	%%%%%%%
+	
+%  	if i==1
+% 		showDistanceMapProcess(...
+% 			redCropped,yelCropped,cellMask,distanceMap,membraneMask);
+% 	end
 
-	BW = cellBinarize(redCropped);
-	
-	positiveDistanceMap = ceil(bwdist(~BW));
-	
-	membraneBW = positiveDistanceMap > 0 & positiveDistanceMap <= 10;
-	
-% 	showDistanceMapProcess(...
-% 		redCropped,yelCropped,BW,positiveDistanceMap,membraneBW);
-	
-	meanInsideCell(i) = sum(BW .* yelCropped) / sum(BW);
-	meanOutsideCell(i) = sum(~BW .* yelCropped) / sum(~BW);
-	meanMembrane(i) = sum(membraneBW .* yelCropped) / sum(membraneBW);
-	
 end
 
-imageStruct.meanInsideCell = meanInsideCell;
-imageStruct.meanOutsideCell = meanOutsideCell;
-imageStruct.meanMembrane = meanMembrane;
+imageStruct.yelInsideCell = yelMeanInsideCell;
+imageStruct.yelOutsideCell = yelMeanOutsideCell;
+imageStruct.yelMembrane = yelMeanMembrane;
+imageStruct.yelRatioOutIn = yelRatioOutsideInside;
+imageStruct.yelRatioMembraneIn = yelRatioMembraneInside;
 
+imageStruct.redInsideCell = redMeanInsideCell;
+imageStruct.redOutsideCell = redMeanOutsideCell;
+imageStruct.redMembrane = redMeanMembrane;
+imageStruct.redRatioOutIn = redRatioOutsideInside;
+imageStruct.redRatioMembraneIn = redRatioMembraneInside;
 
 end
 
