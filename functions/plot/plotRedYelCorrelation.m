@@ -6,6 +6,9 @@ mutation = conditionStruct.mutation;
 yelInside = vertcat(conditionStruct.images.yelInsideCell);
 redInside = vertcat(conditionStruct.images.redInsideCell);
 
+% nonResult = sum(isnan(redInside));
+points = length(redInside);
+
 R = corrcoef(redInside,yelInside);
 r = R(1,2);
 
@@ -15,19 +18,23 @@ yelSTD = std(yelInside);
 slope = r*(yelSTD/redSTD);
 intercept = mean(yelInside) - slope*mean(redInside);
 
-dim = [.7 .4 .2 .2];
-str = sprintf('R = %0.5f\nslope = %0.5f\nintercept = %0.5f'...
-	,r,slope,intercept);
+dim = [.65 .7 .2 .2];
+str = sprintf('R = %0.5f\nslope = %0.5f\nintercept = %0.5f\npoints=%d'...
+	,r,slope,intercept,points);
 
-
+xmax = 1.05*max(redInside);
+ymax = 1.05*max(yelInside);
 
 figure
-ax = axes;
 scatter(redInside,yelInside)
-lsline(ax)
+lsline
 title(mutation)
 xlabel('Mean mCherry fluorescence inside the cell')
 ylabel('Mean YFP fluorescence inside the cell')
-xlim([0 0.12])
-ylim([0 0.025])
-annotation('textbox',dim,'String',str,'FitBoxToText','on');
+xlim([0 xmax])
+ylim([0 ymax])
+annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',13);
+
+set(gca,'fontsize',16)
+
+end

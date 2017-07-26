@@ -112,35 +112,36 @@ disp([cond.hits])
 disp([cond.cellN])
 
 a=3;
-b=4;
+b=158;
 
-% plotMeanIntensity(cond(a).images(b))
+plotMeanIntensity(cond(a).images(b))
 
-% for i=1:length(cond)
-% 	plotRedYelCorrelation(cond(i))
-% end
+for i=1:length(cond)
+	plotRedYelCorrelation(cond(i))
+end
 
 %% DISPLAY
 
-% close all
-% 
-% x=3;
-% y=4;
-% 
-% cond(x).images(y).cellN
-% for i=1:cond(x).images(y).cellN(end)
-% 	figure
-% 	subplot(1,3,1)
-% 	cellDisplay(cond(x).images(y),'yel',i)
-% 	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
-% 		,round(cond(x).images(y).yelInsideCell(i),4)...
-% 		,round(cond(x).images(y).yelOutsideCell(i),4)...
-% 		,round(cond(x).images(y).yelMembrane(i),4)))
-% 	subplot(1,3,2)
-% 	cellDisplay(cond(x).images(y),'red',i)
-% 	subplot(1,3,3)
-% 	cellDisplay(cond(x).images(y),'bw',i)
-% 	
-% end
+close all
+
+x=3;
+y=158;
+
+cond(x).images(y).cellN
+imgDisplay(cond(x).images(y))
+for i=1:cond(x).images(y).cellN(end)
+	figure
+	subplot(1,3,1)
+	cellDisplay(cond(x).images(y),'yel',i)
+	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
+		,round(cond(x).images(y).yelInsideCell(i),4)...
+		,round(cond(x).images(y).yelOutsideCell(i),4)...
+		,round(cond(x).images(y).yelMembrane(i),4)))
+	subplot(1,3,2)
+	cellDisplay(cond(x).images(y),'red',i)
+	subplot(1,3,3)
+	cellDisplay(cond(x).images(y),'bw',i)
+	
+end
 
 

@@ -32,13 +32,14 @@ for i=1:cellN
 	yMaxLeft = max(yelMeanData) + 0.1*range(yelMeanData);
 	yMinRight = min(redMeanData) - 0.1*range(redMeanData);
 	yMaxRight = max(redMeanData) + 0.1*range(redMeanData);
-	xMin = min(distanceLabels);
-	xMax = max(distanceLabels);
+	xMin = -50; % min(distanceLabels);
+	xMax = 50; % max(distanceLabels);
 	
 	horzLine = [xMin:1:xMax]';
 	vertLine = [yMinLeft:0.0001:yMaxLeft]';
 	
 	figure
+	axes('fontsize',18)
 	yyaxis left
 	plot(distanceLabels, yelMeanData ...
 		,zeros(length(vertLine),1),vertLine ...
