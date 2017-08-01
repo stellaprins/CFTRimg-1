@@ -14,7 +14,7 @@ runMode = 'test'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
-baseFolder = fullfile('~','Desktop','data');
+baseFolder = fullfile('~','Desktop','data'); 
 
 if strcmp(runMode,'test')
 	experimentStr = {'exp1'};
