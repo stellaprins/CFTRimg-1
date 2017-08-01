@@ -3,8 +3,8 @@ function plotRedYelCorrelation( conditionStruct )
 %   Detailed explanation goes here
 
 mutation = conditionStruct.mutation;
-yelInside = vertcat(conditionStruct.images.yelInsideCell);
-redInside = vertcat(conditionStruct.images.redInsideCell);
+yelInside = vertcat(conditionStruct.imageLocal.yelInsideCell);
+redInside = vertcat(conditionStruct.imageLocal.redInsideCell);
 
 % nonResult = sum(isnan(redInside));
 points = length(redInside);
@@ -25,14 +25,13 @@ str = sprintf('R = %0.5f\nslope = %0.5f\nintercept = %0.5f\npoints=%d'...
 xmax = 1.05*max(redInside);
 ymax = 1.05*max(yelInside);
 
-figure
 scatter(redInside,yelInside)
 lsline
 title(mutation)
 xlabel('Mean mCherry fluorescence inside the cell')
 ylabel('Mean YFP fluorescence inside the cell')
-xlim([0 xmax])
-ylim([0 ymax])
+xlim([0 0.12])
+ylim([0 0.03])
 annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',13);
 
 set(gca,'fontsize',16)

@@ -1,6 +1,5 @@
-function  imageStruct = createImageStruct( redPathArray , yelPathArray )
-%CREATECONDITIONS create empty structs for each conditions as listed in
-%'conditionsStr'
+function  imageStruct = createImageLocalStruct( redPathArray , yelPathArray )
+%CREATEIMAGELOCALSTRUCT create empty structs for each localisation image
 
 pathN = length(redPathArray);
 imageTemplate = struct(...

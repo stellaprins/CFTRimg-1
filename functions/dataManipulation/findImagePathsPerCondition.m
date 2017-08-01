@@ -62,7 +62,7 @@ for i=1:conditionN
 		
 	end
 	
-	conditionStruct(i).images = createImageStruct(redPathArray,yelPathArray);
+	conditionStruct(i).imageLocal = createImageLocalStruct(redPathArray,yelPathArray);
 	conditionStruct(i).imageN = length(redPathArray);
 	
 end

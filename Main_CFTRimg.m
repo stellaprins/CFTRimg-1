@@ -17,15 +17,15 @@ runMode = 'test'; % 'test' OR 'full'
 baseFolder = fullfile('~','Desktop','data');
 
 if strcmp(runMode,'test')
-	experimentStr = {'exp1'};
+	experimentStr = {'exp3'};
 	exp = createExperimentStruct(experimentStr);
 
-	exp(1).local_quench = {'60x'};
+	exp(1).local_quench = {'60x','quench'};
 	exp(1).conditionStr = {'WT','F508del','R1070W'};
 	
-	exp(1).condWells(1,:) = {'B02'};
-	exp(1).condWells(2,:) = {'B03'};
-	exp(1).condWells(3,:) = {'B04'};
+	exp(1).condWells(1,:) = {'C02'};
+	exp(1).condWells(2,:) = {'C03'};
+	exp(1).condWells(3,:) = {'C04'};
 		
 	cond = createConditionStruct(exp);
 	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
@@ -55,7 +55,7 @@ conditionN = length(cond);
 for j=1:conditionN
 	for i=1:cond(j).imageN		
 
-		cond(j).images(i) = imgSegmentWatershed(cond(j).images(i));
+		cond(j).imageLocal(i) = imgSegmentWatershed(cond(j).imageLocal(i));
 
 	end
 end
@@ -67,17 +67,17 @@ disp('Completed image segmentation')
 for j=1:conditionN
 	for i=1:cond(j).imageN
 		
-		cond(j).images(i).cellN = cond(j).images(i).cellN(1);
+		cond(j).imageLocal(i).cellN = cond(j).imageLocal(i).cellN(1);
 		
-		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
 		
-		cond(j).images(i) = imgFindBackground(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
 		
-		cond(j).images(i) = imgFilterAbuttingCells(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFilterAbuttingCells(cond(j).imageLocal(i));
 		
-		cond(j).images(i) = imgFindCellDimensions(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFindCellDimensions(cond(j).imageLocal(i));
 
-		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFilterCellSize(cond(j).imageLocal(i));
 		
 	end
 end
@@ -89,7 +89,7 @@ disp('Completed image filtering')
 for j=1:conditionN
 	for i=1:cond(j).imageN
 		
-		cond(j).images(i) = distanceMap(cond(j).images(i));
+		cond(j).imageLocal(i) = distanceMap(cond(j).imageLocal(i));
 
 	end
 end
@@ -102,41 +102,45 @@ disp('Completed image processing')
 % close all
 
 for i=1:length(cond)
-	fullCellN = vertcat(cond(i).images.cellN);
+	fullCellN = vertcat(cond(i).imageLocal.cellN);
 	cond(i).cellN = sum(fullCellN(:,end));
 	cond(i) = collectRatioData(cond(i));
 end
 
 disp([cond.mutation])
-disp([cond.hits])
+disp(([cond.hits]./[cond.cellN])*100)
 disp([cond.cellN])
 
 a=3;
-b=110;
+b=1;
 
-plotMeanIntensity(cond(a).images(b))
-[maxGrad maxGradLoc] = findGradient(cond(a).images(b))
+for i=1:cond(a).imageLocal(b).cellN(end)
+	figure
+	plotMeanIntensity(cond(a).imageLocal(b),i)
+end
+% [maxGrad, maxGradLoc] = findGradient(cond(a).imageLocal(b))
 
-% for i=1:length(cond)
-% 	plotRedYelCorrelation(cond(i))
-% end
+for i=1:length(cond)
+	figure
+	plotRedYelCorrelation(cond(i))
+end
 
 %% DISPLAY
 
 close all
 
-x=3;
-y=62;
+x=2;
+y=6;
 
-cond(x).images(y).cellN
-[maxGrad, maxGradLoc] = findGradient(cond(x).images(y));
-% imgDisplay(cond(x).images(y))
-for i=1:cond(x).images(y).cellN(end)
+cond(x).imageLocal(y).cellN
+[maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
+% imgDisplay(cond(x).imageLocal(y))
+for i=1:cond(x).imageLocal(y).cellN(end)
 	
 	str1 = sprintf('in %g\nout %g\nmem %g'...
-		,round(cond(x).images(y).yelInsideCell(i),4)...
-		,round(cond(x).images(y).yelOutsideCell(i),4)...
-		,round(cond(x).images(y).yelMembrane(i),4));
+		,round(cond(x).imageLocal(y).yelInsideCell(i),4)...
+		,round(cond(x).imageLocal(y).yelOutsideCell(i),4)...
+		,round(cond(x).imageLocal(y).yelMembrane(i),4));
 	
 	str2 = sprintf('max %g\nloc %g'...
 		,round(maxGrad(i),4)...
@@ -147,15 +151,15 @@ for i=1:cond(x).images(y).cellN(end)
 	
 	figure
 	subplot(4,5,1)
-	cellDisplay(cond(x).images(y),'yel',i)
+	cellDisplay(cond(x).imageLocal(y),'yel',i)
 	subplot(4,5,2)
-	cellDisplay(cond(x).images(y),'red',i)
+	cellDisplay(cond(x).imageLocal(y),'red',i)
 	subplot(4,5,3)
-	cellDisplay(cond(x).images(y),'bw',i)
+	cellDisplay(cond(x).imageLocal(y),'bw',i)
 	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
 	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
 	subplot(4,1,[2,3,4])
-	plotMeanIntensity(cond(x).images(y),i)
+	plotMeanIntensity(cond(x).imageLocal(y),i)
 	
 end
 
