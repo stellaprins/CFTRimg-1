@@ -99,7 +99,7 @@ disp('Completed image processing')
 
 %% ANALYSIS
 
-close all
+% close all
 
 for i=1:length(cond)
 	fullCellN = vertcat(cond(i).images.cellN);
@@ -112,35 +112,50 @@ disp([cond.hits])
 disp([cond.cellN])
 
 a=3;
-b=158;
+b=110;
 
 plotMeanIntensity(cond(a).images(b))
+[maxGrad maxGradLoc] = findGradient(cond(a).images(b))
 
-for i=1:length(cond)
-	plotRedYelCorrelation(cond(i))
-end
+% for i=1:length(cond)
+% 	plotRedYelCorrelation(cond(i))
+% end
 
 %% DISPLAY
 
 close all
 
 x=3;
-y=158;
+y=62;
 
 cond(x).images(y).cellN
-imgDisplay(cond(x).images(y))
+[maxGrad, maxGradLoc] = findGradient(cond(x).images(y));
+% imgDisplay(cond(x).images(y))
 for i=1:cond(x).images(y).cellN(end)
-	figure
-	subplot(1,3,1)
-	cellDisplay(cond(x).images(y),'yel',i)
-	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
+	
+	str1 = sprintf('in %g\nout %g\nmem %g'...
 		,round(cond(x).images(y).yelInsideCell(i),4)...
 		,round(cond(x).images(y).yelOutsideCell(i),4)...
-		,round(cond(x).images(y).yelMembrane(i),4)))
-	subplot(1,3,2)
+		,round(cond(x).images(y).yelMembrane(i),4));
+	
+	str2 = sprintf('max %g\nloc %g'...
+		,round(maxGrad(i),4)...
+		,maxGradLoc(i));
+	
+	dim1 = [.6 .8 .1 .1];
+	dim2 = [.77 .8 .1 .1];
+	
+	figure
+	subplot(4,5,1)
+	cellDisplay(cond(x).images(y),'yel',i)
+	subplot(4,5,2)
 	cellDisplay(cond(x).images(y),'red',i)
-	subplot(1,3,3)
+	subplot(4,5,3)
 	cellDisplay(cond(x).images(y),'bw',i)
+	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
+	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
+	subplot(4,1,[2,3,4])
+	plotMeanIntensity(cond(x).images(y),i)
 	
 end
 
