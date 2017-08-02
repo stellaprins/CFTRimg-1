@@ -19,7 +19,7 @@ for i=1:conditionN
 	
 	for j=1:experimentN
 		
-		experimentStr = experimentStruct.expStr;
+		experimentStr = experimentStruct(j).expStr;
 		
 		cmpLocalQuench=sum(strcmp(experimentStruct(j).local_quench,local_or_quench));
 		cmpCondition = strcmp(experimentStruct(j).conditionStr,condition);

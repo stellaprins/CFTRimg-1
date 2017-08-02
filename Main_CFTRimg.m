@@ -10,7 +10,7 @@ global SITEN
 
 SITEN = 9;
 
-runMode = 'test'; % 'test' OR 'full'
+runMode = 'full'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
@@ -99,7 +99,7 @@ disp('Completed image processing')
 
 %% ANALYSIS
 
-% close all
+close all
 
 for i=1:length(cond)
 	fullCellN = vertcat(cond(i).imageLocal.cellN);
@@ -114,10 +114,10 @@ disp([cond.cellN])
 a=3;
 b=1;
 
-for i=1:cond(a).imageLocal(b).cellN(end)
-	figure
-	plotMeanIntensity(cond(a).imageLocal(b),i)
-end
+% for i=1:cond(a).imageLocal(b).cellN(end)
+% 	figure
+% 	plotMeanIntensity(cond(a).imageLocal(b),i)
+% end
 % [maxGrad, maxGradLoc] = findGradient(cond(a).imageLocal(b))
 
 for i=1:length(cond)
@@ -129,8 +129,8 @@ end
 
 close all
 
-x=2;
-y=6;
+x=3;
+y=1;
 
 cond(x).imageLocal(y).cellN
 [maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
