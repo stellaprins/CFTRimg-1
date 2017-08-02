@@ -30,8 +30,8 @@ lsline
 title(mutation)
 xlabel('Mean mCherry fluorescence inside the cell')
 ylabel('Mean YFP fluorescence inside the cell')
-xlim([0 0.12])
-ylim([0 0.03])
+xlim([0 0.06])
+ylim([0 0.035])
 annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',13);
 
 set(gca,'fontsize',16)

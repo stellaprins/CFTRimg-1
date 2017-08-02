@@ -112,7 +112,7 @@ disp(([cond.hits]./[cond.cellN])*100)
 disp([cond.cellN])
 
 a=3;
-b=1;
+b=3;
 
 % for i=1:cond(a).imageLocal(b).cellN(end)
 % 	figure
@@ -130,7 +130,7 @@ end
 close all
 
 x=3;
-y=1;
+y=22;
 
 cond(x).imageLocal(y).cellN
 [maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
