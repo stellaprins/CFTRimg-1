@@ -8,24 +8,33 @@ addpath(genpath('functions'));
 
 global SITEN
 
-SITEN = 9;
+SITEN = 3;
 
-runMode = 'full'; % 'test' OR 'full'
+runMode = 'test'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
 baseFolder = fullfile('~','Desktop','data');
 
 if strcmp(runMode,'test')
-	experimentStr = {'exp3'};
+	experimentStr = {'exp2','exp3','exp4','exp5'};
 	exp = createExperimentStruct(experimentStr);
 
 	exp(1).local_quench = {'60x','quench'};
-	exp(1).conditionStr = {'WT','F508del','R1070W'};
-	
+	exp(1).conditionStr = {'WT'};
 	exp(1).condWells(1,:) = {'C02'};
-	exp(1).condWells(2,:) = {'C03'};
-	exp(1).condWells(3,:) = {'C04'};
+	
+	exp(2).local_quench = {'60x','quench'};
+	exp(2).conditionStr = {'WT'};
+	exp(2).condWells(1,:) = {'C02'};
+	
+	exp(3).local_quench = {'60x','quench'};
+	exp(3).conditionStr = {'WT'};
+	exp(3).condWells(1,:) = {'C02'};
+	
+	exp(4).local_quench = {'60x','quench'};
+	exp(4).conditionStr = {'WT'};
+	exp(4).condWells(1,:) = {'C02'};
 		
 	cond = createConditionStruct(exp);
 	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
@@ -111,7 +120,7 @@ disp([cond.mutation])
 disp(([cond.hits]./[cond.cellN])*100)
 disp([cond.cellN])
 
-a=3;
+a=1;
 b=3;
 
 % for i=1:cond(a).imageLocal(b).cellN(end)
@@ -129,8 +138,8 @@ end
 
 close all
 
-x=3;
-y=22;
+x=1;
+y=1;
 
 cond(x).imageLocal(y).cellN
 [maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
