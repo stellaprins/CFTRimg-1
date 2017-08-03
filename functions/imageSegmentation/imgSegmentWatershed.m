@@ -43,11 +43,12 @@ largeEM = bwareaopen(largeEM, 1200);
 % figure, imshow(largeEM)
 
 background = largeEM | Idilated;
+% figure, imshow(background)
 
 if strcmp(mode,'test')
 	IbwPerim = bwperim(background);
 	overlay = imoverlay(Ieq, IbwPerim|smallEM, [.3 1 .3]);
-	% figure, imshow(overlay)
+% 	figure, imshow(overlay)
 end
 
 complement = imcomplement(dI);
@@ -58,7 +59,7 @@ L = watershed(Imod);
 % figure, imshow(label2rgb(L))
 
 if strcmp(mode,'test')
-	showWatershedProcess(dI,Ibw,background,smallEM,overlay,label2rgb(L))
+ 	showWatershedProcess(dI,Ibw,background,smallEM,overlay,label2rgb(L))
 end
 
 properties = regionprops(L,'BoundingBox','Area');

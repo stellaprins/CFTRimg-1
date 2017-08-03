@@ -8,9 +8,9 @@ addpath(genpath('functions'));
 
 global SITEN
 
-SITEN = 3;
+SITEN = 9;
 
-runMode = 'test'; % 'test' OR 'full'
+runMode = 'full'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
@@ -62,7 +62,7 @@ close all
 conditionN = length(cond);
 
 for j=1:conditionN
-	for i=1:cond(j).imageN		
+ 	for i=1:cond(j).imageN
 
 		cond(j).imageLocal(i) = imgSegmentWatershed(cond(j).imageLocal(i));
 
@@ -79,8 +79,8 @@ for j=1:conditionN
 		cond(j).imageLocal(i).cellN = cond(j).imageLocal(i).cellN(1);
 		
 		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
-		
-		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
+				
+ 		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
 		
 		cond(j).imageLocal(i) = imgFilterAbuttingCells(cond(j).imageLocal(i));
 		
@@ -139,7 +139,7 @@ end
 close all
 
 x=1;
-y=1;
+y=2;
 
 cond(x).imageLocal(y).cellN
 [maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
@@ -167,7 +167,7 @@ for i=1:cond(x).imageLocal(y).cellN(end)
 	cellDisplay(cond(x).imageLocal(y),'bw',i)
 	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
 	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
-	subplot(4,1,[2,3,4])
+	subplot(4,1,[2,3,4],'fontsize',14)
 	plotMeanIntensity(cond(x).imageLocal(y),i)
 	
 end

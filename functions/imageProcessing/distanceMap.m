@@ -54,7 +54,7 @@ for i=1:cellN
 	redRatioMembraneInside(i) = redMeanMembrane(i) / redMeanInsideCell(i);
 	%%%%%%%
 	
-%  	if i==1
+%  	if i==2
 % 		showDistanceMapProcess(...
 % 			redCropped,yelCropped,cellMask,distanceMap,membraneMask);
 % 	end
