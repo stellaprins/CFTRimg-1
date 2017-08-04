@@ -1,69 +1,48 @@
-function [ conditionStruct ] = findImagePaths( ...
-	conditionStruct,experimentStruct,baseFolder )
+function [ conditionStructArray ] = findImagePaths( ...
+	experimentStructArray,conditionStructArray)
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 
-global SITEN
+conditionN = length(conditionStructArray);
+experimentN = length(experimentStructArray);
 
-conditionN = length(conditionStruct);
-experimentN = length(experimentStruct);
+conditionStr = unique(horzcat(experimentStructArray.conditionStr));
 
-conditionStr = unique(horzcat(experimentStruct.conditionStr));
-
-for i=1:conditionN
+for j=1:conditionN
 	
-	condition = conditionStr{i};
+	currentCond = conditionStr{j};
 	
-	redPathArray = cell(0);
-	yelPathArray = cell(0);
+	redPathArrayLocal = cell(0);
+	yelPathArrayLocal = cell(0);
+
+	redPathArrayQuench = cell(0,2);
+	yelPathArrayQuench = cell(0,70);
 	
-	for j=1:experimentN
+	for i=1:experimentN
 		
-		experimentStr = experimentStruct(j).expStr;
+		expStruct = experimentStructArray(i);
 		
-		cmpLocalQuench=sum(strcmp(experimentStruct(j).local_quench,local_or_quench));
-		cmpCondition = strcmp(experimentStruct(j).conditionStr,condition);
-		conditionLocation = sum(cmpCondition ...
-			.* (1:length(experimentStruct(j).conditionStr)));
+		if strcmp(expStruct.local_quench,'local')
+			
+			[redPathArrayLocal,yelPathArrayLocal] = findImagePathsLocal(...
+				currentCond,expStruct,redPathArrayLocal,yelPathArrayLocal);
 		
-		if cmpLocalQuench == 1 && sum(cmpCondition) == 1
+		elseif strcmp(expStruct.local_quench,'quench')
 			
-			fileFolder = fullfile(baseFolder,experimentStr,local_or_quench);
-			filePrefix = strcat(experimentStr,'_',local_or_quench,'_');
-			
-			wells = {experimentStruct(j).condWells{conditionLocation,:}};
-			
-			tmpRedPathArray = cell(length(wells)*SITEN,1);
-			tmpYelPathArray = cell(length(wells)*SITEN,1);
-			
-			for k=1:length(wells)
-
-				% red
-				filename = strcat(filePrefix,wells{k},'_s*_w2.TIF');
-				redDirOutput = dir(fullfile(fileFolder,filename));
-
-				% yellow
-				filename = strcat(filePrefix,wells{k},'_s*_w1.TIF');
-				yelDirOutput = dir(fullfile(fileFolder,filename));
-
-				for p = 1:SITEN
-					tmpRedPathArray{(k-1)*SITEN + p} = ...
-						fullfile(fileFolder,redDirOutput(p).name);
-					tmpYelPathArray{(k-1)*SITEN + p} = ...
-						fullfile(fileFolder,yelDirOutput(p).name);
-				end
-				
-			end
-			
+			[redPathArrayQuench,yelPathArrayQuench] = findImagePathsQuench(...
+				currentCond,expStruct,redPathArrayQuench,yelPathArrayQuench);
+		
+		else
+			disp(fprintf('In experimentStruct %d, exp(%d).local_quench must be either "local" or "quench"\n',i,i))
 		end
-		
-		redPathArray = [redPathArray; tmpRedPathArray];
-		yelPathArray = [yelPathArray; tmpYelPathArray];
 		
 	end
 	
-	conditionStruct(i).imageLocal = createImageLocalStruct(redPathArray,yelPathArray);
-	conditionStruct(i).imageN = length(redPathArray);
+	conditionStructArray(j).imageLocal = createImageLocalStruct(...
+		redPathArrayLocal,yelPathArrayLocal);
+	conditionStructArray(j).imageQuench = createImageQuenchStruct(...
+		redPathArrayQuench,yelPathArrayQuench);
+	conditionStructArray(j).localImageN = length(redPathArrayLocal);
 	
 end
 

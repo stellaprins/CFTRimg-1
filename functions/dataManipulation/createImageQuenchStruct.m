@@ -1,20 +1,18 @@
-function imageStruct = createImageQuenchStruct(...)
+function imageStruct = createImageQuenchStruct(redPathArray , yelPathArray)
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
-wellN = length(wells);
+pathN = length(redPathArray);
 imageTemplate = struct(...
-			'yelPaths', {{}}...
-			,'redPaths', {{}}...
-	);
+			'redPath',{{}}...
+			,'yelPath',{{}}...
+			);
 
 imageStruct(1:pathN,1) = imageTemplate;
 
-for i=1:wellN
-	imageStruct(i).redPath = redPathArray{i};
-	imageStruct(i).yelPath = yelPathArray{i};
-end
-
+for i=1:pathN
+	imageStruct(i).redPath = redPathArray(i,:);
+	imageStruct(i).yelPath = yelPathArray(i,:);
 end
 
 end
