@@ -12,46 +12,19 @@ runMode = 'test'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
-baseFolder = fullfile('~','Desktop','data');
+% baseFolder = fullfile('~','Desktop','data');
 
 if strcmp(runMode,'test')
 	SITEN = 2;
-	
-	experimentStr = {'exp2','exp3','exp4','exp5'};
-	exp = createExperimentStruct(experimentStr);
-
-	exp(1).local_quench = {'60x','quench'};
-	exp(1).conditionStr = {'WT','F508del','R1070W'};
-	exp(1).condWells(1,:) = {'C02'};
-	exp(1).condWells(2,:) = {'C03'};
-	exp(1).condWells(3,:) = {'C04'};
-	
-	exp(2).local_quench = {'60x','quench'};
-	exp(2).conditionStr = {'WT','F508del','R1070W'};
-	exp(2).condWells(1,:) = {'C02'};
-	exp(2).condWells(2,:) = {'C03'};
-	exp(2).condWells(3,:) = {'C04'};
-	
-	exp(3).local_quench = {'60x','quench'};
-	exp(3).conditionStr = {'WT','F508del','R1070W'};
-	exp(3).condWells(1,:) = {'C02'};
-	exp(3).condWells(2,:) = {'C03'};
-	exp(3).condWells(3,:) = {'C04'};
-	
-	exp(4).local_quench = {'60x','quench'};
-	exp(4).conditionStr = {'WT','R1070W','F508del'};
-	exp(4).condWells(1,:) = {'C02'};
-	exp(4).condWells(2,:) = {'C03'};
-	exp(4).condWells(3,:) = {'C04'};
-		
+	inputDataTest
 	cond = createConditionStruct(exp);
-	cond = findImagePaths(cond,exp,baseFolder);
+	cond = findImagePaths(exp,cond);
 		
 elseif strcmp(runMode,'full')
 	SITEN = 9;
 	inputData
 	cond = createConditionStruct(exp);
-	cond = findImagePaths(cond,exp,baseFolder);
+	cond = findImagePaths(exp,cond);
 end
 
 disp('Completed importing data')
@@ -71,7 +44,7 @@ close all
 conditionN = length(cond);
 
 for j=1:conditionN
- 	for i=1:cond(j).imageN
+ 	for i=1:cond(j).localImageN
 
 		cond(j).imageLocal(i) = imgSegmentWatershed(cond(j).imageLocal(i));
 
@@ -83,7 +56,7 @@ disp('Completed image segmentation')
 %% FILTERING
 
 for j=1:conditionN
-	for i=1:cond(j).imageN
+	for i=1:cond(j).localImageN
 		
 		cond(j).imageLocal(i).cellN = cond(j).imageLocal(i).cellN(1);
 		
@@ -105,7 +78,7 @@ disp('Completed image filtering')
 %% DISTANCE MAP
 
 for j=1:conditionN
-	for i=1:cond(j).imageN
+	for i=1:cond(j).localImageN
 		
 		cond(j).imageLocal(i) = distanceMap(cond(j).imageLocal(i));
 
@@ -121,13 +94,13 @@ close all
 
 for i=1:length(cond)
 	fullCellN = vertcat(cond(i).imageLocal.cellN);
-	cond(i).cellN = sum(fullCellN(:,end));
+	cond(i).localCellN = sum(fullCellN(:,end));
 	cond(i) = collectRatioData(cond(i));
 end
 
 disp([cond.mutation])
-disp(([cond.hits]./[cond.cellN])*100)
-disp([cond.cellN])
+disp(([cond.localHits]./[cond.localCellN])*100)
+disp([cond.localCellN])
 
 a=1;
 b=3;
@@ -170,8 +143,8 @@ cond(x).imageLocal(y).cellN
 for i=1:cond(x).imageLocal(y).cellN(end)
 	
 	str1 = sprintf('in %g\nout %g\nmem %g'...
-		,round(cond(x).imageLocal(y).yelInsideCell(i),4)...
-		,round(cond(x).imageLocal(y).yelOutsideCell(i),4)...
+		,round(cond(x).imageLocal(y).yelEntire(i),4)...
+		,round(cond(x).imageLocal(y).yelOutside(i),4)...
 		,round(cond(x).imageLocal(y).yelMembrane(i),4));
 	
 	str2 = sprintf('max %g\nloc %g'...

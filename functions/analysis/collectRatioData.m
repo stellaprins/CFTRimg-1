@@ -9,7 +9,7 @@ yelMembrane	= vertcat(conditionStruct.imageLocal.yelMembrane);
 yelRatioMembraneIn	= yelMembrane ./ yelEntire;
 yelRatioOutIn		= yelOutside ./ yelEntire;
 
-conditionStruct.hits = sum(yelRatioOutIn < 0.9 & yelRatioMembraneIn > 1);
+conditionStruct.localHits = sum(yelRatioOutIn < 0.9 & yelRatioMembraneIn > 1);
 
 end
 
