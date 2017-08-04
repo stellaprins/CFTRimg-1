@@ -45,13 +45,13 @@ if strcmp(runMode,'test')
 	exp(4).condWells(3,:) = {'C04'};
 		
 	cond = createConditionStruct(exp);
-	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
+	cond = findImagePaths(cond,exp,baseFolder);
 		
 elseif strcmp(runMode,'full')
 	SITEN = 9;
 	inputData
 	cond = createConditionStruct(exp);
-	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
+	cond = findImagePaths(cond,exp,baseFolder);
 end
 
 disp('Completed importing data')

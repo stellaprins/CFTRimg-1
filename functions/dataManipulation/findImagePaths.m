@@ -1,5 +1,5 @@
-function [ conditionStruct ] = findImagePathsPerCondition( ...
-	conditionStruct,experimentStruct,baseFolder,local_or_quench )
+function [ conditionStruct ] = findImagePaths( ...
+	conditionStruct,experimentStruct,baseFolder )
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 

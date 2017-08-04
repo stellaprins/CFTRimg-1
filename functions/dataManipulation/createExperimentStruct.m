@@ -2,7 +2,7 @@ function  exp = createExperimentStruct( experimentStr )
 %CREATEEXPERIMENTS create empty structs for each experiment as listed in
 %'experimentStr'
 
-experimentsN = length(experimentStr);
+experimentN = length(experimentStr);
 experimentTemplate = struct(...
 			'expStr',[]...
 			,'conditionStr',{{}} ...
@@ -10,7 +10,7 @@ experimentTemplate = struct(...
 			,'condWells',{{}}...
 		);
 
-for i=1:experimentsN
+for i=1:experimentN
 	exp(i) = experimentTemplate;
 	exp(i).expStr = experimentStr{i};
 	
