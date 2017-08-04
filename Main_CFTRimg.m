@@ -8,38 +8,47 @@ addpath(genpath('functions'));
 
 global SITEN
 
-SITEN = 9;
-
-runMode = 'full'; % 'test' OR 'full'
+runMode = 'test'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
 baseFolder = fullfile('~','Desktop','data');
 
 if strcmp(runMode,'test')
+	SITEN = 2;
+	
 	experimentStr = {'exp2','exp3','exp4','exp5'};
 	exp = createExperimentStruct(experimentStr);
 
 	exp(1).local_quench = {'60x','quench'};
-	exp(1).conditionStr = {'WT'};
+	exp(1).conditionStr = {'WT','F508del','R1070W'};
 	exp(1).condWells(1,:) = {'C02'};
+	exp(1).condWells(2,:) = {'C03'};
+	exp(1).condWells(3,:) = {'C04'};
 	
 	exp(2).local_quench = {'60x','quench'};
-	exp(2).conditionStr = {'WT'};
+	exp(2).conditionStr = {'WT','F508del','R1070W'};
 	exp(2).condWells(1,:) = {'C02'};
+	exp(2).condWells(2,:) = {'C03'};
+	exp(2).condWells(3,:) = {'C04'};
 	
 	exp(3).local_quench = {'60x','quench'};
-	exp(3).conditionStr = {'WT'};
+	exp(3).conditionStr = {'WT','F508del','R1070W'};
 	exp(3).condWells(1,:) = {'C02'};
+	exp(3).condWells(2,:) = {'C03'};
+	exp(3).condWells(3,:) = {'C04'};
 	
 	exp(4).local_quench = {'60x','quench'};
-	exp(4).conditionStr = {'WT'};
+	exp(4).conditionStr = {'WT','R1070W','F508del'};
 	exp(4).condWells(1,:) = {'C02'};
+	exp(4).condWells(2,:) = {'C03'};
+	exp(4).condWells(3,:) = {'C04'};
 		
 	cond = createConditionStruct(exp);
 	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
 		
 elseif strcmp(runMode,'full')
+	SITEN = 9;
 	inputData
 	cond = createConditionStruct(exp);
 	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
@@ -131,14 +140,28 @@ b=3;
 
 for i=1:length(cond)
 	figure
-	plotRedYelCorrelation(cond(i))
+	plotRedYelCorrEntire(cond(i))
+	figure
+	plotRedYelCorrMembrane(cond(i))
+	figure
+	plotRedYelCorrInterior(cond(i))
 end
+
+% 	figure
+% for i=1:length(cond)
+% 	subplot(3,3,i)
+% 	plotRedYelCorrEntire(cond(i))
+% 	subplot(3,3,i+3)
+% 	plotRedYelCorrMembrane(cond(i))
+% 	subplot(3,3,i+6)
+% 	plotRedYelCorrInterior(cond(i))
+% end
 
 %% DISPLAY
 
 close all
 
-x=1;
+x=3;
 y=2;
 
 cond(x).imageLocal(y).cellN
