@@ -11,16 +11,15 @@ cellN = imageStruct.cellN(end);
 redBackground = imageStruct.redBackground;
 yelBackground = imageStruct.yelBackground;
 
-yelMeanInsideCell		= zeros(cellN,1);
-yelMeanOutsideCell		= zeros(cellN,1);
-yelMeanMembrane			= zeros(cellN,1);
-yelRatioOutsideInside	= zeros(cellN,1);
-yelRatioMembraneInside	= zeros(cellN,1);
-redMeanInsideCell		= zeros(cellN,1);
-redMeanOutsideCell		= zeros(cellN,1);
-redMeanMembrane			= zeros(cellN,1);
-redRatioOutsideInside	= zeros(cellN,1);
-redRatioMembraneInside	= zeros(cellN,1);
+yelMeanEntire		= zeros(cellN,1);
+yelMeanOutside	= zeros(cellN,1);
+yelMeanMembrane	= zeros(cellN,1);
+yelMeanInterior	= zeros(cellN,1);
+
+redMeanEntire		= zeros(cellN,1);
+redMeanOutside	= zeros(cellN,1);
+redMeanMembrane	= zeros(cellN,1);
+redMeanInterior = zeros(cellN,1);
 
 for i=1:cellN
 	
@@ -39,39 +38,35 @@ for i=1:cellN
 	%%%%%%%
 	membraneMask = distanceMap >= 0 & distanceMap < 10*BINNING;
 	
-	yelMeanInsideCell(i) = sum(cellMask .* yelCropAdj) / sum(cellMask);
-	yelMeanOutsideCell(i) = sum(~cellMask .* yelCropAdj) / sum(~cellMask);
+	yelMeanEntire(i) = sum(cellMask .* yelCropAdj) / sum(cellMask);
+	yelMeanOutside(i) = sum(~cellMask .* yelCropAdj) / sum(~cellMask);
 	yelMeanMembrane(i) = sum(membraneMask .* yelCropAdj) / sum(membraneMask);
+	yelMeanInterior(i) = sum((cellMask & ~membraneMask) .* yelCropAdj) ...
+		/ sum(cellMask & ~membraneMask);
 	
-	yelRatioOutsideInside(i) = yelMeanOutsideCell(i) / yelMeanInsideCell(i);
-	yelRatioMembraneInside(i) = yelMeanMembrane(i) / yelMeanInsideCell(i);
-	
-	redMeanInsideCell(i) = sum(cellMask .* redCropAdj) / sum(cellMask);
-	redMeanOutsideCell(i) = sum(~cellMask .* redCropAdj) / sum(~cellMask);
+	redMeanEntire(i) = sum(cellMask .* redCropAdj) / sum(cellMask);
+	redMeanOutside(i) = sum(~cellMask .* redCropAdj) / sum(~cellMask);
 	redMeanMembrane(i) = sum(membraneMask .* redCropAdj) / sum(membraneMask);
-	
-	redRatioOutsideInside(i) = redMeanOutsideCell(i) / redMeanInsideCell(i);
-	redRatioMembraneInside(i) = redMeanMembrane(i) / redMeanInsideCell(i);
+	redMeanInterior(i) = sum((cellMask & ~membraneMask) .* redCropAdj) ...
+		/ sum(cellMask & ~membraneMask);
 	%%%%%%%
 	
-%  	if i==1
+%  	if i==2
 % 		showDistanceMapProcess(...
 % 			redCropped,yelCropped,cellMask,distanceMap,membraneMask);
 % 	end
 
 end
 
-imageStruct.yelInsideCell = yelMeanInsideCell;
-imageStruct.yelOutsideCell = yelMeanOutsideCell;
-imageStruct.yelMembrane = yelMeanMembrane;
-imageStruct.yelRatioOutIn = yelRatioOutsideInside;
-imageStruct.yelRatioMembraneIn = yelRatioMembraneInside;
+imageStruct.yelEntire				= yelMeanEntire;
+imageStruct.yelOutside			= yelMeanOutside;
+imageStruct.yelMembrane			= yelMeanMembrane;
+imageStruct.yelInterior = yelMeanInterior;
 
-imageStruct.redInsideCell = redMeanInsideCell;
-imageStruct.redOutsideCell = redMeanOutsideCell;
-imageStruct.redMembrane = redMeanMembrane;
-imageStruct.redRatioOutIn = redRatioOutsideInside;
-imageStruct.redRatioMembraneIn = redRatioMembraneInside;
+imageStruct.redEntire				= redMeanEntire;
+imageStruct.redOutside			= redMeanOutside;
+imageStruct.redMembrane			= redMeanMembrane;
+imageStruct.redInterior     = redMeanInterior;
 
 end
 

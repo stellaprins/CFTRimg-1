@@ -2,57 +2,65 @@ function [ imageStruct ] = imgSegmentWatershed( imageStruct )
 %IMGSEGMENTWATERSHED Summary of this function goes here
 %   Detailed explanation goes here
 
+mode = 'full'; % 'full' OR 'test';
+
 global BINNING
 
 I = imread(imageStruct.redPath);
 dI = im2double(I);
 % imshow(dI,[])
  
-% hy = fspecial('sobel');
-% hx = hy';
-% Iy = imfilter(dI, hy, 'replicate');
-% Ix = imfilter(dI, hx, 'replicate');
-% gradmag = sqrt(Ix.^2 + Iy.^2);
-% figure
-% imshow(gradmag,[]), title('Gradient magnitude (gradmag)')
-
-Ieq = adapthisteq(dI);
+Ieq = adapthisteq(dI,'NumTiles',[20 20]);
 % figure, imshow(Ieq,[])
 
-Ibw = imbinarize(Ieq,0.9*graythresh(Ieq));
+Ibw = imbinarize(Ieq,'adaptive');
 % figure, imshow(Ibw)
 
-Ifilled = imfill(Ibw,'holes');
-% figure, imshow(Ifilled)
+closeSE = strel('disk',4*BINNING);
+Iclosed = imclose(Ibw,closeSE);
+% figure, imshow(Iclosed)
 
-Iopened = imopen(Ifilled, ones(ceil(5*BINNING),ceil(5*BINNING)));
-% figure, imshow(Iopened)
-
-Icleared = bwareaopen(Iopened,ceil(40*BINNING));
+Icleared = bwareaopen(Iclosed,ceil(4800*BINNING));
 % figure, imshow(Icleared)
 
-IbwPerim = bwperim(Icleared);
-overlay = imoverlay(Ieq, IbwPerim, [.3 1 .3]);
-% figure, imshow(overlay)
+Ifilled = imfill(Icleared,'holes');
+% figure, imshow(Ifilled)
 
-quartiles = quantile(Ieq(:),3);
-maskEM = imextendedmax(Ieq, quartiles(1));
-% figure, imshow(maskEM)
+dilateSE = strel('disk',ceil(4*BINNING));
+Idilated = imopen(Ifilled,dilateSE);
+% figure, imshow(Idilated)
 
-maskEM = imclose(maskEM, ones(5,5));
-maskEM = imfill(maskEM, 'holes');
-maskEM = bwareaopen(maskEM, 40);
-overlay2 = imoverlay(Ieq, IbwPerim | maskEM, [.3 1 .3]);
-% figure, imshow(overlay2)
+smallEM = imextendedmax(dI, 0.9*median(dI(:)));
+smallEM = imclose(smallEM, closeSE);
+smallEM = bwareaopen(smallEM, 120);
+smallEM = imerode(smallEM, ones(6*BINNING));
+% figure, imshow(smallEM)
 
-IeqComplement = imcomplement(Ieq);
+largeEM = imextendedmax(dI, median(dI(:)));
+largeEM = imclose(largeEM, closeSE);
+largeEM = imfill(largeEM, 'holes');
+largeEM = bwareaopen(largeEM, 1200);
+% figure, imshow(largeEM)
 
-Imod = imimposemin(IeqComplement, ~Icleared | maskEM);
+background = largeEM | Idilated;
+% figure, imshow(background)
+
+if strcmp(mode,'test')
+	IbwPerim = bwperim(background);
+	overlay = imoverlay(Ieq, IbwPerim|smallEM, [.3 1 .3]);
+% 	figure, imshow(overlay)
+end
+
+complement = imcomplement(dI);
+
+Imod = imimposemin(complement, ~background | smallEM);
 
 L = watershed(Imod);
 % figure, imshow(label2rgb(L))
 
-% showWatershedProcess(dI,Icleared,overlay,maskEM,overlay2,label2rgb(L))
+if strcmp(mode,'test')
+ 	showWatershedProcess(dI,Ibw,background,smallEM,overlay,label2rgb(L))
+end
 
 properties = regionprops(L,'BoundingBox','Area');
 

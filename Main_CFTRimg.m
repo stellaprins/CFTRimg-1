@@ -8,32 +8,23 @@ addpath(genpath('functions'));
 
 global SITEN
 
-SITEN = 9;
-
 runMode = 'test'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
-baseFolder = fullfile('~','Desktop','data');
+% baseFolder = fullfile('~','Desktop','data');
 
 if strcmp(runMode,'test')
-	experimentStr = {'exp1'};
-	exp = createExperimentStruct(experimentStr);
-
-	exp(1).local_quench = {'60x'};
-	exp(1).conditionStr = {'WT','F508del','R1070W'};
-	
-	exp(1).condWells(1,:) = {'B02'};
-	exp(1).condWells(2,:) = {'B03'};
-	exp(1).condWells(3,:) = {'B04'};
-		
+	SITEN = 2;
+	inputDataTest
 	cond = createConditionStruct(exp);
-	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
+	cond = findImagePaths(exp,cond);
 		
 elseif strcmp(runMode,'full')
+	SITEN = 9;
 	inputData
 	cond = createConditionStruct(exp);
-	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
+	cond = findImagePaths(exp,cond);
 end
 
 disp('Completed importing data')
@@ -53,9 +44,9 @@ close all
 conditionN = length(cond);
 
 for j=1:conditionN
-	for i=1:cond(j).imageN		
+ 	for i=1:cond(j).localImageN
 
-		cond(j).images(i) = imgSegmentWatershed(cond(j).images(i));
+		cond(j).imageLocal(i) = imgSegmentWatershed(cond(j).imageLocal(i));
 
 	end
 end
@@ -65,19 +56,19 @@ disp('Completed image segmentation')
 %% FILTERING
 
 for j=1:conditionN
-	for i=1:cond(j).imageN
+	for i=1:cond(j).localImageN
 		
-		cond(j).images(i).cellN = cond(j).images(i).cellN(1);
+		cond(j).imageLocal(i).cellN = cond(j).imageLocal(i).cellN(1);
 		
-		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
+				
+ 		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
 		
-		cond(j).images(i) = imgFindBackground(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFilterAbuttingCells(cond(j).imageLocal(i));
 		
-		cond(j).images(i) = imgFilterAbuttingCells(cond(j).images(i));
-		
-		cond(j).images(i) = imgFindCellDimensions(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFindCellDimensions(cond(j).imageLocal(i));
 
-		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFilterCellSize(cond(j).imageLocal(i));
 		
 	end
 end
@@ -87,9 +78,9 @@ disp('Completed image filtering')
 %% DISTANCE MAP
 
 for j=1:conditionN
-	for i=1:cond(j).imageN
+	for i=1:cond(j).localImageN
 		
-		cond(j).images(i) = distanceMap(cond(j).images(i));
+		cond(j).imageLocal(i) = distanceMap(cond(j).imageLocal(i));
 
 	end
 end
@@ -99,26 +90,44 @@ disp('Completed image processing')
 
 %% ANALYSIS
 
-% close all
+close all
 
 for i=1:length(cond)
-	fullCellN = vertcat(cond(i).images.cellN);
-	cond(i).cellN = sum(fullCellN(:,end));
+	fullCellN = vertcat(cond(i).imageLocal.cellN);
+	cond(i).localCellN = sum(fullCellN(:,end));
 	cond(i) = collectRatioData(cond(i));
 end
 
 disp([cond.mutation])
-disp([cond.hits])
-disp([cond.cellN])
+disp(([cond.localHits]./[cond.localCellN])*100)
+disp([cond.localCellN])
 
-a=3;
-b=110;
+a=1;
+b=3;
 
-plotMeanIntensity(cond(a).images(b))
-[maxGrad maxGradLoc] = findGradient(cond(a).images(b))
+% for i=1:cond(a).imageLocal(b).cellN(end)
+% 	figure
+% 	plotMeanIntensity(cond(a).imageLocal(b),i)
+% end
+% [maxGrad, maxGradLoc] = findGradient(cond(a).imageLocal(b))
 
+for i=1:length(cond)
+	figure
+	plotRedYelCorrEntire(cond(i))
+	figure
+	plotRedYelCorrMembrane(cond(i))
+	figure
+	plotRedYelCorrInterior(cond(i))
+end
+
+% 	figure
 % for i=1:length(cond)
-% 	plotRedYelCorrelation(cond(i))
+% 	subplot(3,3,i)
+% 	plotRedYelCorrEntire(cond(i))
+% 	subplot(3,3,i+3)
+% 	plotRedYelCorrMembrane(cond(i))
+% 	subplot(3,3,i+6)
+% 	plotRedYelCorrInterior(cond(i))
 % end
 
 %% DISPLAY
@@ -126,17 +135,17 @@ plotMeanIntensity(cond(a).images(b))
 close all
 
 x=3;
-y=62;
+y=2;
 
-cond(x).images(y).cellN
-[maxGrad, maxGradLoc] = findGradient(cond(x).images(y));
-% imgDisplay(cond(x).images(y))
-for i=1:cond(x).images(y).cellN(end)
+cond(x).imageLocal(y).cellN
+[maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
+% imgDisplay(cond(x).imageLocal(y))
+for i=1:cond(x).imageLocal(y).cellN(end)
 	
 	str1 = sprintf('in %g\nout %g\nmem %g'...
-		,round(cond(x).images(y).yelInsideCell(i),4)...
-		,round(cond(x).images(y).yelOutsideCell(i),4)...
-		,round(cond(x).images(y).yelMembrane(i),4));
+		,round(cond(x).imageLocal(y).yelEntire(i),4)...
+		,round(cond(x).imageLocal(y).yelOutside(i),4)...
+		,round(cond(x).imageLocal(y).yelMembrane(i),4));
 	
 	str2 = sprintf('max %g\nloc %g'...
 		,round(maxGrad(i),4)...
@@ -147,15 +156,15 @@ for i=1:cond(x).images(y).cellN(end)
 	
 	figure
 	subplot(4,5,1)
-	cellDisplay(cond(x).images(y),'yel',i)
+	cellDisplay(cond(x).imageLocal(y),'yel',i)
 	subplot(4,5,2)
-	cellDisplay(cond(x).images(y),'red',i)
+	cellDisplay(cond(x).imageLocal(y),'red',i)
 	subplot(4,5,3)
-	cellDisplay(cond(x).images(y),'bw',i)
+	cellDisplay(cond(x).imageLocal(y),'bw',i)
 	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
 	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
-	subplot(4,1,[2,3,4])
-	plotMeanIntensity(cond(x).images(y),i)
+	subplot(4,1,[2,3,4],'fontsize',14)
+	plotMeanIntensity(cond(x).imageLocal(y),i)
 	
 end
 
