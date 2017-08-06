@@ -43,6 +43,7 @@ for j=1:conditionN
 	conditionStructArray(j).imageQuench = createImageQuenchStruct(...
 		redPathArrayQuench,yelPathArrayQuench);
 	conditionStructArray(j).localImageN = length(redPathArrayLocal);
+	conditionStructArray(j).quenchImageN = size(redPathArrayQuench,1);
 	
 end
 

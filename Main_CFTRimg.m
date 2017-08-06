@@ -27,6 +27,8 @@ elseif strcmp(runMode,'full')
 	cond = findImagePaths(exp,cond);
 end
 
+conditionN = length(cond);
+
 disp('Completed importing data')
 
 %% DECLARE GLOBAL VARIABLES
@@ -40,8 +42,6 @@ EXTRA = ceil(BINNING*20);
 %% SEGMENTATION
 
 close all
-
-conditionN = length(cond);
 
 for j=1:conditionN
  	for i=1:cond(j).localImageN
@@ -167,5 +167,48 @@ for i=1:cond(x).imageLocal(y).cellN(end)
 	plotMeanIntensity(cond(x).imageLocal(y),i)
 	
 end
+
+
+%% QUENCHING ANALYSIS
+
+
+for j=1:conditionN
+	for i=1:cond(j).quenchImageN
+		
+		cond(j).imageQuench(i) = findYelBackground(cond(j).imageQuench(i));
+		
+		cond(j).imageQuench(i) = findRedExpression(cond(j).imageQuench(i));
+		
+		cond(j).imageQuench(i) = findRedMaskChange(cond(j).imageQuench(i));
+		
+		cond(j).imageQuench(i) = findYelInsideOverTime(cond(j).imageQuench(i));
+		
+	end
+end
+
+disp('Completed quenching analysis')
+
+
+%% QUENCHING PLOTS
+
+ymin = zeros(conditionN,1);
+ymax = zeros(conditionN,1);
+for i=1:conditionN
+	ymin(i) = min(vertcat(cond(i).imageQuench.yelInsideOverT));
+	ymax(i) = max(vertcat(cond(i).imageQuench.yelInsideOverT));
+end
+
+disp([min(ymin), max(ymax)])
+
+m=1;
+
+figure
+subplot(1,3,1)
+plotMeanInside(cond(1),m)
+subplot(1,3,2)
+plotMeanInside(cond(2),m)
+subplot(1,3,3)
+plotMeanInside(cond(3),m)
+
 
 
