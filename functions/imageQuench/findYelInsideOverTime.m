@@ -20,13 +20,23 @@ end
 
 for i=1:yelN
 	yelImage(:,:,i) = im2double(imread(imageStruct.yelPath{i}));
-	yelImage(:,:,i) = (yelImage(:,:,i) - imageStruct.yelBackground) ...
-		/ imageStruct.redExpression;
+% 	yelImage(:,:,i) = (yelImage(:,:,i) - imageStruct.yelBackground) ...
+% 		/ imageStruct.redExpression;
+end
+
+minF = min(yelImage(:));
+maxF = max(yelImage(:));
+
+for i=1:yelN
+	yelImage(:,:,i) = imadjust(yelImage(:,:,i),[minF;maxF],[0;1]);
 	tmpIn = yelImage(:,:,i) .* cellMask(:,:,1);
 	tmpOut = yelImage(:,:,i) .* imcomplement(cellMask(:,:,1));
 	yelInside(i) = mean(tmpIn(:));
 	yelOutside(i) = mean(tmpOut(:));
 end
+
+minF = min(yelImage(:));
+maxF = max(yelImage(:));
 
 imageStruct.yelInsideOverT = yelInside;
 

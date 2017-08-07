@@ -6,7 +6,7 @@ function plotMeanInside( conditionStruct,idx )
 meanYel = conditionStruct.imageQuench(idx).yelInsideOverT;
 
 plot(1:70,meanYel)
-ylim([0.5 1.6])
+ylim([0 0.04])
 title(conditionStruct.mutation)
 xlabel('Timepoint')
 ylabel('Norm. adj. mean YFP fluorescence within cells')

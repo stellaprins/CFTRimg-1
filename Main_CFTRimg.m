@@ -183,6 +183,8 @@ for j=1:conditionN
 		
 		cond(j).imageQuench(i) = findYelInsideOverTime(cond(j).imageQuench(i));
 		
+		cond(j).imageQuench(i) = calculateConcIodine(cond(j).imageQuench(i));
+		
 	end
 end
 
@@ -200,7 +202,7 @@ end
 
 disp([min(ymin), max(ymax)])
 
-m=1;
+m=2;
 
 figure
 subplot(1,3,1)
