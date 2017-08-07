@@ -37,6 +37,10 @@ exp(3).expStr = 'Stella YFP mCh 2017-07-05 Plate_15435';
 		exp(3).condWells(1,:) = {'C02'};
 		exp(3).condWells(2,:) = {'C03'};
 		exp(3).condWells(3,:) = {'C04'};
+		
+		exp(3).condWellsControl(1,:) = {'F02'};
+		exp(3).condWellsControl(2,:) = {'F03'};
+		exp(3).condWellsControl(3,:) = {'F04'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 exp(4).expStr = 'Stella YFP mCh 2017-07-12 Plate_15451 localisation';
@@ -61,6 +65,10 @@ exp(5).expStr = 'Stella YFP mCh 2017-07-12 Plate_15452';
 		exp(5).condWells(1,:) = {'C02'};
 		exp(5).condWells(2,:) = {'C03'};
 		exp(5).condWells(3,:) = {'C04'};
+		
+		exp(5).condWellsControl(1,:) = {'F02'};
+		exp(5).condWellsControl(2,:) = {'F03'};
+		exp(5).condWellsControl(3,:) = {'F04'};
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 exp(6).expStr = 'Stella YFP mCh 2017-07-14 Plate_15463 localisation';
@@ -95,6 +103,10 @@ exp(8).expStr = 'Stella YFP mCh 2017-07-14 Plate_15465';
 		exp(8).condWells(2,:) = {'C03'};
 		exp(8).condWells(3,:) = {'C04'};
 		
+		exp(8).condWellsControl(1,:) = {'F02'};
+		exp(8).condWellsControl(2,:) = {'F03'};
+		exp(8).condWellsControl(3,:) = {'F04'};
+		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 exp(9).expStr = 'Stella YFP mCh 2017-07-21 Plate_15485 localisation';
 
@@ -115,7 +127,11 @@ exp(10).expStr = 'Stella YFP mCh 2017-07-21 Plate_15486';
 	exp(10).filePrefix = 'Stella mCherry YFP 2017-07-21_';
 	
 	exp(10).conditionStr = {'WT','R1070W','F508del'};
-		exp(10).condWells(1,:) = {'C02'};
-		exp(10).condWells(2,:) = {'C03'};
-		exp(10).condWells(3,:) = {'C04'};
+		exp(10).condWells(1,:) = {'F02'};
+		exp(10).condWells(2,:) = {'F03'};
+		exp(10).condWells(3,:) = {'F04'};
+		
+		exp(10).condWellsControl(1,:) = {'C02'};
+		exp(10).condWellsControl(2,:) = {'C03'};
+		exp(10).condWellsControl(3,:) = {'C04'};
 

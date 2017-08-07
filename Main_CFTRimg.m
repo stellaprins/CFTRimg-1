@@ -171,9 +171,11 @@ end
 
 %% QUENCHING ANALYSIS
 
-
 for j=1:conditionN
-	for i=1:cond(j).quenchImageN
+	
+	quenchImageN = cond(j).quenchImageTestN + cond(j).quenchImageControlN;
+	
+	for i=1:quenchImageN
 		
 		cond(j).imageQuench(i) = findYelBackground(cond(j).imageQuench(i));
 		

@@ -1,5 +1,8 @@
-function [ redPathArray,yelPathArray ] = findImagePathsQuench( ...
-	currentCondition,experimentStruct,redPathArray,yelPathArray)
+function [ redPathArrayTest,yelPathArrayTest...
+	,redPathArrayControl,yelPathArrayControl] = findImagePathsQuench( ...
+	currentCondition,experimentStruct...
+	,redPathArrayTest,yelPathArrayTest...
+	,redPathArrayControl,yelPathArrayControl)
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -11,35 +14,35 @@ redTimePoints = {'1','70'};
 
 if sum(cmpCondition) == 1
 
-	wells = {experimentStruct.condWells{conditionLocation,:}};
+	wellsTest = {experimentStruct.condWells{conditionLocation,:}};
+	wellsControl = {experimentStruct.condWellsControl{conditionLocation,:}};
 
-	tmpRedPathArray = cell(length(wells),2);
-	tmpYelPathArray = cell(length(wells),70);
+	tmpRedPathArrayTest = cell(length(wellsTest),2);
+	tmpYelPathArrayTest = cell(length(wellsTest),70);
+	tmpRedPathArrayControl = cell(length(wellsControl),2);
+	tmpYelPathArrayControl = cell(length(wellsControl),70);
 
-	for j=1:length(wells)
+	for j=1:length(wellsTest)
 		
-		% red
-		for i=1:2
-			fileFolder = fullfile(experimentStruct.baseFolder...
-			,experimentStruct.expStr...
-			,['TimePoint_',redTimePoints{i}]);
-			filename = strcat(experimentStruct.filePrefix,wells{j},'_w2.TIF');			
-			tmpRedPathArray{j,i} = fullfile(fileFolder,filename);
-		end
-
-		% yellow
-		for i=1:70
-			fileFolder = fullfile(experimentStruct.baseFolder...
-			,experimentStruct.expStr...
-			,['TimePoint_',char(string(i))]);
-			filename = strcat(experimentStruct.filePrefix,wells{j},'_w1.TIF');
-			tmpYelPathArray{j,i} = fullfile(fileFolder,filename);
-		end
+		[tmpRedPathArrayTest,tmpYelPathArrayTest] = ...
+			constructPathName(experimentStruct,wellsTest,j,redTimePoints...
+			,tmpRedPathArrayTest,tmpYelPathArrayTest);
 		
 	end
 	
-	redPathArray = [redPathArray; tmpRedPathArray];
-	yelPathArray = [yelPathArray; tmpYelPathArray];
+	for j=1:length(wellsControl)
+		
+		[tmpRedPathArrayControl,tmpYelPathArrayControl] = ...
+			constructPathName(experimentStruct,wellsControl,j,redTimePoints...
+			,tmpRedPathArrayControl,tmpYelPathArrayControl);
+		
+	end
+	
+	redPathArrayTest = [redPathArrayTest; tmpRedPathArrayTest];
+	yelPathArrayTest = [yelPathArrayTest; tmpYelPathArrayTest];
+	
+	redPathArrayControl = [redPathArrayControl; tmpRedPathArrayControl];
+	yelPathArrayControl = [yelPathArrayControl; tmpYelPathArrayControl];
 
 end
 
