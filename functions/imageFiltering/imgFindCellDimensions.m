@@ -2,21 +2,16 @@ function [ imageStruct ] = imgFindCellDimensions( imageStruct )
 %UNTITLED8 Summary of this function goes here
 %   Detailed explanation goes here
 
-image = imread(imageStruct.redPath);
-redBackground = imageStruct.redBackground;
+image = im2double(imread(imageStruct.redPath));
 
 counter = 1;
 for idx=1:imageStruct.cellN(end)
 	
 	boundingBox = imageStruct.boundingBox(idx,:);
 
-	redCropped = boundingBoxToCroppedImage(image,boundingBox);
-	
-	redCropAdj = im2double(redCropped) - redBackground;
+	cellMask = boundingBoxToCellMask(image,boundingBox);
 
-	bw = cellBinarize(redCropAdj);
-
-	[labelled, ~] = bwlabel(bw,8);
+	[labelled, ~] = bwlabel(cellMask,8);
 	properties = regionprops(labelled ...
 		,'MinorAxisLength','MajorAxisLength');
 	

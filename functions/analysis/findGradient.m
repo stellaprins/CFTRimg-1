@@ -2,10 +2,10 @@ function [ maxGradient,maxGradientLocation ] = findGradient( imageStruct )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
-redImage = imread(imageStruct.redPath);
+redImage = im2double(imread(imageStruct.redPath));
 
 cellN = imageStruct.cellN(end);
-redBackground = imageStruct.redBackground;
+% redBackground = imageStruct.redBackground;
 
 maxGradient = zeros(cellN,1);
 maxGradientLocation = zeros(cellN,1);
@@ -13,18 +13,21 @@ maxGradientLocation = zeros(cellN,1);
 for i=1:cellN
 	
 	boundingBox = imageStruct.boundingBox(i,:);
-
+	
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
+	cellMask = boundingBoxToCellMask(redImage,boundingBox);
 	
-	redCropAdj = im2double(redCropped) - redBackground;
-	
-	cellMask = cellBinarize(redCropped);
+	if sum(cellMask(:)) == 0
+		maxGradient(i) = NaN;
+		maxGradientLocation(i) = NaN;
+		continue
+	end
 	
 	distanceMap = makeDistanceMap(cellMask);
 	distanceGroups = distanceMap - min(distanceMap(:)) + 1;
 	distanceLabels = unique(distanceMap) + (unique(distanceMap) >= 0);
 
-	redMeanData = splitapply(@mean,redCropAdj(:),distanceGroups(:));
+	redMeanData = splitapply(@mean,redCropped(:),distanceGroups(:));
 	
 	newStart = 1;
 	newEnd = length(redMeanData);
@@ -33,7 +36,7 @@ for i=1:cellN
 	while maxGradientLocation(i) > 20 || maxGradientLocation(i) < -20
 		
 		redGradient = gradient(redMeanData(newStart:newEnd));
-		maxGradient(i) = max(redGradient);
+		maxGradient(i) = max(redGradient(:));
 		tmp = (redGradient == maxGradient(i)) ...
 			.* distanceLabels(newStart:newEnd);
 		if max(tmp) == 0

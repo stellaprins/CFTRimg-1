@@ -6,6 +6,14 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
+mapLen = 256;
+mapVec = linspace(0,1,mapLen)';
+mapZeros = zeros(mapLen,1);
+redMap = [mapVec, mapZeros, mapZeros];
+yelMap = [mapVec, mapVec, mapZeros];
+
+colormap(redMap)
+
 global SITEN
 
 runMode = 'test'; % 'test' OR 'full'
@@ -51,9 +59,13 @@ for j=1:conditionN
 	end
 end
 
+store = cond;
+
 disp('Completed image segmentation')
 
 %% FILTERING
+
+cond = store;
 
 for j=1:conditionN
 	for i=1:cond(j).localImageN
@@ -61,10 +73,12 @@ for j=1:conditionN
 		cond(j).imageLocal(i).cellN = cond(j).imageLocal(i).cellN(1);
 		
 		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
-				
- 		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
 		
-		cond(j).imageLocal(i) = imgFilterAbuttingCells(cond(j).imageLocal(i));
+% 		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
+		
+		cond(j).imageLocal(i) = imgFilterUnmasked(cond(j).imageLocal(i));
+		
+% 		cond(j).imageLocal(i) = imgFilterAbuttingCells(cond(j).imageLocal(i));
 		
 		cond(j).imageLocal(i) = imgFindCellDimensions(cond(j).imageLocal(i));
 
@@ -135,35 +149,53 @@ end
 close all
 
 x=3;
-y=2;
+y=5;
 
-cond(x).imageLocal(y).cellN
-[maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
+% imageStruct = cond(x).imageLocal(y);
+% redImage = imadjust(im2double(imread(imageStruct.redPath)));
+% yelImage = imadjust(im2double(imread(imageStruct.yelPath)));
+% [redX,map] = gray2ind(redImage,1024);
+% yelX = gray2ind(yelImage,1024);
+% 
+% redMap = [map(:,1),zeros(1024,1),zeros(1024,1)];
+% yelMap = [map(:,1),map(:,1),zeros(1024,1)];
+% 
+% colorRed = ind2rgb(redX,redMap);
+% colorYel = ind2rgb(yelX,yelMap);
+
 % imgDisplay(cond(x).imageLocal(y))
-for i=1:cond(x).imageLocal(y).cellN(end)
+cond(x).imageLocal(y).cellN
+
+
+[maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
+meanRedEntire = mean(cond(x).imageLocal(y).redEntire);
+
+for i=1 %cond(x).imageLocal(y).cellN(end)
 	
-	str1 = sprintf('in %g\nout %g\nmem %g'...
+	str1 = sprintf('max %g\nloc %g\nentire %g\nav. entire %g'...
+		,round(maxGrad(i),4)...
+		,maxGradLoc(i)...
+		,cond(x).imageLocal(y).redEntire(i)...
+		,meanRedEntire);
+	
+	str2 = sprintf('in %g\nout %g\nmem %g'...
 		,round(cond(x).imageLocal(y).yelEntire(i),4)...
 		,round(cond(x).imageLocal(y).yelOutside(i),4)...
 		,round(cond(x).imageLocal(y).yelMembrane(i),4));
 	
-	str2 = sprintf('max %g\nloc %g'...
-		,round(maxGrad(i),4)...
-		,maxGradLoc(i));
-	
-	dim1 = [.6 .8 .1 .1];
-	dim2 = [.77 .8 .1 .1];
+	dim1 = [.15 .65 .1 .1];
+	dim2 = [.45 .65 .1 .1];
 	
 	figure
-	subplot(4,5,1)
-	cellDisplay(cond(x).imageLocal(y),'yel',i)
-	subplot(4,5,2)
+	subplot(5,3,1)
 	cellDisplay(cond(x).imageLocal(y),'red',i)
-	subplot(4,5,3)
+	subplot(5,3,2)
+	cellDisplay(cond(x).imageLocal(y),'yel',i)
+	subplot(5,3,3)
 	cellDisplay(cond(x).imageLocal(y),'bw',i)
 	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
 	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
-	subplot(4,1,[2,3,4],'fontsize',14)
+	subplot(5,1,[3,4,5],'fontsize',14)
 	plotMeanIntensity(cond(x).imageLocal(y),i)
 	
 end
