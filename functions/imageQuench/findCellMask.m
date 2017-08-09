@@ -12,7 +12,7 @@ se = strel('disk',1);
 
 tmp = Ibw;
 
-for i=1:3
+for i=1:4
 	tmp = imdilate(tmp,se);
 end
 

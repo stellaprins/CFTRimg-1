@@ -20,25 +20,20 @@ end
 
 for i=1:yelN
 	yelImage(:,:,i) = im2double(imread(imageStruct.yelPath{i}));
-% 	yelImage(:,:,i) = (yelImage(:,:,i) - imageStruct.yelBackground) ...
-% 		/ imageStruct.redExpression;
 end
 
-minF = min(yelImage(:));
-maxF = max(yelImage(:));
-
+mask = cellMask(:,:,1);
 for i=1:yelN
-	yelImage(:,:,i) = imadjust(yelImage(:,:,i),[minF;maxF],[0;1]);
-	tmpIn = yelImage(:,:,i) .* cellMask(:,:,1);
-	tmpOut = yelImage(:,:,i) .* imcomplement(cellMask(:,:,1));
-	yelInside(i) = mean(tmpIn(:));
-	yelOutside(i) = mean(tmpOut(:));
+	tmpIn = yelImage(:,:,i) .* mask;
+	tmpOut = yelImage(:,:,i) .* ~mask;
+	yelInside(i) = sum(tmpIn(:)) / sum(mask(:));
+	yelOutside(i) = sum(tmpOut(:)) / sum(~mask(:));
 end
 
-minF = min(yelImage(:));
-maxF = max(yelImage(:));
+yelSignal = yelInside - yelOutside;
+yelStandard = yelSignal(4);
 
-imageStruct.yelInsideOverT = yelInside;
+imageStruct.yelInsideOverT = yelSignal / yelStandard;
 
 % figure
 % showQuenchImage(redImage(:,:,1),yelImage(:,:,1),cellMask(:,:,1))

@@ -6,21 +6,18 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
-mapLen = 256;
-mapVec = linspace(0,1,mapLen)';
-mapZeros = zeros(mapLen,1);
-redMap = [mapVec, mapZeros, mapZeros];
-yelMap = [mapVec, mapVec, mapZeros];
-
-colormap(redMap)
+% mapLen = 256;
+% mapVec = linspace(0,1,mapLen)';
+% mapZeros = zeros(mapLen,1);
+% redMap = [mapVec, mapZeros, mapZeros];
+% yelMap = [mapVec, mapVec, mapZeros];
+% colormap(redMap)
 
 global SITEN
 
-runMode = 'test'; % 'test' OR 'full'
+runMode = 'acrossExperiments'; % 'test' OR 'full' OR 'acrossExperiments'
 
 %% IMPORT DATA
-
-% baseFolder = fullfile('~','Desktop','data');
 
 if strcmp(runMode,'test')
 	SITEN = 2;
@@ -151,19 +148,6 @@ close all
 x=3;
 y=5;
 
-% imageStruct = cond(x).imageLocal(y);
-% redImage = imadjust(im2double(imread(imageStruct.redPath)));
-% yelImage = imadjust(im2double(imread(imageStruct.yelPath)));
-% [redX,map] = gray2ind(redImage,1024);
-% yelX = gray2ind(yelImage,1024);
-% 
-% redMap = [map(:,1),zeros(1024,1),zeros(1024,1)];
-% yelMap = [map(:,1),map(:,1),zeros(1024,1)];
-% 
-% colorRed = ind2rgb(redX,redMap);
-% colorYel = ind2rgb(yelX,yelMap);
-
-% imgDisplay(cond(x).imageLocal(y))
 cond(x).imageLocal(y).cellN
 
 
@@ -209,9 +193,9 @@ for j=1:conditionN
 	
 	for i=1:quenchImageN
 		
-		cond(j).imageQuench(i) = findYelBackground(cond(j).imageQuench(i));
+% 		cond(j).imageQuench(i) = findYelBackground(cond(j).imageQuench(i));
 		
-		cond(j).imageQuench(i) = findRedExpression(cond(j).imageQuench(i));
+% 		cond(j).imageQuench(i) = findRedExpression(cond(j).imageQuench(i));
 		
 		cond(j).imageQuench(i) = findRedMaskChange(cond(j).imageQuench(i));
 		
@@ -236,15 +220,71 @@ end
 
 disp([min(ymin), max(ymax)])
 
-m=2;
+% m=4;
+% 
+% figure
+% subplot(1,3,1)
+% plotMeanInside(cond(1),m)
+% subplot(1,3,2)
+% plotMeanInside(cond(2),m)
+% subplot(1,3,3)
+% plotMeanInside(cond(3),m)
 
 figure
 subplot(1,3,1)
-plotMeanInside(cond(1),m)
+plotMeanInsideCollated(cond(1))
 subplot(1,3,2)
-plotMeanInside(cond(2),m)
+plotMeanInsideCollated(cond(2))
 subplot(1,3,3)
-plotMeanInside(cond(3),m)
+plotMeanInsideCollated(cond(3))
+
+
+
+%% QUENCHING OUTPUT
+
+
+for j=1:conditionN
+	
+	testLogical = zeros(length(cond(j).imageQuench),1);
+	for i=1:length(cond(j).imageQuench)
+		testLogical(i) = strcmp(cond(j).imageQuench(i).test_control,'test');
+	end
+	
+	maxGradTest = zeros(sum(testLogical),1);
+	maxGradControl = zeros(length(testLogical) - sum(testLogical),1);
+	maxGradTestLoc = zeros(sum(testLogical),1);
+	maxGradControlLoc = zeros(length(testLogical) - sum(testLogical),1.);
+	
+	maxGrad = vertcat(cond(j).imageQuench.maxGradIodine);
+	maxGradLoc = vertcat(cond(j).imageQuench.maxGradLocation);
+	
+	counterTest = 1;
+	counterControl = 1;
+	for i=1:length(testLogical)
+		if testLogical(i) == 1
+			maxGradTest(counterTest) = maxGrad(i);
+			maxGradTestLoc(counterTest) = maxGradLoc(i);
+			counterTest = counterTest + 1;
+		elseif testLogical(i) == 0
+			maxGradControl(counterControl) = maxGrad(i);
+			maxGradControlLoc(counterControl) = maxGradLoc(i);
+			counterControl = counterControl + 1;
+		end
+	end
+	
+	fprintf('\n%s - Test\n',cond(j).mutation{1})
+	disp([mean(maxGradTest),std(maxGradTest)])
+	disp([mean(maxGradTestLoc),std(maxGradTestLoc)])
+	
+	fprintf('%s - Control\n',cond(j).mutation{1})
+	disp([mean(maxGradControl),std(maxGradControl)])
+	disp([mean(maxGradControlLoc),std(maxGradControlLoc)])
+	
+	
+%  	disp([maxGradTest,maxGradTestLoc,maxGradControl,maxGradControlLoc])
+
+	
+end
 
 
 

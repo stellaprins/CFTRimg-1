@@ -14,8 +14,8 @@ for i=1:length(gradIodine)
 	
 end
 
-imageStruct.maxGradIodine = max(gradIodine(25:end));
-location = (1:length(gradIodine))' .* (gradIodine==max(gradIodine(25:end)));
+imageStruct.maxGradIodine = max(gradIodine(26:end));
+location = (1:length(gradIodine))' .* (gradIodine==max(gradIodine(26:end)));
 
 imageStruct.maxGradLocation = max(location);
 
