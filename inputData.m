@@ -127,10 +127,10 @@ exp(10).expStr = 'Stella YFP mCh 2017-07-21 Plate_15486';
 	exp(10).filePrefix = 'Stella mCherry YFP 2017-07-21_';
 	
 	exp(10).conditionStr = {'WT','R1070W','F508del'};
-		exp(3).condWells(1,:) = {'E02','F02','G02'};
-		exp(3).condWells(2,:) = {'E03','F03','G03'};
-		exp(3).condWells(3,:) = {'E04','F04','G04'};
+		exp(10).condWells(1,:) = {'E02','F02','G02'};
+		exp(10).condWells(2,:) = {'E03','F03','G03'};
+		exp(10).condWells(3,:) = {'E04','F04','G04'};
 		
-		exp(3).condWellsControl(1,:) = {'B02','C02','D02'};
-		exp(3).condWellsControl(2,:) = {'B03','C03','D03'};
-		exp(3).condWellsControl(3,:) = {'B04','C04','D04'};
+		exp(10).condWellsControl(1,:) = {'B02','C02','D02'};
+		exp(10).condWellsControl(2,:) = {'B03','C03','D03'};
+		exp(10).condWellsControl(3,:) = {'B04','C04','D04'};
