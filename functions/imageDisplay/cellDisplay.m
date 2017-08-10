@@ -4,16 +4,22 @@ function cellDisplay(imageStruct, colorStr, boundingBox_idx )
 
 if strcmp(colorStr,'red')
 	image = imadjust(im2double(imread(imageStruct.redPath)));
-	[imX,map] = gray2ind(image,1024);
-	redMap = [map(:,1),zeros(1024,1),zeros(1024,1)];
+	[imX,map] = gray2ind(image,256);
+	redMap = [map(:,1),zeros(256,1),zeros(256,1)];
 	image = ind2rgb(imX,redMap);
 elseif  strcmp(colorStr,'yel')
 	image = imadjust(im2double(imread(imageStruct.yelPath)));
-	[imX,map] = gray2ind(image,1024);
-	yelMap = [map(:,1),map(:,1),zeros(1024,1)];
+	[imX,map] = gray2ind(image,256);
+	yelMap = [map(:,1),map(:,1),zeros(256,1)];
 	image = ind2rgb(imX,yelMap);
 elseif strcmp(colorStr,'bw')
 	image = im2double(imread(imageStruct.redPath));
+elseif strcmp(colorStr,'overlay')
+	image = imadjust(im2double(imread(imageStruct.yelPath)));
+	[imX,map] = gray2ind(image,256);
+	yelMap = [map(:,1),map(:,1),zeros(256,1)];
+	image = ind2rgb(imX,yelMap);
+	redImage = im2double(imread(imageStruct.redPath));
 else
 	disp('Please enter "red", "yel" or "bw".')
 	image = [];
@@ -36,6 +42,13 @@ elseif strcmp(colorStr,'red')
 elseif strcmp(colorStr,'yel')
 
 	imshow(cropped,yelMap,'InitialMagnification','fit')
+	
+elseif	strcmp(colorStr,'overlay')
+	
+	cellMask = boundingBoxToCellMask(redImage,boundingBox);
+	edgeCellMask = imdilate(edge(cellMask),strel('disk',1));
+	fused = imoverlay(cropped,edgeCellMask,'m');
+	imshow(fused)
 	
 else
 	

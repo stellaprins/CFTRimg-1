@@ -56,11 +56,10 @@ xmax = max(redEntire)*1.1;
 x=0:0.001:xmax;
 y=slope*x + intercept;
 
-scatter(redEntireMiss,yelInteriorMiss,'b'), hold on
-% lsline
-scatter(redEntireHit,yelInteriorHit,'r')
-% lsline
-plot(x,y,'-k')
+plot(redEntireMiss,yelInteriorMiss,'bo'), hold on
+plot(redEntireHit,yelInteriorHit,'ro')
+plot(x,y,'k.')
+lsline
 title(sprintf('%s - Interior',mutation))
 xlabel('Mean mCherry fluorescence inside the entire cell')
 ylabel('Mean YFP fluorescence inside the cell interior')

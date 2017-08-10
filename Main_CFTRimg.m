@@ -15,7 +15,7 @@ addpath(genpath('functions'));
 
 global SITEN
 
-runMode = 'acrossExperiments'; % 'test' OR 'full' OR 'acrossExperiments'
+runMode = 'test'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
@@ -33,6 +33,7 @@ elseif strcmp(runMode,'full')
 end
 
 conditionN = length(cond);
+cond(2).mutation{1} = 'F508del/R1070W';
 
 disp('Completed importing data')
 
@@ -154,7 +155,7 @@ cond(x).imageLocal(y).cellN
 [maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
 meanRedEntire = mean(cond(x).imageLocal(y).redEntire);
 
-for i=1 %cond(x).imageLocal(y).cellN(end)
+for i=1:1 %cond(x).imageLocal(y).cellN(end)
 	
 	str1 = sprintf('max %g\nloc %g\nentire %g\nav. entire %g'...
 		,round(maxGrad(i),4)...
@@ -179,6 +180,8 @@ for i=1 %cond(x).imageLocal(y).cellN(end)
 	cellDisplay(cond(x).imageLocal(y),'bw',i)
 	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
 	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
+	subplot(5,3,6)
+	cellDisplay(cond(x).imageLocal(y),'overlay',i)
 	subplot(5,1,[3,4,5],'fontsize',14)
 	plotMeanIntensity(cond(x).imageLocal(y),i)
 	
