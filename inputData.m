@@ -1,4 +1,5 @@
 
+
 experimentN = 10;
 exp = createExperimentStruct(experimentN);
 
@@ -134,3 +135,4 @@ exp(10).expStr = 'Stella YFP mCh 2017-07-21 Plate_15486';
 		exp(10).condWellsControl(1,:) = {'B02','C02','D02'};
 		exp(10).condWellsControl(2,:) = {'B03','C03','D03'};
 		exp(10).condWellsControl(3,:) = {'B04','C04','D04'};
+

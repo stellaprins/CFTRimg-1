@@ -19,9 +19,22 @@ runMode = 'test'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
+baseFolder = 'E:\Stella\'
+
+% fullfile('~','Desktop','data'); 
+
 if strcmp(runMode,'test')
-	SITEN = 2;
-	inputDataTest
+	experimentStr = {'exp1'};
+	exp = createExperimentStruct(experimentStr);
+
+	exp(1).local_quench = {'60x'};
+	exp(1).conditionStr = {'F508del/T1064W','F508del/T1064H','F508del/T1064M',};
+	
+	exp(1).condWells(1,:) = {'B02'};
+	exp(1).condWells(2,:) = {'B03'};
+	exp(1).condWells(3,:) = {'B04'};
+
+	
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 		
