@@ -23,7 +23,7 @@ if strcmp(runMode,'test')
 	exp = createExperimentStruct(experimentStr);
 
 	exp(1).local_quench = {'60x'};
-	exp(1).conditionStr = {'WT','F508del','R1070W'};
+	exp(1).conditionStr = {'F508del/T1064W','F508del/T1064H','F508del/T1064M',};
 	
 	exp(1).condWells(1,:) = {'B02'};
 	exp(1).condWells(2,:) = {'B03'};
