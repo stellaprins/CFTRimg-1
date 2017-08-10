@@ -5,26 +5,26 @@ function plotMeanIntensity( imageStruct,idx )
 redImage = imread(imageStruct.redPath);
 yelImage = imread(imageStruct.yelPath);
 
-yelBackground = imageStruct.yelBackground;
-redBackground = imageStruct.redBackground;
-
+% yelBackground = imageStruct.yelBackground;
+% redBackground = imageStruct.redBackground;
 
 boundingBox = imageStruct.boundingBox(idx,:);
 
 redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
 yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
 
-redCropAdj = im2double(redCropped) - redBackground;
-yelCropAdj = im2double(yelCropped) - yelBackground;
+cellMask = boundingBoxToCellMask(redImage,boundingBox);
 
-cellMask = cellBinarize(redCropped);
+if sum(cellMask(:)) == 0
+	return
+end
 
 distanceMap = makeDistanceMap(cellMask);
 distanceGroups = distanceMap - min(distanceMap(:)) + 1;
 distanceLabels = unique(distanceMap) + (unique(distanceMap) >= 0);
 
-yelMeanData = splitapply(@mean,yelCropAdj(:),distanceGroups(:));
-redMeanData = splitapply(@mean,redCropAdj(:),distanceGroups(:));
+yelMeanData = splitapply(@mean,yelCropped(:),distanceGroups(:));
+redMeanData = splitapply(@mean,redCropped(:),distanceGroups(:));
 
 yMinLeft = min(yelMeanData) - 0.1*range(yelMeanData);
 yMaxLeft = max(yelMeanData) + 0.1*range(yelMeanData);
