@@ -15,8 +15,11 @@ for j=1:conditionN
 	redPathArrayLocal = cell(0);
 	yelPathArrayLocal = cell(0);
 
-	redPathArrayQuench = cell(0,2);
-	yelPathArrayQuench = cell(0,70);
+	redPathArrayTest = cell(0,2);
+	yelPathArrayTest = cell(0,70);
+	
+	redPathArrayControl = cell(0,2);
+	yelPathArrayControl = cell(0,70);
 	
 	for i=1:experimentN
 		
@@ -29,8 +32,11 @@ for j=1:conditionN
 		
 		elseif strcmp(expStruct.local_quench,'quench')
 			
-			[redPathArrayQuench,yelPathArrayQuench] = findImagePathsQuench(...
-				currentCond,expStruct,redPathArrayQuench,yelPathArrayQuench);
+			[redPathArrayTest,yelPathArrayTest,...
+				redPathArrayControl,yelPathArrayControl] = ...
+				findImagePathsQuench(currentCond,expStruct...
+				,redPathArrayTest,yelPathArrayTest...
+				,redPathArrayControl,yelPathArrayControl);
 		
 		else
 			disp(fprintf('In experimentStruct %d, exp(%d).local_quench must be either "local" or "quench"\n',i,i))
@@ -40,9 +46,16 @@ for j=1:conditionN
 	
 	conditionStructArray(j).imageLocal = createImageLocalStruct(...
 		redPathArrayLocal,yelPathArrayLocal);
-	conditionStructArray(j).imageQuench = createImageQuenchStruct(...
-		redPathArrayQuench,yelPathArrayQuench);
 	conditionStructArray(j).localImageN = length(redPathArrayLocal);
+	
+	testN = size(redPathArrayTest,1);
+	controlN = size(redPathArrayControl,1);
+	conditionStructArray(j).quenchImageTestN = testN;
+	conditionStructArray(j).quenchImageControlN = controlN;
+	
+	conditionStructArray(j).imageQuench = ...
+		createImageQuenchStruct(redPathArrayTest,yelPathArrayTest...
+		,redPathArrayControl,yelPathArrayControl);
 	
 end
 

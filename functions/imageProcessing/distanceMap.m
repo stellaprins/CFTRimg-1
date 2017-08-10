@@ -4,12 +4,12 @@ function [ imageStruct ] = distanceMap( imageStruct )
 
 global BINNING
 
-redImage = imread(imageStruct.redPath);
-yelImage = imread(imageStruct.yelPath);
+redImage = im2double(imread(imageStruct.redPath));
+yelImage = im2double(imread(imageStruct.yelPath));
 
 cellN = imageStruct.cellN(end);
-redBackground = imageStruct.redBackground;
-yelBackground = imageStruct.yelBackground;
+% redBackground = imageStruct.redBackground;
+% yelBackground = imageStruct.yelBackground;
 
 yelMeanEntire		= zeros(cellN,1);
 yelMeanOutside	= zeros(cellN,1);
@@ -24,30 +24,27 @@ redMeanInterior = zeros(cellN,1);
 for i=1:cellN
 	
 	boundingBox = imageStruct.boundingBox(i,:);
-
-	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
-	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
 	
-	redCropAdj = im2double(redCropped) - redBackground;
-	yelCropAdj = im2double(yelCropped) - yelBackground;
-	
-	cellMask = cellBinarize(redCropAdj);
+	cellMask = boundingBoxToCellMask(redImage,boundingBox);
 	
 	distanceMap = makeDistanceMap(cellMask);
+	
+	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
+	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
 	
 	%%%%%%%
 	membraneMask = distanceMap >= 0 & distanceMap < 10*BINNING;
 	
-	yelMeanEntire(i) = sum(cellMask .* yelCropAdj) / sum(cellMask);
-	yelMeanOutside(i) = sum(~cellMask .* yelCropAdj) / sum(~cellMask);
-	yelMeanMembrane(i) = sum(membraneMask .* yelCropAdj) / sum(membraneMask);
-	yelMeanInterior(i) = sum((cellMask & ~membraneMask) .* yelCropAdj) ...
+	yelMeanEntire(i) = sum(cellMask .* yelCropped) / sum(cellMask);
+	yelMeanOutside(i) = sum(~cellMask .* yelCropped) / sum(~cellMask);
+	yelMeanMembrane(i) = sum(membraneMask .* yelCropped) / sum(membraneMask);
+	yelMeanInterior(i) = sum((cellMask & ~membraneMask) .* yelCropped) ...
 		/ sum(cellMask & ~membraneMask);
 	
-	redMeanEntire(i) = sum(cellMask .* redCropAdj) / sum(cellMask);
-	redMeanOutside(i) = sum(~cellMask .* redCropAdj) / sum(~cellMask);
-	redMeanMembrane(i) = sum(membraneMask .* redCropAdj) / sum(membraneMask);
-	redMeanInterior(i) = sum((cellMask & ~membraneMask) .* redCropAdj) ...
+	redMeanEntire(i) = sum(cellMask .* redCropped) / sum(cellMask);
+	redMeanOutside(i) = sum(~cellMask .* redCropped) / sum(~cellMask);
+	redMeanMembrane(i) = sum(membraneMask .* redCropped) / sum(membraneMask);
+	redMeanInterior(i) = sum((cellMask & ~membraneMask) .* redCropped) ...
 		/ sum(cellMask & ~membraneMask);
 	%%%%%%%
 	
