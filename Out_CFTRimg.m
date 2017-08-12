@@ -38,21 +38,21 @@ close all
 
 for i=1:length(cond)
 	figure
-	plotRedYelCorrEntire(cond(i))
+	plotLocalRedYelCorr(cond(i),'entire')
 	figure
-	plotRedYelCorrMembrane(cond(i))
+	plotLocalRedYelCorr(cond(i),'membrane')
 	figure
-	plotRedYelCorrInterior(cond(i))
+	plotLocalRedYelCorr(cond(i),'interior')
 end
 
 % 	figure
 % for i=1:length(cond)
 % 	subplot(3,3,i)
-% 	plotRedYelCorrEntire(cond(i))
+% 	plotLocalRedYelCorr(cond(i),'entire')
 % 	subplot(3,3,i+3)
-% 	plotRedYelCorrMembrane(cond(i))
+% 	plotLocalRedYelCorr(cond(i),'membrane')
 % 	subplot(3,3,i+6)
-% 	plotRedYelCorrInterior(cond(i))
+% 	plotLocalRedYelCorr(cond(i),'interior')
 % end
 
 %% CELL DISPLAY
@@ -60,26 +60,22 @@ end
 close all
 
 x=3;
-y=4;
+y=5;
 
 cond(x).imageLocal(y).cellN
 
-
-[maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
-meanRedEntire = mean(cond(x).imageLocal(y).redEntire);
+[maxGrad, maxGradLoc,refGrad] = findGradient(cond(x).imageLocal(y));
 
 for i=1:cond(x).imageLocal(y).cellN(end)
 	
-	str1 = sprintf('max %g\nloc %g\nentire %g\nav. entire %g'...
-		,round(maxGrad(i),4)...
+	str1 = sprintf('max %g\nloc %g\n\nref %g'...
+		,round(maxGrad(i),5)...
 		,maxGradLoc(i)...
-		,cond(x).imageLocal(y).redEntire(i)...
-		,meanRedEntire);
+		,round(refGrad(i),5));
 	
-	str2 = sprintf('in %g\nout %g\nmem %g'...
-		,round(cond(x).imageLocal(y).yelEntire(i),4)...
-		,round(cond(x).imageLocal(y).yelOutside(i),4)...
-		,round(cond(x).imageLocal(y).yelMembrane(i),4));
+	str2 = sprintf('membrane %g\nentire %g'...
+		,round(cond(x).imageLocal(y).yelMembrane(i)/cond(x).imageLocal(y).redEntire(i),3)...
+		,round(cond(x).imageLocal(y).yelEntire(i)/cond(x).imageLocal(y).redEntire(i),3));
 	
 	dim1 = [.15 .65 .1 .1];
 	dim2 = [.45 .65 .1 .1];
@@ -96,7 +92,7 @@ for i=1:cond(x).imageLocal(y).cellN(end)
 	subplot(5,3,6)
 	cellDisplay(cond(x).imageLocal(y),'overlay',i)
 	subplot(5,1,[3,4,5],'fontsize',14)
-	plotMeanIntensity(cond(x).imageLocal(y),i)
+	plotFOverDistance(cond(x).imageLocal(y),i)
 	
 end
 
@@ -160,22 +156,22 @@ for i=1:conditionN
 	ymax(i) = max(vertcat(cond(i).imageQuench.yelInsideOverT));
 end
 
-disp([min(ymin), max(ymax)])
+% disp([min(ymin), max(ymax)])
 
 % m=4;
 % 
 % figure
 % subplot(1,3,1)
-% plotMeanInside(cond(1),m)
+% plotYelOverTime(cond(1),m)
 % subplot(1,3,2)
-% plotMeanInside(cond(2),m)
+% plotYelOverTime(cond(2),m)
 % subplot(1,3,3)
-% plotMeanInside(cond(3),m)
+% plotYelOverTime(cond(3),m)
 
 figure
 subplot(1,3,1)
-plotMeanInsideCollated(cond(1))
+plotYelOverTimeCollated(cond(1))
 subplot(1,3,2)
-plotMeanInsideCollated(cond(2))
+plotYelOverTimeCollated(cond(2))
 subplot(1,3,3)
-plotMeanInsideCollated(cond(3))
+plotYelOverTimeCollated(cond(3))

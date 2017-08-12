@@ -59,8 +59,6 @@ for j=1:conditionN
 		
 		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
 		
- 		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
-		
 		cond(j).imageLocal(i) = imgFilterUnmasked(cond(j).imageLocal(i));
 		
 		cond(j).imageLocal(i) = imgFilterCellDimensions(cond(j).imageLocal(i));
@@ -76,6 +74,8 @@ disp('Completed cell filtering')
 
 for j=1:conditionN
 	for i=1:cond(j).localImageN
+		
+		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
 		
 		cond(j).imageLocal(i) = distanceMap(cond(j).imageLocal(i));
 

@@ -1,4 +1,4 @@
-function plotMeanInsideCollated( conditionStruct )
+function plotYelOverTimeCollated( conditionStruct )
 %UNTITLED20 Summary of this function goes here
 %   Detailed explanation goes here
 
