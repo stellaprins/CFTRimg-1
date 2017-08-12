@@ -11,7 +11,7 @@ for idx=1:imageStruct.cellN(end)
 
 	cellMask = boundingBoxToCellMask(image,boundingBox);
 
-	[labelled, ~] = bwlabel(cellMask,8);
+	[labelled, num] = bwlabel(cellMask,8);
 	properties = regionprops(labelled ...
 		,'MinorAxisLength','MajorAxisLength');
 	

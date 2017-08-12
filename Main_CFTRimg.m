@@ -6,13 +6,6 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
-% mapLen = 256;
-% mapVec = linspace(0,1,mapLen)';
-% mapZeros = zeros(mapLen,1);
-% redMap = [mapVec, mapZeros, mapZeros];
-% yelMap = [mapVec, mapVec, mapZeros];
-% colormap(redMap)
-
 global SITEN
 
 runMode = 'test'; % 'test' OR 'full'
@@ -72,15 +65,15 @@ for j=1:conditionN
 		
 		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
 		
-% 		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
+%  		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
 		
 		cond(j).imageLocal(i) = imgFilterUnmasked(cond(j).imageLocal(i));
-		
-% 		cond(j).imageLocal(i) = imgFilterAbuttingCells(cond(j).imageLocal(i));
 		
 		cond(j).imageLocal(i) = imgFindCellDimensions(cond(j).imageLocal(i));
 
 		cond(j).imageLocal(i) = imgFilterCellSize(cond(j).imageLocal(i));
+		
+		cond(j).imageLocal(i) = imgFilterRedGrad(cond(j).imageLocal(i));
 		
 	end
 end
@@ -114,14 +107,6 @@ disp([cond.mutation])
 disp(([cond.localHits]./[cond.localCellN])*100)
 disp([cond.localCellN])
 
-a=1;
-b=3;
-
-% for i=1:cond(a).imageLocal(b).cellN(end)
-% 	figure
-% 	plotMeanIntensity(cond(a).imageLocal(b),i)
-% end
-% [maxGrad, maxGradLoc] = findGradient(cond(a).imageLocal(b))
 
 for i=1:length(cond)
 	figure
@@ -147,7 +132,7 @@ end
 close all
 
 x=3;
-y=5;
+y=10;
 
 cond(x).imageLocal(y).cellN
 
@@ -155,7 +140,7 @@ cond(x).imageLocal(y).cellN
 [maxGrad, maxGradLoc] = findGradient(cond(x).imageLocal(y));
 meanRedEntire = mean(cond(x).imageLocal(y).redEntire);
 
-for i=1:1 %cond(x).imageLocal(y).cellN(end)
+for i=1:cond(x).imageLocal(y).cellN(end)
 	
 	str1 = sprintf('max %g\nloc %g\nentire %g\nav. entire %g'...
 		,round(maxGrad(i),4)...

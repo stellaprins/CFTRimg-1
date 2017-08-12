@@ -48,10 +48,10 @@ for i=1:cellN
 		/ sum(cellMask & ~membraneMask);
 	%%%%%%%
 	
-%  	if i==2
-% 		showDistanceMapProcess(...
-% 			redCropped,yelCropped,cellMask,distanceMap,membraneMask);
-% 	end
+ 	if i==4
+		showDistanceMapProcess(...
+			redCropped,yelCropped,cellMask,distanceMap,membraneMask);
+	end
 
 end
 
