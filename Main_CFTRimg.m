@@ -6,6 +6,7 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
+% declare global variables
 global SITEN BINNING EXTRA
 
 BINNING = 1 / 1;
