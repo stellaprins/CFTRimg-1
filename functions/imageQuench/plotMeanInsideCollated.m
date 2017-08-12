@@ -2,19 +2,38 @@ function plotMeanInsideCollated( conditionStruct )
 %UNTITLED20 Summary of this function goes here
 %   Detailed explanation goes here
 
+yelN = 70;
 
-meanYel = horzcat(conditionStruct.imageQuench.yelInsideOverT);
+testN			= conditionStruct.quenchImageTestN;
+controlN	= conditionStruct.quenchImageControlN;
 
-% FIX ME
+yelTest					= zeros(yelN,testN);
+yelControl			= zeros(yelN,testN);
+
+countTest			= 1;
+countControl	= 1;
+for i=1:(testN+controlN)
+	
+	if strcmp(conditionStruct.imageQuench(i).test_control,'test')
+		
+		yelTest(:,countTest) = conditionStruct.imageQuench(i).yelInsideOverT;
+		countTest = countTest + 1;
+		
+	elseif strcmp(conditionStruct.imageQuench(i).test_control,'control')
+		
+		yelControl(:,countControl) = conditionStruct.imageQuench(i).yelInsideOverT;
+		countControl = countControl + 1;
+		
+	end
+	
+end
+	
+meanYelTest = mean(yelTest,2);
+meanYelControl = mean(yelControl,2);
+errYelTest = std(yelTest,0,2);
+errYelControl = std(yelControl,0,2);
+
 x=1:70;
-
-meanYelTest = mean(meanYel(:,1:4),2);
-meanYelControl = mean(meanYel(:,5:8),2);
-
-errYelTest = std(meanYel(:,1:4),0,2);
-errYelControl = std(meanYel(:,5:8),0,2);
-
-
 
 shadedErrorBar(x,meanYelTest,errYelTest...
 	,'lineprops','-r','transparent',1);
@@ -34,10 +53,6 @@ ylabel(sprintf('Norm. mean YFP signal\nwithin cells'))
 legend([p1 p2],'test','control','location','southeast')
 
 set(gca,'fontsize',16)
-
-
-
-
 
 
 end

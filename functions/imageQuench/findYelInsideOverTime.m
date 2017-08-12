@@ -3,37 +3,37 @@ function [ imageStruct ] = findYelInsideOverTime( imageStruct )
 %   Detailed explanation goes here
 
 imageDim = 432;
-
-redN = 2;
 yelN = 70;
-redImage = zeros(imageDim,imageDim,redN,'double');
-cellMask = zeros(imageDim,imageDim,redN,'double');
-yelImage = zeros(imageDim,imageDim,yelN,'double');
 
+redImage = im2double(imread(imageStruct.redPath{1}));
+cellMask = findCellMask(redImage);
+
+tmpRedIn = redImage .* cellMask;
+tmpRedOut = redImage .* ~cellMask;
+redInside = sum(tmpRedIn(:)) / sum(cellMask(:));
+redOutside = sum(tmpRedOut(:)) / sum(~cellMask(:));
+redSignal = redInside - redOutside;
+
+yelImage = zeros(imageDim,imageDim,yelN,'double');
 yelInside = zeros(yelN,1);
 yelOutside = zeros(yelN,1);
 
-for i=1:redN
-	redImage(:,:,i) = im2double(imread(imageStruct.redPath{i}));
-	cellMask(:,:,i) = findCellMask(redImage(:,:,i));
-end
-
 for i=1:yelN
+	
 	yelImage(:,:,i) = im2double(imread(imageStruct.yelPath{i}));
-end
-
-mask = cellMask(:,:,1);
-for i=1:yelN
-	tmpIn = yelImage(:,:,i) .* mask;
-	tmpOut = yelImage(:,:,i) .* ~mask;
-	yelInside(i) = sum(tmpIn(:)) / sum(mask(:));
-	yelOutside(i) = sum(tmpOut(:)) / sum(~mask(:));
+	tmpYelIn = yelImage(:,:,i) .* cellMask;
+	tmpYelOut = yelImage(:,:,i) .* ~cellMask;
+	yelInside(i) = sum(tmpYelIn(:)) / sum(cellMask(:));
+	yelOutside(i) = sum(tmpYelOut(:)) / sum(~cellMask(:));
+	
 end
 
 yelSignal = yelInside - yelOutside;
-yelStandard = yelSignal(4);
 
-imageStruct.yelInsideOverT = yelSignal / yelStandard;
+yelData		= yelSignal / redSignal;
+yelStandard = yelData(4);
+
+imageStruct.yelInsideOverT = yelData / yelStandard;
 
 % figure
 % showQuenchImage(redImage(:,:,1),yelImage(:,:,1),cellMask(:,:,1))
