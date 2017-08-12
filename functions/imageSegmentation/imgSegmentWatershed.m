@@ -6,11 +6,11 @@ mode = 'full'; % 'full' OR 'test';
 
 global BINNING
 
-I = imread(imageStruct.redPath);
-dI = im2double(I);
-% imshow(dI,[])
+I = im2double(imread(imageStruct.redPath));
+yelImage = im2double(imread(imageStruct.yelPath));
+% imshow(I,[])
  
-Ieq = adapthisteq(dI,'NumTiles',[20 20]);
+Ieq = adapthisteq(I,'NumTiles',[20 20]);
 % figure, imshow(Ieq,[])
 
 Ibw = imbinarize(Ieq,'adaptive');
@@ -30,36 +30,40 @@ dilateSE = strel('disk',ceil(4*BINNING));
 Idilated = imopen(Ifilled,dilateSE);
 % figure, imshow(Idilated)
 
-smallEM = imextendedmax(dI, 0.9*median(dI(:)));
+smallEM = imextendedmax(I, 0.9*median(I(:)));
 smallEM = imclose(smallEM, closeSE);
 smallEM = bwareaopen(smallEM, 120);
 smallEM = imerode(smallEM, ones(6*BINNING));
 % figure, imshow(smallEM)
 
-largeEM = imextendedmax(dI, median(dI(:)));
+largeEM = imextendedmax(I, median(I(:)));
 largeEM = imclose(largeEM, closeSE);
 largeEM = imfill(largeEM, 'holes');
 largeEM = bwareaopen(largeEM, 1200);
 % figure, imshow(largeEM)
 
-background = largeEM | Idilated;
+BGmarkers = largeEM | Idilated;
 % figure, imshow(background)
 
+BGmask = imcomplement(BGmarkers);
+imageStruct.redBackground = sum(I(:) .* BGmask(:)) / sum(BGmask(:));
+imageStruct.yelBackground = sum(yelImage(:) .* BGmask(:)) / sum(BGmask(:));
+
 if strcmp(mode,'test')
-	IbwPerim = bwperim(background);
+	IbwPerim = bwperim(BGmarkers);
 	overlay = imoverlay(Ieq, IbwPerim|smallEM, [.3 1 .3]);
 % 	figure, imshow(overlay)
 end
 
-complement = imcomplement(dI);
+complement = imcomplement(I);
 
-Imod = imimposemin(complement, ~background | smallEM);
+Imod = imimposemin(complement, ~BGmarkers | smallEM);
 
 L = watershed(Imod);
 % figure, imshow(label2rgb(L))
 
 if strcmp(mode,'test')
- 	showWatershedProcess(dI,Ibw,background,smallEM,overlay,label2rgb(L))
+ 	showWatershedProcess(I,Ibw,BGmarkers,smallEM,overlay,label2rgb(L))
 end
 
 properties = regionprops(L,'BoundingBox','Area');

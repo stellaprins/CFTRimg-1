@@ -26,7 +26,6 @@ elseif strcmp(runMode,'full')
 end
 
 conditionN = length(cond);
-cond(2).mutation{1} = 'F508del/R1070W';
 
 disp('Completed importing data')
 
@@ -65,13 +64,11 @@ for j=1:conditionN
 		
 		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
 		
-%  		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
+ 		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
 		
 		cond(j).imageLocal(i) = imgFilterUnmasked(cond(j).imageLocal(i));
 		
-		cond(j).imageLocal(i) = imgFindCellDimensions(cond(j).imageLocal(i));
-
-		cond(j).imageLocal(i) = imgFilterCellSize(cond(j).imageLocal(i));
+		cond(j).imageLocal(i) = imgFilterCellDimensions(cond(j).imageLocal(i));
 		
 		cond(j).imageLocal(i) = imgFilterRedGrad(cond(j).imageLocal(i));
 		
