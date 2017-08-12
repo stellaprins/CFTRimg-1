@@ -41,9 +41,11 @@ newBoundingBox = zeros(cellN,4);
 counter = 1;
 for idx=1:imageStruct.cellN(end)
 	
-	if cellLogical == 1
+	boundingBox = imageStruct.boundingBox(idx,:);
+	
+	if cellLogical(idx) == 1
 		
-		newBoundingBox(counter,:)	= boundingBox(idx,:);
+		newBoundingBox(counter,:)	= boundingBox;
 		counter = counter + 1;
 		
 	end

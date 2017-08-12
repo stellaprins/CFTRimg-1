@@ -89,20 +89,39 @@ end
 
 disp('Completed image processing')
 
+meanYFPEntire		= zeros(1,conditionN);
+meanYFPMembrane = zeros(1,conditionN);
+stdYFPEntire		= zeros(1,conditionN);
+stdYFPMembrane = zeros(1,conditionN);
 
-%% ANALYSIS
-
-close all
-
-for i=1:length(cond)
+for i=1:conditionN
+	
 	fullCellN = vertcat(cond(i).imageLocal.cellN);
 	cond(i).localCellN = sum(fullCellN(:,end));
+	
+	yelMembrane	= vertcat(cond(i).imageLocal.yelMembrane);
+	yelEntire		= vertcat(cond(i).imageLocal.yelEntire);
+	redEntire		= vertcat(cond(i).imageLocal.redEntire);
+	
+	meanYFPEntire(i)		= mean(yelEntire ./ redEntire);
+	stdYFPEntire(i)			= std(yelEntire ./ redEntire);
+	meanYFPMembrane(i)	= mean(yelMembrane ./ redEntire);
+	stdYFPMembrane(i)		= std(yelMembrane ./ redEntire);
+	
 	cond(i) = collectRatioData(cond(i));
+
 end
 
 disp([cond.mutation])
 disp(([cond.localHits]./[cond.localCellN])*100)
+disp([meanYFPEntire; stdYFPEntire])
+disp([meanYFPMembrane; stdYFPMembrane])
 disp([cond.localCellN])
+
+
+%% CORRELATION PLOTS
+
+close all
 
 
 for i=1:length(cond)
@@ -124,12 +143,10 @@ end
 % 	plotRedYelCorrInterior(cond(i))
 % end
 
-%% DISPLAY
-
-close all
+%% CELL DISPLAY
 
 x=3;
-y=10;
+y=4;
 
 cond(x).imageLocal(y).cellN
 

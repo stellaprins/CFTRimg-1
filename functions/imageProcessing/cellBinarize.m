@@ -26,13 +26,13 @@ for i=1:6*BINNING
 end
 
 dilated = eroded;
-for i=1:floor(24*BINNING)
-	dilated = imdilate(closed,seUnit);
+for i=1:floor(10*BINNING)
+	dilated = imdilate(dilated,seUnit);
 end
 
-smoothed = imbinarize(imgaussfilt(im2double(dilated),5),0.8);
+% smoothed = imbinarize(imgaussfilt(im2double(dilated),5),0.8);
 
-binaryImage = smoothed;
+binaryImage = dilated;
 	
 
 end
