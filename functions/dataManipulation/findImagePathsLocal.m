@@ -19,7 +19,11 @@ for i=1:length(wells)
 	% red
 	filename = strcat(experimentStruct.filePrefix,wells{i},'_s*_w2.TIF');
 	redDirOutput = dir(fullfile(fileFolder,filename));
-
+	if isempty(redDirOutput)
+		fprintf('Check experiment "%s".\nFor well %s a file cannot be found.\n',...
+		experimentStruct.expStr,wells{i})
+	end
+	
 	% yellow
 	filename = strcat(experimentStruct.filePrefix,wells{i},'_s*_w1.TIF');
 	yelDirOutput = dir(fullfile(fileFolder,filename));

@@ -12,7 +12,7 @@ global SITEN BINNING EXTRA
 BINNING = 1 / 1;
 EXTRA = ceil(BINNING*20);
 
-runMode = 'test'; % 'test' OR 'full'
+runMode = 'full'; % 'test' OR 'full'
 
 %% IMPORT DATA
 
@@ -24,7 +24,7 @@ if strcmp(runMode,'test')
 		
 elseif strcmp(runMode,'full')
 	SITEN = 9;
-	inputData
+	inputDataTempCorr
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 end
