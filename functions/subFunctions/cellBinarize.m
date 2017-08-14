@@ -6,7 +6,7 @@ global BINNING
 
 adjusted = croppedImage; % imadjust(croppedImage);
 
-thresh = 0.8*graythresh(adjusted);
+thresh = 0.75*graythresh(adjusted);
 
 bw = imbinarize(adjusted,thresh);
 
@@ -26,7 +26,7 @@ for i=1:6*BINNING
 end
 
 dilated = eroded;
-for i=1:floor(10*BINNING)
+for i=1:floor(8*BINNING)
 	dilated = imdilate(dilated,seUnit);
 end
 

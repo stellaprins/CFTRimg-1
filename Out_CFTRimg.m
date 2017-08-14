@@ -59,8 +59,8 @@ end
 
 close all
 
-x=3;
-y=5;
+x=1;
+y=7;
 
 cond(x).imageLocal(y).cellN
 

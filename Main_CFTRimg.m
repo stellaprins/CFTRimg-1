@@ -1,4 +1,4 @@
-
+tic;
 % close all other windows
 close all
 imtool close all
@@ -24,7 +24,7 @@ if strcmp(runMode,'test')
 		
 elseif strcmp(runMode,'full')
 	SITEN = 9;
-	inputDataTempCorr
+	inputData
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 end
@@ -32,7 +32,7 @@ end
 conditionN = length(cond);
 
 disp('Completed importing data')
-
+time(1) = toc;
 %% SEGMENTATION
 
 close all
@@ -48,7 +48,7 @@ end
 store = cond;
 
 disp('Completed image segmentation')
-
+time(2) = toc;
 %% FILTERING
 
 cond = store;
@@ -70,7 +70,7 @@ for j=1:conditionN
 end
 
 disp('Completed cell filtering')
-
+time(3) = toc;
 %% DISTANCE MAP
 
 for j=1:conditionN
@@ -84,7 +84,7 @@ for j=1:conditionN
 end
 
 disp('Completed localisation distance map')
-
+time(4) = toc;
 %% QUENCHING ANALYSIS
 
 for j=1:conditionN
@@ -103,7 +103,7 @@ for j=1:conditionN
 end
 
 disp('Completed quenching analysis')
-
+time(5) = toc;
 %%
 
 disp('Full analysis completed')
