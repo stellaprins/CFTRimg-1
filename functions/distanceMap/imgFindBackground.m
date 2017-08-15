@@ -4,30 +4,33 @@ function [ imageStruct ] = imgFindBackground( imageStruct )
 
 global BINNING
 
-yelImage = imread(imageStruct.yelPath);
-redImage = imread(imageStruct.redPath);
+yelImage = im2double(imread(imageStruct.yelPath));
 
-dYelImage = im2double(yelImage);
-dRedImage = im2double(redImage);
+redImage = im2double(imread(imageStruct.redPath));
+redQuant = quantile(redImage(:),3);
+redThresh = (redQuant(1) + min(redImage)) / 2;
 
-yelQuant = quantile(dYelImage(:),3);
-redQuant = quantile(dRedImage(:),3);
+redMask = redImage > redThresh;
 
-yelThresh = yelQuant(1);
-redThresh = redQuant(1);
+se = strel('disk',floor(4*BINNING));
+openedMask = imopen(redMask,se);
+closedMask = imclose(openedMask,se);
+filledMask = imfill(~closedMask,'holes');
 
-yelMask = dYelImage > yelThresh;
-redMask = dRedImage > redThresh;
+erodedMask = filledMask;
+seUnit = strel('disk',1);
+for i = 1:(4*BINNING)
+	erodedMask = imerode(erodedMask,seUnit);
+end
+dilatedMask = erodedMask;
+for i = 1:(4*BINNING)
+	dilatedMask = imdilate(dilatedMask,seUnit);
+end
 
-combinedMask = redMask & yelMask;
+backgroundMask = dilatedMask;
 
-seDilate = strel('disk',floor(5*BINNING));
-dilatedMask = imdilate(combinedMask,seDilate);
-
-backgroundMask = ~dilatedMask;
-
-yelMeanBackground = sum(dYelImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));
-redMeanBackground = sum(dRedImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));
+yelMeanBackground = sum(yelImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));
+redMeanBackground = sum(redImage(:) .* backgroundMask(:)) / sum(backgroundMask(:));
 
 imageStruct.yelBackground = yelMeanBackground;
 imageStruct.redBackground = redMeanBackground;

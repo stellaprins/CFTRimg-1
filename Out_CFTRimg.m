@@ -1,4 +1,18 @@
 
+global BINNING
+
+%% BOXPLOTS
+
+image = zeros(2160*BINNING, 2160*BINNING, 5);
+imageData = zeros(2160^2 * BINNING^2,5);
+
+for i = 1:5
+	image(:,:,i) = im2double(imread(cond(1).imageLocal(10+i).redPath));
+	tmp = image(:,:,i);
+ 	imageData(:,i) = tmp(:);
+end
+
+boxplot(imageData)
 
 %% LOCALISATION OUTPUT
 
@@ -66,10 +80,10 @@ close all
 for i=1:length(cond)
 	figure
 	plotLocalRedYelCorr(cond(i),'entire')
-	figure
-	plotLocalRedYelCorr(cond(i),'membrane')
-	figure
-	plotLocalRedYelCorr(cond(i),'interior')
+% 	figure
+% 	plotLocalRedYelCorr(cond(i),'membrane')
+% 	figure
+% 	plotLocalRedYelCorr(cond(i),'interior')
 end
 
 % 	figure
