@@ -2,11 +2,16 @@
 
 %% LOCALISATION OUTPUT
 
+cellN = sum(vertcat(cond.localCellN));
+
 meanYFPEntire		= zeros(1,conditionN);
 meanYFPMembrane = zeros(1,conditionN);
 stdYFPEntire		= zeros(1,conditionN);
 stdYFPMembrane = zeros(1,conditionN);
 
+data = zeros(cellN,1);
+
+cellCount = 1;
 for i=1:conditionN
 	
 	fullCellN = vertcat(cond(i).imageLocal.cellN);
@@ -21,6 +26,10 @@ for i=1:conditionN
 	meanYFPMembrane(i)	= mean(yelMembrane ./ redEntire);
 	stdYFPMembrane(i)		= std(yelMembrane ./ redEntire);
 	
+	data(cellCount:(cellCount+cond(i).localCellN-1)) = ...
+		yelMembrane ./ redEntire;
+	cellCount = cellCount + cond(i).localCellN;
+	
 	cond(i) = collectRatioData(cond(i));
 
 end
@@ -31,6 +40,24 @@ disp([meanYFPEntire; stdYFPEntire])
 disp([meanYFPMembrane; stdYFPMembrane])
 disp([cond.localCellN])
 
+%% STATISTICS
+
+cellN = sum(vertcat(cond.localCellN));
+
+group = cell(cellN,1);
+
+cellCount = 1;
+for i=1:conditionN
+	
+	group(cellCount:(cellCount+cond(i).localCellN-1)) = cond(i).mutation;
+	
+	cellCount = cellCount + cond(i).localCellN;
+	
+end
+
+[p,tbl,stats]=kruskalwallis(data,group,'off');
+
+[c,m,h] = multcompare(stats,'CType','dunn-sidak');
 
 %% CORRELATION PLOTS
 
@@ -59,8 +86,8 @@ end
 
 close all
 
-x=1;
-y=7;
+x=3;
+y=6;
 
 cond(x).imageLocal(y).cellN
 
