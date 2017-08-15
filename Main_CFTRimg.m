@@ -15,13 +15,9 @@ addpath(genpath('functions'));
 
 global SITEN
 
-runMode = 'test'; % 'test' OR 'full'
+runMode = 'Stella'; % 'test' OR 'full' 
 
 %% IMPORT DATA
-
-baseFolder = 'E:\Stella\'
-
-% fullfile('~','Desktop','data'); 
 
 if strcmp(runMode,'test')
 	experimentStr = {'exp1'};
@@ -43,10 +39,14 @@ elseif strcmp(runMode,'full')
 	inputData
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
+elseif strcmp(runMode,'Stella')
+	SITEN = 9;
+	inputDataStellaICL4
+	cond = createConditionStruct(exp);
+	cond = findImagePaths(exp,cond);
 end
 
 conditionN = length(cond);
-cond(2).mutation{1} = 'F508del/R1070W';
 
 disp('Completed importing data')
 
