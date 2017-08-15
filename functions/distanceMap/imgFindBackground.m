@@ -2,6 +2,8 @@ function [ imageStruct ] = imgFindBackground( imageStruct )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
+global BINNING
+
 yelImage = imread(imageStruct.yelPath);
 redImage = imread(imageStruct.redPath);
 
@@ -19,7 +21,7 @@ redMask = dRedImage > redThresh;
 
 combinedMask = redMask & yelMask;
 
-seDilate = strel('disk',5);
+seDilate = strel('disk',floor(5*BINNING));
 dilatedMask = imdilate(combinedMask,seDilate);
 
 backgroundMask = ~dilatedMask;

@@ -1,4 +1,4 @@
-
+tic;
 % close all other windows
 close all
 imtool close all
@@ -6,142 +6,106 @@ imtool close all
 % add the functions to the path
 addpath(genpath('functions'));
 
-global SITEN
-
-SITEN = 9;
-
-runMode = 'test'; % 'test' OR 'full'
-
-%% IMPORT DATA
-
-baseFolder = fullfile('~','Desktop','data');
-
-if strcmp(runMode,'test')
-	experimentStr = {'exp1'};
-	exp = createExperimentStruct(experimentStr);
-
-	exp(1).local_quench = {'60x'};
-	exp(1).conditionStr = {'WT','F508del','R1070W'};
-	
-	exp(1).condWells(1,:) = {'B02'};
-	exp(1).condWells(2,:) = {'B03'};
-	exp(1).condWells(3,:) = {'B04'};
-		
-	cond = createConditionStruct(exp);
-	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
-		
-elseif strcmp(runMode,'full')
-	inputData
-	cond = createConditionStruct(exp);
-	cond = findImagePathsPerCondition(cond,exp,baseFolder,'60x');
-end
-
-disp('Completed importing data')
-
-%% DECLARE GLOBAL VARIABLES
-
-global BINNING EXTRA
+% declare global variables
+global SITEN BINNING EXTRA
 
 BINNING = 1 / 1;
 EXTRA = ceil(BINNING*20);
 
+runMode = 'full'; % 'test' OR 'full'
 
+%% IMPORT DATA
+
+if strcmp(runMode,'test')
+	SITEN = 2;
+	inputDataTest
+	cond = createConditionStruct(exp);
+	cond = findImagePaths(exp,cond);
+		
+elseif strcmp(runMode,'full')
+	SITEN = 9;
+	inputData
+	cond = createConditionStruct(exp);
+	cond = findImagePaths(exp,cond);
+end
+
+conditionN = length(cond);
+
+disp('Completed importing data')
+time(1) = toc;
 %% SEGMENTATION
 
 close all
 
-conditionN = length(cond);
-
 for j=1:conditionN
-	for i=1:cond(j).imageN		
+ 	for i=1:cond(j).localImageN
 
-		cond(j).images(i) = imgSegmentWatershed(cond(j).images(i));
+		cond(j).imageLocal(i) = imgSegmentWatershed(cond(j).imageLocal(i));
 
 	end
 end
+
+store = cond;
 
 disp('Completed image segmentation')
-
+time(2) = toc;
 %% FILTERING
 
-for j=1:conditionN
-	for i=1:cond(j).imageN
-		
-		cond(j).images(i).cellN = cond(j).images(i).cellN(1);
-		
-		cond(j).images(i) = imgFilterEdges(cond(j).images(i));
-		
-		cond(j).images(i) = imgFindBackground(cond(j).images(i));
-		
-		cond(j).images(i) = imgFilterAbuttingCells(cond(j).images(i));
-		
-		cond(j).images(i) = imgFindCellDimensions(cond(j).images(i));
+cond = store;
 
-		cond(j).images(i) = imgFilterCellSize(cond(j).images(i));
+for j=1:conditionN
+	for i=1:cond(j).localImageN
+		
+		cond(j).imageLocal(i).cellN = cond(j).imageLocal(i).cellN(1);
+		
+		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
+		
+		cond(j).imageLocal(i) = imgFilterUnmasked(cond(j).imageLocal(i));
+		
+		cond(j).imageLocal(i) = imgFilterCellDimensions(cond(j).imageLocal(i));
+		
+		cond(j).imageLocal(i) = imgFilterRedGrad(cond(j).imageLocal(i));
 		
 	end
 end
 
-disp('Completed image filtering')
-
+disp('Completed cell filtering')
+time(3) = toc;
 %% DISTANCE MAP
 
 for j=1:conditionN
-	for i=1:cond(j).imageN
+	for i=1:cond(j).localImageN
 		
-		cond(j).images(i) = distanceMap(cond(j).images(i));
+		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
+		
+		cond(j).imageLocal(i) = distanceMap(cond(j).imageLocal(i));
 
 	end
 end
 
-disp('Completed image processing')
+disp('Completed localisation distance map')
+time(4) = toc;
+%% QUENCHING ANALYSIS
 
-
-%% ANALYSIS
-
-close all
-
-for i=1:length(cond)
-	fullCellN = vertcat(cond(i).images.cellN);
-	cond(i).cellN = sum(fullCellN(:,end));
-	cond(i) = collectRatioData(cond(i));
-end
-
-disp([cond.mutation])
-disp([cond.hits])
-disp([cond.cellN])
-
-a=3;
-b=158;
-
-plotMeanIntensity(cond(a).images(b))
-
-for i=1:length(cond)
-	plotRedYelCorrelation(cond(i))
-end
-
-%% DISPLAY
-
-close all
-
-x=3;
-y=158;
-
-cond(x).images(y).cellN
-imgDisplay(cond(x).images(y))
-for i=1:cond(x).images(y).cellN(end)
-	figure
-	subplot(1,3,1)
-	cellDisplay(cond(x).images(y),'yel',i)
-	title(sprintf('inside=%g\noutside=%g\nmembrane=%g'...
-		,round(cond(x).images(y).yelInsideCell(i),4)...
-		,round(cond(x).images(y).yelOutsideCell(i),4)...
-		,round(cond(x).images(y).yelMembrane(i),4)))
-	subplot(1,3,2)
-	cellDisplay(cond(x).images(y),'red',i)
-	subplot(1,3,3)
-	cellDisplay(cond(x).images(y),'bw',i)
+for j=1:conditionN
 	
+	quenchImageN = cond(j).quenchImageTestN + cond(j).quenchImageControlN;
+	
+	for i=1:quenchImageN
+		
+		cond(j).imageQuench(i) = findRedMaskChange(cond(j).imageQuench(i));
+		
+		cond(j).imageQuench(i) = findYelInsideOverTime(cond(j).imageQuench(i));
+		
+		cond(j).imageQuench(i) = calculateConcIodine(cond(j).imageQuench(i));
+		
+	end
 end
+
+disp('Completed quenching analysis')
+time(5) = toc;
+%%
+
+disp('Full analysis completed')
 
 
