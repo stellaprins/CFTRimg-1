@@ -1,2 +1,2 @@
 # CFTRimg
-An image analysis tool for quantifying how well the CFTR protein is trafficked to the cell membrane.
+An image analysis tool for localisation of CFTR on the cell membrane.
