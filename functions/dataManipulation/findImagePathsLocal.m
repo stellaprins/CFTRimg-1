@@ -10,11 +10,12 @@ fileFolder = fullfile(experimentStruct.baseFolder...
 	,'TimePoint_1');
 
 wells = {experimentStruct.condWells{conditionLocation,:}};
+wellN = sum(~cellfun(@isempty,experimentStruct.condWells(conditionLocation,:)));
 
-tmpRedPathArray = cell(length(wells)*SITEN,1);
-tmpYelPathArray = cell(length(wells)*SITEN,1);
+tmpRedPathArray = cell(wellN*SITEN,1);
+tmpYelPathArray = cell(wellN*SITEN,1);
 
-for i=1:length(wells)
+for i=1:wellN
 
 	% red
 	filename = strcat(experimentStruct.filePrefix,wells{i},'_s*_w2.TIF');
