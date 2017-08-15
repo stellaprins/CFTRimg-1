@@ -12,13 +12,9 @@ global SITEN BINNING EXTRA
 BINNING = 1 / 1;
 EXTRA = ceil(BINNING*20);
 
-runMode = 'full'; % 'test' OR 'full'
+runMode = 'Stella'; % 'test' OR 'full' 
 
 %% IMPORT DATA
-
-baseFolder = 'E:\Stella\'
-
-% fullfile('~','Desktop','data'); 
 
 if strcmp(runMode,'test')
 	experimentStr = {'exp1'};
@@ -38,6 +34,11 @@ if strcmp(runMode,'test')
 elseif strcmp(runMode,'full')
 	SITEN = 9;
 	inputData
+	cond = createConditionStruct(exp);
+	cond = findImagePaths(exp,cond);
+elseif strcmp(runMode,'Stella')
+	SITEN = 9;
+	inputDataStellaICL4
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 end
