@@ -1,4 +1,4 @@
-function plotMeanIntensity( imageStruct,idx )
+function plotFOverDistance( imageStruct,idx )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 

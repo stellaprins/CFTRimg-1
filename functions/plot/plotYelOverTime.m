@@ -1,4 +1,4 @@
-function plotMeanInside( conditionStruct,idx )
+function plotYelOverTime( conditionStruct,idx )
 %UNTITLED20 Summary of this function goes here
 %   Detailed explanation goes here
 
