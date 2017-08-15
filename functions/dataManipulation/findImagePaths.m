@@ -10,7 +10,7 @@ conditionStr = unique(horzcat(experimentStructArray.conditionStr));
 
 for j=1:conditionN
 	
-	currentCond = conditionStr{j};
+	currentCondition = conditionStr{j};
 	
 	redPathArrayLocal = cell(0);
 	yelPathArrayLocal = cell(0);
@@ -25,21 +25,32 @@ for j=1:conditionN
 		
 		expStruct = experimentStructArray(i);
 		
-		if strcmp(expStruct.local_quench,'local')
-			
-			[redPathArrayLocal,yelPathArrayLocal] = findImagePathsLocal(...
-				currentCond,expStruct,redPathArrayLocal,yelPathArrayLocal);
+		cmpCondition = strcmp(expStruct.conditionStr,currentCondition);
+		conditionLoc = sum(cmpCondition .* (1:length(expStruct.conditionStr)));
 		
-		elseif strcmp(expStruct.local_quench,'quench')
-			
-			[redPathArrayTest,yelPathArrayTest,...
-				redPathArrayControl,yelPathArrayControl] = ...
-				findImagePathsQuench(currentCond,expStruct...
-				,redPathArrayTest,yelPathArrayTest...
-				,redPathArrayControl,yelPathArrayControl);
+		if sum(cmpCondition == 1)
 		
-		else
-			disp(fprintf('In experimentStruct %d, exp(%d).local_quench must be either "local" or "quench"\n',i,i))
+			switch expStruct.local_quench
+
+				case 'local'
+
+					[redPathArrayLocal,yelPathArrayLocal] = ...
+					findImagePathsLocal(conditionLoc,expStruct...
+					,redPathArrayLocal,yelPathArrayLocal);
+
+				case 'quench'
+
+					[redPathArrayTest,yelPathArrayTest,...
+					redPathArrayControl,yelPathArrayControl] = ...
+					findImagePathsQuench(conditionLoc,expStruct...
+					,redPathArrayTest,yelPathArrayTest...
+					,redPathArrayControl,yelPathArrayControl);
+
+				otherwise
+					fprintf(strcat('In experimentStruct %d, exp(%d).local_quench',...
+						' must be either "local" or "quench"\n'),i,i)
+			end
+		
 		end
 		
 	end

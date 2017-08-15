@@ -1,4 +1,4 @@
-function [ maxGradient,maxGradientLocation ] = findGradient( imageStruct )
+function [ maxGradient,maxGradientLocation,refGradient ] = findGradient( imageStruct )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -9,6 +9,7 @@ cellN = imageStruct.cellN(end);
 
 maxGradient = zeros(cellN,1);
 maxGradientLocation = zeros(cellN,1);
+refGradient = zeros(cellN,1);
 
 for i=1:cellN
 	
@@ -16,6 +17,10 @@ for i=1:cellN
 	
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
 	cellMask = boundingBoxToCellMask(redImage,boundingBox);
+	
+	redMin = min(redCropped(:));
+	redMax = max(redCropped(:));
+	refGradient(i) = (redMax - redMin) / 40;
 	
 	if sum(cellMask(:)) == 0
 		maxGradient(i) = NaN;
