@@ -17,7 +17,7 @@ conditionTemplate = struct(...
 
 for i=1:conditionsN
 	conditionStruct(i) = conditionTemplate;
-	conditionStruct(i).mutation = conditionsStr(i);
+	conditionStruct(i).mutation = conditionsStr{i};
 end
 
 

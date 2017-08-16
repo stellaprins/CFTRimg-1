@@ -69,9 +69,9 @@ for i=1:conditionN
 	
 end
 
-[p,tbl,stats]=kruskalwallis(data,group,'off');
+[p,tbl,stats]=kruskalwallis(data,group,'off')
 
-[c,m,h] = multcompare(stats,'CType','dunn-sidak');
+[c,m,h] = multcompare(stats,'CType','dunn-sidak')
 
 %% CORRELATION PLOTS
 
@@ -100,8 +100,8 @@ end
 
 close all
 
-x=3;
-y=6;
+x=2;
+y=2;
 
 cond(x).imageLocal(y).cellN
 
@@ -171,11 +171,11 @@ for j=1:conditionN
 		end
 	end
 	
-	fprintf('\n%s - Test\n',cond(j).mutation{1})
+	fprintf('\n%s - Test\n',cond(j).mutation)
 	disp([mean(maxGradTest),std(maxGradTest)])
 	disp([mean(maxGradTestLoc),std(maxGradTestLoc)])
 	
-	fprintf('%s - Control\n',cond(j).mutation{1})
+	fprintf('%s - Control\n',cond(j).mutation)
 	disp([mean(maxGradControl),std(maxGradControl)])
 	disp([mean(maxGradControlLoc),std(maxGradControlLoc)])
 	
@@ -210,9 +210,7 @@ end
 % plotYelOverTime(cond(3),m)
 
 figure
-subplot(1,3,1)
-plotYelOverTimeCollated(cond(1))
-subplot(1,3,2)
-plotYelOverTimeCollated(cond(2))
-subplot(1,3,3)
-plotYelOverTimeCollated(cond(3))
+for i=1:conditionN
+    subplot(3,4,i)
+    plotYelOverTimeCollated(cond(1))
+end
