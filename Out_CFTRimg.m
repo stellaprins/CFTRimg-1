@@ -1,77 +1,84 @@
 
-global BINNING
+
 
 %% BOXPLOTS
+% 
+% image = zeros(2160*BINNING, 2160*BINNING, 5);
+% imageData = zeros(2160^2 * BINNING^2,5);
+% 
+% for i = 1:5
+% 	image(:,:,i) = im2double(imread(cond(1).imageLocal(10+i).redPath));
+% 	tmp = image(:,:,i);
+%  	imageData(:,i) = tmp(:);
+% end
+% 
+% boxplot(imageData)
 
-image = zeros(2160*BINNING, 2160*BINNING, 5);
-imageData = zeros(2160^2 * BINNING^2,5);
+%% SET UP RESULTS STRUCT
 
-for i = 1:5
-	image(:,:,i) = im2double(imread(cond(1).imageLocal(10+i).redPath));
-	tmp = image(:,:,i);
- 	imageData(:,i) = tmp(:);
+resultsLocal = createResultsLocalStruct(cond);
+
+for i=1:conditionN
+
+		resultsLocal(i) = filterNegativeMetric(resultsLocal(i));
+		
 end
 
-boxplot(imageData)
 
 %% LOCALISATION OUTPUT
-
-cellN = sum(vertcat(cond.localCellN));
 
 meanYFPEntire		= zeros(1,conditionN);
 meanYFPMembrane = zeros(1,conditionN);
 stdYFPEntire		= zeros(1,conditionN);
 stdYFPMembrane = zeros(1,conditionN);
 
-data = zeros(cellN,1);
-
-cellCount = 1;
 for i=1:conditionN
 	
-	fullCellN = vertcat(cond(i).imageLocal.cellN);
-	cond(i).localCellN = sum(fullCellN(:,end));
+	res = resultsLocal(i);
 	
-	yelMembrane	= vertcat(cond(i).imageLocal.yelMembrane);
-	yelEntire		= vertcat(cond(i).imageLocal.yelEntire);
-	redEntire		= vertcat(cond(i).imageLocal.redEntire);
-	
-	meanYFPEntire(i)		= mean(yelEntire ./ redEntire);
-	stdYFPEntire(i)			= std(yelEntire ./ redEntire);
-	meanYFPMembrane(i)	= mean(yelMembrane ./ redEntire);
-	stdYFPMembrane(i)		= std(yelMembrane ./ redEntire);
-	
-	data(cellCount:(cellCount+cond(i).localCellN-1)) = ...
-		yelMembrane ./ redEntire;
-	cellCount = cellCount + cond(i).localCellN;
-	
-	cond(i) = collectRatioData(cond(i));
+	meanYFPEntire(i)		= mean(res.yelEntire ./ res.redEntire);
+	stdYFPEntire(i)			= std(res.yelEntire ./ res.redEntire);
+	meanYFPMembrane(i)	= mean(res.yelMembrane ./ res.redEntire);
+	stdYFPMembrane(i)		= std(res.yelMembrane ./ res.redEntire);
 
 end
 
-disp([cond.mutation])
-disp(([cond.localHits]./[cond.localCellN])*100)
+disp([resultsLocal.mutation])
 disp([meanYFPEntire; stdYFPEntire])
 disp([meanYFPMembrane; stdYFPMembrane])
-disp([cond.localCellN])
+disp([resultsLocal.localCellN])
 
 %% STATISTICS
 
-cellN = sum(vertcat(cond.localCellN));
+cellN = sum(vertcat(resultsLocal.localCellN));
 
+statsData = zeros(cellN,1);
 group = cell(cellN,1);
 
 cellCount = 1;
 for i=1:conditionN
 	
-	group(cellCount:(cellCount+cond(i).localCellN-1)) = cond(i).mutation;
+	res = resultsLocal(i);
 	
-	cellCount = cellCount + cond(i).localCellN;
+	statsData(cellCount:(cellCount+res.localCellN-1)) = ...
+		res.yelMembrane ./ res.redEntire;
+	group(cellCount:(cellCount+res.localCellN-1)) = {res.mutation};
+	
+	cellCount = cellCount + res.localCellN;
 	
 end
 
-[p,tbl,stats]=kruskalwallis(data,group,'off')
+[p,tbl,stats]=kruskalwallis(statsData,group,'on');
 
-[c,m,h] = multcompare(stats,'CType','dunn-sidak')
+figure
+[c,m,h] = multcompare(stats,'CType','dunn-sidak');
+
+
+
+%% HISTOGRAM
+
+plotMetricHistogram(cond);
+
 
 %% CORRELATION PLOTS
 
@@ -100,8 +107,10 @@ end
 
 close all
 
-x=2;
-y=2;
+
+x=1;
+y=6;
+
 
 cond(x).imageLocal(y).cellN
 
