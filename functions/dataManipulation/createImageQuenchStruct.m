@@ -4,8 +4,8 @@ function imageStructArray = createImageQuenchStruct(...
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
-testN = length(redPathArrayTest);
-controlN = length(redPathArrayControl);
+testN = size(redPathArrayTest,1);
+controlN = size(redPathArrayControl,1);
 pathN = testN+controlN;
 
 imageTemplate = struct(...

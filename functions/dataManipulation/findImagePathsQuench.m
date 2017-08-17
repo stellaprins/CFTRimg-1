@@ -11,12 +11,15 @@ redTimePoints = {'1','70'};
 wellsTest = {experimentStruct.condWells{conditionLocation,:}};
 wellsControl = {experimentStruct.condWellsControl{conditionLocation,:}};
 
-tmpRedPathArrayTest = cell(length(wellsTest),2);
-tmpYelPathArrayTest = cell(length(wellsTest),70);
-tmpRedPathArrayControl = cell(length(wellsControl),2);
-tmpYelPathArrayControl = cell(length(wellsControl),70);
+wellsTestN = sum(~cellfun(@isempty,experimentStruct.condWells(conditionLocation,:)));
+wellsControlN = sum(~cellfun(@isempty,experimentStruct.condWellsControl(conditionLocation,:)));
 
-for j=1:length(wellsTest)
+tmpRedPathArrayTest = cell(wellsTestN,2);
+tmpYelPathArrayTest = cell(wellsTestN,70);
+tmpRedPathArrayControl = cell(wellsControlN,2);
+tmpYelPathArrayControl = cell(wellsControlN,70);
+
+for j=1:wellsTestN
 
 	[tmpRedPathArrayTest,tmpYelPathArrayTest] = ...
 		constructPathNameQuench(experimentStruct,wellsTest,j,redTimePoints...
@@ -24,7 +27,7 @@ for j=1:length(wellsTest)
 
 end
 
-for j=1:length(wellsControl)
+for j=1:wellsControlN
 
 	[tmpRedPathArrayControl,tmpYelPathArrayControl] = ...
 		constructPathNameQuench(experimentStruct,wellsControl,j,redTimePoints...

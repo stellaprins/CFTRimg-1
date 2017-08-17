@@ -9,10 +9,10 @@ addpath(genpath('functions'));
 % declare global variables
 global SITEN BINNING EXTRA
 
-BINNING = 1 / 1;
+BINNING = 1 / 2;
 EXTRA = ceil(BINNING*20);
 
-runMode = 'Stella'; % 'test' OR 'full' 
+runMode = 'StellaTest'; % 'test' OR 'full' 
 
 %% IMPORT DATA
 
@@ -28,6 +28,11 @@ elseif strcmp(runMode,'full')
 elseif strcmp(runMode,'Stella')
 	SITEN = 9;
 	inputDataStellaICL4
+	cond = createConditionStruct(exp);
+	cond = findImagePaths(exp,cond);
+elseif strcmp(runMode,'StellaTest')
+	SITEN = 2;
+	inputDataStellaTestICL4
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 end
@@ -111,4 +116,4 @@ time(5) = toc;
 
 disp('Full analysis completed')
 
-
+save('../stella.mat')
