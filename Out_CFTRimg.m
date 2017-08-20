@@ -1,5 +1,12 @@
 
-
+colors = get(groot,'DefaultAxesColorOrder');
+% colors(1,:) --> blue
+% colors(2,:) --> red
+% colors(3,:) --> yellow
+% colors(4,:) --> purple
+% colors(5,:) --> green
+% colors(6,:) --> cyan
+% colors(7,:) --> brown?
 
 %% BOXPLOTS
 % 
@@ -14,9 +21,10 @@
 % 
 % boxplot(imageData)
 
+
 %% SET UP RESULTS STRUCT
 
-resultsLocal = createResultsLocalStruct(cond);
+resultsLocal = createResultsLocalStruct(cond3);
 
 for i=1:conditionN
 
@@ -31,6 +39,8 @@ meanYFPEntire		= zeros(1,conditionN);
 meanYFPMembrane = zeros(1,conditionN);
 stdYFPEntire		= zeros(1,conditionN);
 stdYFPMembrane = zeros(1,conditionN);
+medianYFPMembrane = zeros(1,conditionN);
+iqrYFPMembrane = zeros(1,conditionN);
 
 for i=1:conditionN
 	
@@ -40,15 +50,86 @@ for i=1:conditionN
 	stdYFPEntire(i)			= std(res.yelEntire ./ res.redEntire);
 	meanYFPMembrane(i)	= mean(res.yelMembrane ./ res.redEntire);
 	stdYFPMembrane(i)		= std(res.yelMembrane ./ res.redEntire);
+ 	medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
+ 	iqrYFPMembrane(i)			= iqr(res.yelMembrane ./ res.redEntire);
 
 end
 
-disp([resultsLocal.mutation])
-disp([meanYFPEntire; stdYFPEntire])
+disp({resultsLocal.mutation})
+%disp([meanYFPEntire; stdYFPEntire])
 disp([meanYFPMembrane; stdYFPMembrane])
+% disp([medianYFPMembrane; iqrYFPMembrane])
 disp([resultsLocal.localCellN])
 
+
+%% TESTS FOR NORMALITY
+
+close all
+
+for i=1:conditionN
+	plotTestForNormality(resultsLocal(i));
+end
+
+
+
+
+%% TEST DIFFERENCE IN MCHERRY
+
+close all
+
+for i=1:conditionN
+	plotRedHistogram(resultsLocal(i));
+end
+
+cellN = sum(vertcat(resultsLocal.localCellN));
+
+redStatsData = zeros(cellN,1);
+group = cell(cellN,1);
+
+cellCount = 1;
+for i=1:conditionN
+	
+	% rearrange order of data to display box plots in correct order
+	switch i
+		case 1
+			x=3;
+		case 2
+			x=1;
+		case 3
+			x=2;
+	end
+			
+	res = resultsLocal(x);
+	
+	redStatsData(cellCount:(cellCount+res.localCellN-1)) = res.redEntire;
+	group(cellCount:(cellCount+res.localCellN-1)) = {res.mutation};
+	
+	cellCount = cellCount + res.localCellN;
+	
+end
+
+[pRedKW, statsRedKW] = plotKruskalWallis(redStatsData,group);
+
+figure
+[cRed,mRed,~] = multcompare(statsRedKW,'CType','dunn-sidak');
+
+h=zeros(3);
+p=zeros(3);
+
+for j=1:conditionN
+	for i=1:conditionN
+		
+		r = resultsLocal;
+		
+		[h(i,j),p(i,j)] = kstest2(r(i).redEntire,r(j).redEntire);
+		
+	end
+end
+
+
 %% STATISTICS
+
+close all
 
 cellN = sum(vertcat(resultsLocal.localCellN));
 
@@ -58,7 +139,17 @@ group = cell(cellN,1);
 cellCount = 1;
 for i=1:conditionN
 	
-	res = resultsLocal(i);
+	% rearrange order of data to display box plots in correct order
+	switch i
+		case 1
+			x=3;
+		case 2
+			x=1;
+		case 3
+			x=2;
+	end
+			
+	res = resultsLocal(x);
 	
 	statsData(cellCount:(cellCount+res.localCellN-1)) = ...
 		res.yelMembrane ./ res.redEntire;
@@ -68,39 +159,30 @@ for i=1:conditionN
 	
 end
 
-[p,tbl,stats]=kruskalwallis(statsData,group,'on');
+
+[pKruskalWallis, statsKW] = plotKruskalWallis(statsData,group);
 
 figure
-[c,m,h] = multcompare(stats,'CType','dunn-sidak');
-
-
-
-%% HISTOGRAM
-
-plotMetricHistogram(cond);
+[c,m,~,gnames] = multcompare(statsKW,'CType','dunn-sidak');
 
 
 %% CORRELATION PLOTS
 
-close all
+% close all
 
-for i=1:length(cond)
+for i=1:length(cond3)
 	figure
-	plotLocalRedYelCorr(cond(i),'entire')
+	plotLocalRedYelCorr(resultsLocal(i),'membrane')
 % 	figure
-% 	plotLocalRedYelCorr(cond(i),'membrane')
-% 	figure
-% 	plotLocalRedYelCorr(cond(i),'interior')
+% 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
 end
 
-% 	figure
+% figure
 % for i=1:length(cond)
 % 	subplot(3,3,i)
 % 	plotLocalRedYelCorr(cond(i),'entire')
 % 	subplot(3,3,i+3)
 % 	plotLocalRedYelCorr(cond(i),'membrane')
-% 	subplot(3,3,i+6)
-% 	plotLocalRedYelCorr(cond(i),'interior')
 % end
 
 %% CELL DISPLAY
@@ -218,8 +300,14 @@ end
 % subplot(1,3,3)
 % plotYelOverTime(cond(3),m)
 
-figure
+% figure
+% for i=1:conditionN
+%     subplot(1,3,i)
+%     plotYelOverTimeCollated(cond(i))
+% end
+
+
 for i=1:conditionN
-    subplot(3,4,i)
-    plotYelOverTimeCollated(cond(1))
+    figure
+    plotYelOverTimeCollated(cond(i))
 end
