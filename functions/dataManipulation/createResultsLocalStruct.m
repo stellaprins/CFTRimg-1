@@ -18,7 +18,7 @@ for i=1:conditionN
 	
 	condStruct = conditionStructArray(i);
 	
-	resultsStructArray(i).mutation = condStruct.mutation{1};
+	resultsStructArray(i).mutation = condStruct.mutation;
 	resultsStructArray(i).yelEntire = vertcat(condStruct.imageLocal.yelEntire);
 	resultsStructArray(i).yelMembrane = vertcat(condStruct.imageLocal.yelMembrane);
 	resultsStructArray(i).redEntire = vertcat(condStruct.imageLocal.redEntire);

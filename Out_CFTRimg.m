@@ -11,7 +11,6 @@ colors = get(groot,'DefaultAxesColorOrder');
 %% SET UP RESULTS STRUCT
 
 resultsLocal = createResultsLocalStruct(cond);
-
 for i=1:conditionN
 	resultsLocal(i) = filterNegativeMetric(resultsLocal(i));
 end
