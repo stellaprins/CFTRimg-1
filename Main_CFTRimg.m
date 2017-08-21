@@ -19,7 +19,11 @@ runMode = 'StellaTestLocal'; % 'test' OR 'full' OR 'StellaTest'
 
 %% IMPORT DATA
 
-if strcmp(runMode,'full')
+if strcmp(runMode,'test')
+	inputDataTest
+	cond = createConditionStruct(exp);
+	cond = findImagePaths(exp,cond);
+elseif strcmp(runMode,'full')
 	SITEN = 9;
 	inputData;
 	cond = createConditionStruct(exp);
