@@ -22,14 +22,14 @@ resultsLocal = normalizeResultsWT(resultsLocal);
 %% LOCALISATION OUTPUT
 
 meanYFPEntire		= zeros(1,conditionN);
-meanYFPMembrane = zeros(1,conditionN);
+meanYFPMembrane     = zeros(1,conditionN);
 stdYFPEntire		= zeros(1,conditionN);
 stdYFPMembrane = zeros(1,conditionN);
 medianYFPMembrane = zeros(1,conditionN);
 iqrYFPMembrane = zeros(1,conditionN);
 
 for i=1:conditionN
-	
+
 	res = resultsLocal(i);
 	
 	meanYFPEntire(i)		= mean(res.yelEntire ./ res.redEntire);
@@ -118,16 +118,16 @@ end
 
 close all
 
-x=1;
-y=8;
+x=10;
+y=2;
 
 % cond1(x).imageLocal(y).cellN
 
 % [maxGrad, maxGradLoc,refGrad] = findGradient(cond1(x).imageLocal(y));
 
-% for i=1:cond1(x).imageLocal(y).cellN(end)
+for i=1:cond1(x).imageLocal(y).cellN(end)
 % for i=[9,18] % x=3, y=8
-for i=[3,17] % x=1, y=8
+% for i=[3,17] % x=1, y=8
 	
 % 	str1 = sprintf('max %g\nloc %g\n\nref %g'...
 % 		,round(maxGrad(i),5)...
@@ -236,14 +236,20 @@ end
 % subplot(1,3,3)
 % plotYelOverTime(cond(3),m)
 
-% figure
-% for i=1:conditionN
-%     subplot(1,3,i)
-%     plotYelOverTimeCollated(cond(i))
-% end
 
-
-for i=1:conditionN
-    figure
+figure
+for i=1:25
+    subplot(5,5,i)
     plotYelOverTimeCollated(cond(i))
 end
+
+figure
+for i=26:conditionN
+    k = i-25;
+    subplot(5,5,k)
+end
+
+% for i=1:conditionN
+%    figure
+%    plotYelOverTimeCollated(cond(i))
+%end

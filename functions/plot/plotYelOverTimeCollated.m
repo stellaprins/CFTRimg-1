@@ -52,16 +52,18 @@ a2=annotation('textbox',[0.38 0.22 0.05 0.05],'string',sprintf('Forskolin\naddit
 ylim([0 1.3])
 xlim([-5 140])
 title(conditionStruct.mutation)
+
 xlhand = get(gca,'xlabel');
-set(xlhand,'string','Time (s)','fontsize',24)
+set(xlhand,'string','Time (s)','fontsize',12)
 ylhand = get(gca,'ylabel');
-set(ylhand,'string','F/F_{max}','fontsize',26)
+set(ylhand,'string','F/F_{max}','fontsize',14)
 
-legend([p1 p2],'DMSO','DMSO + Forskolin','location','northeast')
+% legend([p1 p2],'DMSO','DMSO + Forskolin','location','northeast')
 
-set(gca,'fontsize',20)
-a1.FontSize = 16;
-a2.FontSize = 16;
+set(gca,'fontsize',12)
+a1.FontSize = 12;
+a2.FontSize = 12;
+
 
 
 end

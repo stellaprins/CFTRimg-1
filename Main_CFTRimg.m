@@ -1,3 +1,6 @@
+clc;
+clear;
+
 tic;
 % close all other windows
 close all
@@ -12,7 +15,7 @@ global SITEN BINNING EXTRA
 BINNING = 1 / 2;
 EXTRA = ceil(BINNING*20);
 
-runMode = 'StellaTest'; % 'test' OR 'full' 
+runMode = 'StellaTestLocal'; % 'test' OR 'full' OR 'StellaTest'
 
 %% IMPORT DATA
 
@@ -22,17 +25,27 @@ if strcmp(runMode,'test')
 	cond = findImagePaths(exp,cond);
 elseif strcmp(runMode,'full')
 	SITEN = 9;
-	inputData
+	inputData;
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 elseif strcmp(runMode,'Stella')
 	SITEN = 9;
-	inputDataStellaICL4
+	inputDataStellaICL4;
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 elseif strcmp(runMode,'StellaTest')
 	SITEN = 2;
-	inputDataStellaTestICL4
+	inputDataStellaTestICL4;
+	cond = createConditionStruct(exp);
+	cond = findImagePaths(exp,cond);
+elseif strcmp(runMode,'StellaTestQuench')
+	SITEN = 1;
+	inputDataQuenchStellaTestICL4;
+	cond = createConditionStruct(exp);
+	cond = findImagePaths(exp,cond);
+elseif strcmp(runMode,'StellaTestLocal')
+	SITEN = 3;
+	inputDataLocalStellaTestICL4;
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 end
@@ -116,4 +129,4 @@ time(5) = toc;
 
 disp('Full analysis completed')
 
-save('../stella.mat')
+save('../stellalocal.mat')
