@@ -42,11 +42,10 @@ dim = [.62 .7 .2 .2];
 str = sprintf('R = %0.3f\nslope = %0.3f\nMSE = %0.5f'...
 	,r,slope,MSE);
 
-plot(redEntire,yelData,'o','color',markerColor,'markeredgecolor'...
-	,markerColor)
+plot(redEntire,yelData,'o')
 hold on
 set(gca,'fontsize',18)
-plot([0 maxX],[0 maxX*slope],'-','color',markerColor)
+plot([0 maxX],[0 maxX*slope],'-')
 % title(sprintf('%s - %s',mutation,yelRegion))
 ylhand = get(gca,'ylabel');
 set(ylhand,'string','F_{YFP,membrane}','fontsize',22)
