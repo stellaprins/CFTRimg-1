@@ -23,24 +23,30 @@ switch resultsStruct.mutation
 		markerColor = colors(6,:);
 end
 
+[slope, ~, stats] = glmfit(redEntire,yelData,'normal','constant','off');
+
 R = corrcoef(redEntire,yelData);
 r = R(1,2);
 
-redSTD = std(redEntire);
-yelSTD = std(yelData);
+maxX = max(redEntire) * 1.1;
 
-slope = r*(yelSTD/redSTD);
-intercept = mean(yelData) - slope*mean(redEntire);
+% redSTD = std(redEntire);
+% yelSTD = std(yelData);
+% 
+% slope = redEntire(:)\yelData(:);
+% intercept = mean(yelData) - slope*mean(redEntire);
+
+MSE = sum(stats.resid .^2) / length(stats);
 
 dim = [.62 .7 .2 .2];
-str = sprintf('R = %0.3f\nslope = %0.3f\nintercept = %0.3f'...
-	,r,slope,intercept);
+str = sprintf('R = %0.3f\nslope = %0.3f\nMSE = %0.5f'...
+	,r,slope,MSE);
 
 plot(redEntire,yelData,'o','color',markerColor,'markeredgecolor'...
 	,markerColor)
 hold on
 set(gca,'fontsize',18)
-lsline
+plot([0 maxX],[0 maxX*slope],'-','color',markerColor)
 % title(sprintf('%s - %s',mutation,yelRegion))
 ylhand = get(gca,'ylabel');
 set(ylhand,'string','F_{YFP,membrane}','fontsize',22)

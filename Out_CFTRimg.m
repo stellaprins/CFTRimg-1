@@ -8,29 +8,15 @@ colors = get(groot,'DefaultAxesColorOrder');
 % colors(6,:) --> cyan
 % colors(7,:) --> brown?
 
-%% BOXPLOTS
-% 
-% image = zeros(2160*BINNING, 2160*BINNING, 5);
-% imageData = zeros(2160^2 * BINNING^2,5);
-% 
-% for i = 1:5
-% 	image(:,:,i) = im2double(imread(cond(1).imageLocal(10+i).redPath));
-% 	tmp = image(:,:,i);
-%  	imageData(:,i) = tmp(:);
-% end
-% 
-% boxplot(imageData)
-
-
 %% SET UP RESULTS STRUCT
 
-resultsLocal = createResultsLocalStruct(cond3);
+resultsLocal = createResultsLocalStruct(cond);
 
 for i=1:conditionN
-
-		resultsLocal(i) = filterNegativeMetric(resultsLocal(i));
-		
+	resultsLocal(i) = filterNegativeMetric(resultsLocal(i));
 end
+
+resultsLocal = normalizeResultsWT(resultsLocal);
 
 
 %% LOCALISATION OUTPUT
@@ -56,7 +42,7 @@ for i=1:conditionN
 end
 
 disp({resultsLocal.mutation})
-%disp([meanYFPEntire; stdYFPEntire])
+% disp([meanYFPEntire; stdYFPEntire])
 disp([meanYFPMembrane; stdYFPMembrane])
 % disp([medianYFPMembrane; iqrYFPMembrane])
 disp([resultsLocal.localCellN])
@@ -69,63 +55,6 @@ close all
 for i=1:conditionN
 	plotTestForNormality(resultsLocal(i));
 end
-
-
-
-
-%% TEST DIFFERENCE IN MCHERRY
-
-close all
-
-for i=1:conditionN
-	plotRedHistogram(resultsLocal(i));
-end
-
-cellN = sum(vertcat(resultsLocal.localCellN));
-
-redStatsData = zeros(cellN,1);
-group = cell(cellN,1);
-
-cellCount = 1;
-for i=1:conditionN
-	
-	% rearrange order of data to display box plots in correct order
-	switch i
-		case 1
-			x=3;
-		case 2
-			x=1;
-		case 3
-			x=2;
-	end
-			
-	res = resultsLocal(x);
-	
-	redStatsData(cellCount:(cellCount+res.localCellN-1)) = res.redEntire;
-	group(cellCount:(cellCount+res.localCellN-1)) = {res.mutation};
-	
-	cellCount = cellCount + res.localCellN;
-	
-end
-
-[pRedKW, statsRedKW] = plotKruskalWallis(redStatsData,group);
-
-figure
-[cRed,mRed,~] = multcompare(statsRedKW,'CType','dunn-sidak');
-
-h=zeros(3);
-p=zeros(3);
-
-for j=1:conditionN
-	for i=1:conditionN
-		
-		r = resultsLocal;
-		
-		[h(i,j),p(i,j)] = kstest2(r(i).redEntire,r(j).redEntire);
-		
-	end
-end
-
 
 %% STATISTICS
 
@@ -170,7 +99,7 @@ figure
 
 % close all
 
-for i=1:length(cond3)
+for i=1:length(cond)
 	figure
 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
 % 	figure
@@ -189,45 +118,52 @@ end
 
 close all
 
-
 x=1;
-y=6;
+y=8;
 
+% cond1(x).imageLocal(y).cellN
 
-cond(x).imageLocal(y).cellN
+% [maxGrad, maxGradLoc,refGrad] = findGradient(cond1(x).imageLocal(y));
 
-[maxGrad, maxGradLoc,refGrad] = findGradient(cond(x).imageLocal(y));
-
-for i=1:cond(x).imageLocal(y).cellN(end)
+% for i=1:cond1(x).imageLocal(y).cellN(end)
+% for i=[9,18] % x=3, y=8
+for i=[3,17] % x=1, y=8
 	
-	str1 = sprintf('max %g\nloc %g\n\nref %g'...
-		,round(maxGrad(i),5)...
-		,maxGradLoc(i)...
-		,round(refGrad(i),5));
+% 	str1 = sprintf('max %g\nloc %g\n\nref %g'...
+% 		,round(maxGrad(i),5)...
+% 		,maxGradLoc(i)...
+% 		,round(refGrad(i),5));
+% 	
+% 	str2 = sprintf('membrane %g\nentire %g'...
+% 		,round(cond1(x).imageLocal(y).yelMembrane(i)/cond1(x).imageLocal(y).redEntire(i),3)...
+% 		,round(cond1(x).imageLocal(y).yelEntire(i)/cond1(x).imageLocal(y).redEntire(i),3));
+% 	
+% 	dim1 = [.15 .65 .1 .1];
+% 	dim2 = [.45 .65 .1 .1];
 	
-	str2 = sprintf('membrane %g\nentire %g'...
-		,round(cond(x).imageLocal(y).yelMembrane(i)/cond(x).imageLocal(y).redEntire(i),3)...
-		,round(cond(x).imageLocal(y).yelEntire(i)/cond(x).imageLocal(y).redEntire(i),3));
+	figure('position',[400 400 500 600])
+	subplot(3,3,1)
 	
-	dim1 = [.15 .65 .1 .1];
-	dim2 = [.45 .65 .1 .1];
-	
-	figure
-	subplot(5,3,1)
-	cellDisplay(cond(x).imageLocal(y),'red',i)
-	subplot(5,3,2)
-	cellDisplay(cond(x).imageLocal(y),'yel',i)
-	subplot(5,3,3)
-	cellDisplay(cond(x).imageLocal(y),'bw',i)
-	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
-	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
-	subplot(5,3,6)
-	cellDisplay(cond(x).imageLocal(y),'overlay',i)
-	subplot(5,1,[3,4,5],'fontsize',14)
-	plotFOverDistance(cond(x).imageLocal(y),i)
+	cellDisplay(cond1(x).imageLocal(y),'red',i)
+	subplot(3,3,2)
+	cellDisplay(cond1(x).imageLocal(y),'yel',i)
+	subplot(3,3,3)
+	cellDisplay(cond1(x).imageLocal(y),'bw',i)
+% 	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
+% 	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
+% 	subplot(5,3,6)
+% 	cellDisplay(cond1(x).imageLocal(y),'overlay',i)
+	subplot(3,1,[2,3],'position',[0.12 0.1 0.74 0.54])
+	plotFOverDistance(cond1(x).imageLocal(y),i)
 	
 end
 
+
+%% IMAGE DISPLAY
+
+boundingBox1 = cond1(x).imageLocal(y).boundingBox(3,:);
+boundingBox2 = cond1(x).imageLocal(y).boundingBox(17,:);
+imgDisplayRectangle(cond1(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 
 
 %% QUENCHING OUTPUT
