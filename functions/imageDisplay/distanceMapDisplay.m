@@ -1,4 +1,4 @@
-function [ imageStruct ] = distanceMap( imageStruct )
+function [ imageStruct ] = distanceMapDisplay( imageStruct,boundingBox_idx )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -45,6 +45,17 @@ for i=1:cellN
 	redMeanEntire(i) = sum(cellMask .* redCropAdj) / sum(cellMask);
 	redMeanOutside(i) = sum(~cellMask .* redCropped) / sum(~cellMask);
 	%%%%%%%
+	
+ 	if i==boundingBox_idx
+		posDistance = distanceMap;
+		for a=1:length(distanceMap(:))
+			if distanceMap(a) <= -1
+				posDistance(a) = 0;
+			end
+		end
+		showDistanceMapProcess(...
+			imageStruct,i,cellMask,posDistance,membraneMask);
+	end
 
 end
 
