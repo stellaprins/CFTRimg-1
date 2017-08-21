@@ -6,10 +6,10 @@ global BINNING
 image = zeros(2160*BINNING, 2160*BINNING, 5);
 imageData = zeros(2160^2 * BINNING^2,5);
 
-for i = 1:5
-	image(:,:,i) = im2double(imread(cond(1).imageLocal(10+i).redPath));
-	tmp = image(:,:,i);
- 	imageData(:,i) = tmp(:);
+for i               = 1:conditionN
+	image(:,:,i)    = im2double(imread(cond(1).imageLocal(10+i).redPath));
+	tmp             = image(:,:,i);
+ 	imageData(:,i)  = tmp(:);
 end
 
 boxplot(imageData)
@@ -19,25 +19,25 @@ boxplot(imageData)
 cellN = sum(vertcat(cond.localCellN));
 
 meanYFPEntire		= zeros(1,conditionN);
-meanYFPMembrane = zeros(1,conditionN);
+meanYFPMembrane     = zeros(1,conditionN);
 stdYFPEntire		= zeros(1,conditionN);
-stdYFPMembrane = zeros(1,conditionN);
+stdYFPMembrane      = zeros(1,conditionN);
 
 data = zeros(cellN,1);
 
 cellCount = 1;
 for i=1:conditionN
 	
-	fullCellN = vertcat(cond(i).imageLocal.cellN);
-	cond(i).localCellN = sum(fullCellN(:,end));
+	fullCellN           = vertcat(cond(i).imageLocal.cellN);
+	cond(i).localCellN  = sum(fullCellN(:,end));
 	
-	yelMembrane	= vertcat(cond(i).imageLocal.yelMembrane);
+	yelMembrane     = vertcat(cond(i).imageLocal.yelMembrane);
 	yelEntire		= vertcat(cond(i).imageLocal.yelEntire);
 	redEntire		= vertcat(cond(i).imageLocal.redEntire);
 	
 	meanYFPEntire(i)		= mean(yelEntire ./ redEntire);
 	stdYFPEntire(i)			= std(yelEntire ./ redEntire);
-	meanYFPMembrane(i)	= mean(yelMembrane ./ redEntire);
+	meanYFPMembrane(i)  	= mean(yelMembrane ./ redEntire);
 	stdYFPMembrane(i)		= std(yelMembrane ./ redEntire);
 	
 	data(cellCount:(cellCount+cond(i).localCellN-1)) = ...
@@ -100,7 +100,7 @@ end
 
 close all
 
-x=2;
+x=10;
 y=2;
 
 cond(x).imageLocal(y).cellN
@@ -210,7 +210,14 @@ end
 % plotYelOverTime(cond(3),m)
 
 figure
-for i=1:conditionN
-    subplot(3,4,i)
-    plotYelOverTimeCollated(cond(1))
+for i=1:25
+    subplot(5,5,i)
+    plotYelOverTimeCollated(cond(i))
+end
+
+figure
+for i=26:conditionN
+    k = i-25;
+    subplot(5,5,k)
+    plotYelOverTimeCollated(cond(i))
 end

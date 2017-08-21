@@ -49,10 +49,10 @@ xlim([0 70])
 title(conditionStruct.mutation)
 xlabel('Time point')
 ylabel(sprintf('Norm. mean YFP signal\nwithin cells'))
+% 
+% legend([p1 p2],'test','control','location','southeast')
 
-legend([p1 p2],'test','control','location','southeast')
-
-set(gca,'fontsize',16)
+set(gca,'fontsize',9)
 
 
 end
