@@ -1,2 +1,2 @@
 # CFTRimg
-An image analysis tool for localisation of CFTR on the cell membrane.
+An image analysis tool to estimate localisation and function of CFTR.
