@@ -14,8 +14,14 @@ function showDistanceMapProcess( ...
 figure, cellDisplayOverlay(imageStruct,'redOverlay'...
 	,cellMask, membraneMask,boundingBox_idx)
 figure, cellDisplay(imageStruct,'bw',boundingBox_idx)
-figure, imshow(positiveDistanceMap,[],'InitialMagnification','fit')
-figure, imshow(membraneMask,'InitialMagnification','fit')
+cmapMax = double(ceil(max(positiveDistanceMap(:))));
+figure
+imshow(label2rgb(positiveDistanceMap,colormap(lines(cmapMax)))...
+	,'InitialMagnification','fit')
+set(gca,'position',[0 0 1 1])
+figure
+imshow(membraneMask,'InitialMagnification','fit')
+set(gca,'position',[0 0 1 1])
 figure, cellDisplayOverlay(imageStruct,'yelOverlay'...
 	,cellMask, membraneMask,boundingBox_idx)
 

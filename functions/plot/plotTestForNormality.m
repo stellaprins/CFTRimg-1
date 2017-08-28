@@ -8,11 +8,11 @@ metricMembrane = resultsStruct.yelMembrane ./ resultsStruct.redEntire;
 
 fig = figure;
 ax = axes(fig);
-hist = histogram(ax,metricMembrane,0:0.025:2.5);
+hist = histogram(ax,metricMembrane,0:0.05:6);
 	box on
 	set(gca,'fontsize',20)
-	xlim([0 2.5])
-	ylim([0 400])
+	xlim([0 6])
+	ylim([0 350])
 	xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
 	set(xLab,'fontsize',24)
 	yLab = ylabel('Frequency');
