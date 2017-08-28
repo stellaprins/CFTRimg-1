@@ -14,11 +14,15 @@ switch yelRegion
 		yelData		= resultsStruct.yelMembrane;
 end
 
-switch resultsStruct.mutation
+maxX = max(redEntire) * 1;
+
+switch mutation
 	case 'WT'
 		markerColor = colors(2,:);
+		maxX = 0.08;
 	case 'F508del/R1070W'
 		markerColor = colors(4,:);
+		maxX = 0.08;
 	case 'F508del'
 		markerColor = colors(6,:);
 end
@@ -28,7 +32,7 @@ end
 R = corrcoef(redEntire,yelData);
 r = R(1,2);
 
-maxX = max(redEntire) * 1.1;
+
 
 % redSTD = std(redEntire);
 % yelSTD = std(yelData);
@@ -38,7 +42,7 @@ maxX = max(redEntire) * 1.1;
 
 MSE = sum(stats.resid .^2) / length(stats);
 
-dim = [.62 .7 .2 .2];
+dim = [.654 .71 .2 .2];
 str = sprintf('R = %0.3f\nslope = %0.3f\nMSE = %0.5f'...
 	,r,slope,MSE);
 
@@ -49,11 +53,16 @@ set(gca,'fontsize',18)
 plot([0 maxX],[0 maxX*slope],'-','color',markerColor)
 % title(sprintf('%s - %s',mutation,yelRegion))
 ylhand = get(gca,'ylabel');
-set(ylhand,'string','F_{YFP,membrane}','fontsize',22)
+switch yelRegion
+	case 'entire'
+		set(ylhand,'string','F_{YFP,cell}','fontsize',22)
+	case 'membrane'
+		set(ylhand,'string','F_{YFP,membrane}','fontsize',22)
+end
 xlhand = get(gca,'xlabel');
 set(xlhand,'string','F_{mCh,cell}','fontsize',22)
 xlim([0 0.12])
-ylim([0 0.04])
+ylim([0 0.08])
 annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',16);
 
 

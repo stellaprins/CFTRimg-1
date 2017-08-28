@@ -1,14 +1,14 @@
-function plotTestForNormality( resultsStruct )
+function plotTestForNormalityQuench( resultsStruct )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
 colors = get(groot,'DefaultAxesColorOrder');
 
-metricMembrane = resultsStruct.yelMembrane ./ resultsStruct.redEntire;
+maxGradTest = horzcat(resultsStruct.maxGradTest);
 
 fig = figure;
 ax = axes(fig);
-hist = histogram(ax,metricMembrane,0:0.05:6);
+hist = histogram(ax,maxGradTest,0:0.05:6);
 	box on
 	set(gca,'fontsize',20)
 	xlim([0 6])
@@ -18,7 +18,7 @@ hist = histogram(ax,metricMembrane,0:0.05:6);
 	yLab = ylabel('Frequency');
 	set(yLab,'fontsize',24)
 	annotation('textbox',[0.65 0.7 0.1 0.1]...
-		,'string',sprintf('N = %d',resultsStruct.localCellN)...
+		,'string',sprintf('N = %d',length(maxGradTest))...
 		,'fitboxtotext','on','fontsize',22)
 	switch resultsStruct.mutation
 		case 'WT'
@@ -30,7 +30,7 @@ hist = histogram(ax,metricMembrane,0:0.05:6);
 	end
 
 figure
-qq = qqplot(metricMembrane);
+qq = qqplot(maxGradTest);
 	box on
 	switch resultsStruct.mutation
 		case 'WT'
@@ -40,8 +40,10 @@ qq = qqplot(metricMembrane);
 		case 'F508del'
 			set(qq(1),'MarkerEdgeColor', colors(6,:));
 	end
+	set(qq(2),'color', 'k')
 	set(qq(3),'color', 'k')
 	set(gca,'fontsize',20)
+	set(qq(1),'marker','.','markersize',15)
 	title('')
 	yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
 	set(yLab,'fontsize',24)

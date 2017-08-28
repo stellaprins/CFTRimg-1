@@ -19,6 +19,7 @@ switch colorStr
 		edgeMemMask = edge(dilatedMask);
 		fused = imoverlay(cropped,edgeMemMask,'c');
 		imshow(fused,'InitialMagnification','fit')
+		set(gca,'position',[0 0 1 1])
 % 		title('Cell component')
 case 'redOverlay'
 		redImage = imadjust(im2double(imread(imageStruct.redPath)));
@@ -34,6 +35,7 @@ case 'redOverlay'
 		edgeCellMask = imdilate(edge(dilatedMask),seUnit);
 		fused = imoverlay(cropped,edgeCellMask,'c');
 		imshow(fused,'InitialMagnification','fit')
+		set(gca,'position',[0 0 1 1])
 % 		title('Cell component')
 	otherwise
 		disp('Please enter "redOverlay" or "yelOverlay".')
