@@ -11,7 +11,6 @@ colors = get(groot,'DefaultAxesColorOrder');
 %% SET UP RESULTS STRUCT
 
 resultsLocal = createResultsLocalStruct(cond);
-
 for i=1:conditionN
 	resultsLocal(i) = filterNegativeMetric(resultsLocal(i));
 end
@@ -128,11 +127,11 @@ close all
 x=10;
 y=2;
 
-% cond1(x).imageLocal(y).cellN
+% cond(x).imageLocal(y).cellN
 
 % [maxGrad, maxGradLoc,refGrad] = findGradient(cond1(x).imageLocal(y));
 
-for i=1:cond1(x).imageLocal(y).cellN(end)
+for i=1:cond(x).imageLocal(y).cellN(end)
 % for i=[9,18] % x=3, y=8
 % for i=[3,17] % x=1, y=8
 	
