@@ -1,12 +1,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-experimentN = 2;
+experimentN = 1;
 exp = createExperimentStruct(experimentN);
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     exp(1).expStr       = 'Stella YFP mCh 60x localisation 30-06-2017_Plate_15425';
-    exp(1).baseFolder	= 'E:\Stella\30-06-2017';
+    exp(1).baseFolder	= 'C:\Users\StellaPrins\Documents\DATA\Stella\30-06-2017';
     exp(1).local_quench = 'local';
     exp(1).filePrefix   = 'Stella YFP mCh 60x localisation 30-06-2017_';
 	
@@ -26,29 +26,29 @@ exp = createExperimentStruct(experimentN);
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    exp(2).expStr           = 'Stella YFP mCh 60x localisation 05-07-2017_Plate_15438';
-    exp(2).baseFolder       = 'E:\Stella\05-07-2017';
-    exp(2).local_quench     = 'local';
-    exp(2).filePrefix       = 'Stella YFP mCh 60x localisation 05-07-2017_';
-	
-    exp(2).conditionStr = {'WT','F508del/R1070H','F508del/R1070Q',...
-    'F508del/R1070M','F508del/P1072W','F508del/P1072Y','F508del/P1072F',...
-    'F508del/P1072H','F508del/P1072Q', 'F508del/P1072M'};
-    exp(2).condWells(1,1:5) = {'C02','D02','E02','F02','G02'};
-	exp(2).condWells(2,1:6) = {'B03','C03','D03','E03','F03','G03'};
-    exp(2).condWells(3,1:5) = {'B04','C04','D04','F04','G04'};
-	exp(2).condWells(4,:)   = {'B05','C05','D05','E05','F05','G05'};
-	exp(2).condWells(5,:)   = {'B06','C06','D06','E06','F06','G06'};
-	exp(2).condWells(6,:)   = {'B07','C07','D07','E07','F07','G07'};
-    exp(2).condWells(7,:)   = {'B08','C08','D08','E08','F08','G08'};
-	exp(2).condWells(8,:)   = {'B09','C09','D09','E09','F09','G09'};
-    exp(2).condWells(9,1:5) = {'B10','C10','E10','F10','G10'};
-    exp(2).condWells(10,:)  = {'B12','C12','D12','E12','F12','G12'};
+%     exp(2).expStr           = 'Stella YFP mCh 60x localisation 05-07-2017_Plate_15438';
+%     exp(2).baseFolder       = 'C:\Users\StellaPrins\Documents\DATA\Stella\05-07-2017';
+%     exp(2).local_quench     = 'local';
+%     exp(2).filePrefix       = 'Stella YFP mCh 60x localisation 05-07-2017_';
+% 	
+%     exp(2).conditionStr = {'WT','F508del/R1070H','F508del/R1070Q',...
+%     'F508del/R1070M','F508del/P1072W','F508del/P1072Y','F508del/P1072F',...
+%     'F508del/P1072H','F508del/P1072Q', 'F508del/P1072M'};
+%     exp(2).condWells(1,1:5) = {'C02','D02','E02','F02','G02'};
+% 	exp(2).condWells(2,1:6) = {'B03','C03','D03','E03','F03','G03'};
+%     exp(2).condWells(3,1:5) = {'B04','C04','D04','F04','G04'};
+% 	exp(2).condWells(4,:)   = {'B05','C05','D05','E05','F05','G05'};
+% 	exp(2).condWells(5,:)   = {'B06','C06','D06','E06','F06','G06'};
+% 	exp(2).condWells(6,:)   = {'B07','C07','D07','E07','F07','G07'};
+%     exp(2).condWells(7,:)   = {'B08','C08','D08','E08','F08','G08'};
+% 	exp(2).condWells(8,:)   = {'B09','C09','D09','E09','F09','G09'};
+%     exp(2).condWells(9,1:5) = {'B10','C10','E10','F10','G10'};
+%     exp(2).condWells(10,:)  = {'B12','C12','D12','E12','F12','G12'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  
 % exp(3).expStr       = 'Stella YFP mCh 60x localisation 07-07-2017_Plate_15445';
-% exp(3).baseFolder	= 'E:\Stella\07-07-2017';
+% exp(3).baseFolder	= 'C:\Users\StellaPrins\Documents\DATA\Stella\07-07-2017';
 % exp(3).local_quench = 'local';
 % exp(3).filePrefix   = 'Stella YFP mCh 60x localisation 07-07-2017_';
 % 	
@@ -69,7 +69,7 @@ exp = createExperimentStruct(experimentN);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 % exp(4).expStr       = 'Stella YFP mCh 60x localisation 12-07-2017_Plate_15453';
-% exp(4).baseFolder	= 'E:\Stella\12-07-2017';
+% exp(4).baseFolder	= 'C:\Users\StellaPrins\Documents\DATA\Stella\12-07-2017';
 % exp(4).local_quench = 'local';
 % exp(4).filePrefix   = 'Stella YFP mCh 60x localisation 12-07-2017_';
 % 	
@@ -88,7 +88,7 @@ exp = createExperimentStruct(experimentN);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 %     exp(5).expStr         = 'Stella YFP mCh 60x localisation 14-07-2017_Plate_15461';
-%     exp(5).baseFolder     = 'E:\Stella\14-07-2017';
+%     exp(5).baseFolder     = 'C:\Users\StellaPrins\Documents\DATA\Stella\14-07-2017';
 %     exp(5).local_quench   = 'local';
 %     exp(5).filePrefix     = 'Stella YFP mCh 60x localisation 14-07-2017_';
 % 	
