@@ -7,7 +7,6 @@ mode = 'full'; % 'full' OR 'test';
 global BINNING
 
 I = im2double(imread(imageStruct.redPath));
-yelImage = im2double(imread(imageStruct.yelPath));
 % imshow(I,[])
  
 Ieq = adapthisteq(I,'NumTiles',[20 20]);
@@ -44,10 +43,6 @@ largeEM = bwareaopen(largeEM, 1200);
 
 BGmarkers = largeEM | Idilated;
 % figure, imshow(background)
-
-BGmask = imcomplement(BGmarkers);
-imageStruct.redBackground = sum(I(:) .* BGmask(:)) / sum(BGmask(:));
-imageStruct.yelBackground = sum(yelImage(:) .* BGmask(:)) / sum(BGmask(:));
 
 if strcmp(mode,'test')
 	IbwPerim = bwperim(BGmarkers);

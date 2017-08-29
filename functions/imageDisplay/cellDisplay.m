@@ -11,7 +11,8 @@ switch colorStr
 		boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
 		cropped = boundingBoxToCroppedColor(image,boundingBox);
 		imshow(cropped,redMap,'InitialMagnification','fit')
-		title('mCherry')
+		set(gca,'position',[0 0 1 1])
+% 		title('mCherry')
 	case 'yel'
 		image = imadjust(im2double(imread(imageStruct.yelPath)));
 		[imX,map] = gray2ind(image,256);
@@ -20,13 +21,15 @@ switch colorStr
 		boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
 		cropped = boundingBoxToCroppedColor(image,boundingBox);
 		imshow(cropped,yelMap,'InitialMagnification','fit')
-		title('YFP')
+		set(gca,'position',[0 0 1 1])
+% 		title('YFP')
 	case 'bw'
 		image = im2double(imread(imageStruct.redPath));
 		boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
 		cellMask = boundingBoxToCellMask(image,boundingBox);
 		imshow(cellMask,[],'InitialMagnification','fit')
- 		title('BW component')
+		set(gca,'position',[0 0 1 1])
+%  		title('BW component')
 	otherwise
 		disp('Please enter "red", "yel", "bw".')
 		return

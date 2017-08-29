@@ -15,7 +15,7 @@ for i=1:conditionN
 	resultsLocal(i) = filterNegativeMetric(resultsLocal(i));
 end
 
-resultsLocal = normalizeResultsWT(resultsLocal);
+% resultsLocal = normalizeResultsWT(resultsLocal);
 
 
 %% LOCALISATION OUTPUT
@@ -27,24 +27,32 @@ stdYFPMembrane      = zeros(1,conditionN);
 medianYFPMembrane   = zeros(1,conditionN);
 iqrYFPMembrane      = zeros(1,conditionN);
 
+meanRedEntire = zeros(1,conditionN);
+stdRedEntire		= zeros(1,conditionN);
+
 for i=1:conditionN
 
-	res = resultsLocal(i);
+	res = resultsLocal5(i);
 	
 	meanYFPEntire(i)		= mean(res.yelEntire ./ res.redEntire);
 	stdYFPEntire(i)			= std(res.yelEntire ./ res.redEntire);
 	meanYFPMembrane(i)	    = mean(res.yelMembrane ./ res.redEntire);
 	stdYFPMembrane(i)		= std(res.yelMembrane ./ res.redEntire);
  	medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
- 	iqrYFPMembrane(i)		= iqr(res.yelMembrane ./ res.redEntire);
+ 	iqrYFPMembrane(i)			= iqr(res.yelMembrane ./ res.redEntire);
+	
+	meanRedEntire(i) = mean(res.redEntire);
+	stdRedEntire(i) = std(res.redEntire);
+
 
 end
 
-disp({resultsLocal.mutation})
+disp({resultsLocal1.mutation})
+disp([meanRedEntire; stdRedEntire])
 % disp([meanYFPEntire; stdYFPEntire])
-disp([meanYFPMembrane; stdYFPMembrane])
+% disp([meanYFPMembrane; stdYFPMembrane])
 % disp([medianYFPMembrane; iqrYFPMembrane])
-disp([resultsLocal.localCellN])
+disp([resultsLocal5.localCellN])
 
 
 %% TESTS FOR NORMALITY
@@ -98,9 +106,9 @@ figure
 
 close all
 
-for i=1:length(cond)
+for i=1:length(resultsLocal)
 	figure
-	plotLocalRedYelCorr(resultsLocal(i),'membrane')
+	plotLocalRedYelCorr(resultsLocal(i),'entire')
 % 	figure
 % 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
 end
@@ -167,48 +175,20 @@ imgDisplayRectangle(cond(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 
 %% QUENCHING OUTPUT
 
+resultsQuench = createResultsQuenchStruct(cond);
 
-for j=1:conditionN
+for i=1:conditionN
 	
-	testLogical = zeros(length(cond(j).imageQuench),1);
-	for i=1:length(cond(j).imageQuench)
-		testLogical(i) = strcmp(cond(j).imageQuench(i).test_control,'test');
-	end
+	res = resultsQuench(i);
 	
-	maxGradTest = zeros(sum(testLogical),1);
-	maxGradControl = zeros(length(testLogical) - sum(testLogical),1);
-	maxGradTestLoc = zeros(sum(testLogical),1);
-	maxGradControlLoc = zeros(length(testLogical) - sum(testLogical),1.);
+	fprintf('\n%s - Test\n',res.mutation)
+	disp([mean(res.maxGradTest),std(res.maxGradTest)])
+	disp([mean(res.maxGradTestLoc),std(res.maxGradTestLoc)])
 	
-	maxGrad = vertcat(cond(j).imageQuench.maxGradIodine);
-	maxGradLoc = vertcat(cond(j).imageQuench.maxGradLocation);
-	
-	counterTest = 1;
-	counterControl = 1;
-	for i=1:length(testLogical)
-		if testLogical(i) == 1
-			maxGradTest(counterTest) = maxGrad(i);
-			maxGradTestLoc(counterTest) = maxGradLoc(i);
-			counterTest = counterTest + 1;
-		elseif testLogical(i) == 0
-			maxGradControl(counterControl) = maxGrad(i);
-			maxGradControlLoc(counterControl) = maxGradLoc(i);
-			counterControl = counterControl + 1;
-		end
-	end
-	
-	fprintf('\n%s - Test\n',cond(j).mutation)
-	disp([mean(maxGradTest),std(maxGradTest)])
-	disp([mean(maxGradTestLoc),std(maxGradTestLoc)])
-	
-	fprintf('%s - Control\n',cond(j).mutation)
-	disp([mean(maxGradControl),std(maxGradControl)])
-	disp([mean(maxGradControlLoc),std(maxGradControlLoc)])
-	
-	
-%  	disp([maxGradTest,maxGradTestLoc,maxGradControl,maxGradControlLoc])
-
-	
+	fprintf('%s - Control\n',res.mutation)
+	disp([mean(res.maxGradControl),std(res.maxGradControl)])
+	disp([mean(res.maxGradControlLoc),std(res.maxGradControlLoc)])
+		
 end
 
 
@@ -236,19 +216,50 @@ end
 % plotYelOverTime(cond(3),m)
 
 
-figure
-for i=1:25
-    subplot(5,5,i)
-    plotYelOverTimeCollated(cond(i))
+% figure
+% for i=1:25
+%     subplot(5,5,i)
+%     plotYelOverTimeCollated(cond(i))
+% end
+% 
+% figure
+% for i=26:conditionN
+%     k = i-25;
+%     subplot(5,5,k)
+% end
+
+for i=1:conditionN
+   figure
+   plotYelOverTimeCollated(cond(i))
 end
 
-figure
-for i=26:conditionN
-    k = i-25;
-    subplot(5,5,k)
+
+plotMaxGradBarChart( resultsQuench )
+
+
+%% TESTS FOR NORMALITY
+
+for i=1:conditionN
+	plotTestForNormalityQuench(resultsQuench(i));
 end
 
-% for i=1:conditionN
-%    figure
-%    plotYelOverTimeCollated(cond(i))
-%end
+%% STATISTICS
+
+close all
+
+statsDataQuench = horzcat(resultsQuench.maxGradTest);
+
+[pKWQuench,tblKWQuench,statsKWQuench] = kruskalwallis(statsDataQuench)
+
+figure
+[cQuench,mQuench] = multcompare(statsKWQuench,'CType','dunn-sidak');
+
+
+[p,h,stats] = ranksum(resultsQuench(1).maxGradTest,resultsQuench(1).maxGradControl);
+%p = 0.976970255321976
+[p,h,stats] = ranksum(resultsQuench(2).maxGradTest,resultsQuench(2).maxGradControl);
+%p = 3.658455353897101e-05
+[p,h,stats] = ranksum(resultsQuench(3).maxGradTest,resultsQuench(3).maxGradControl);
+%p = 3.658455353897101e-05
+
+

@@ -8,7 +8,7 @@ colors = get(groot,'DefaultAxesColorOrder');
 	set(gcf,'position',[10 10 480 600])
 	set(gca,'fontsize',18)
 	ylhand = get(gca,'ylabel');
-	set(ylhand,'string','F_{YFP,membrane} / F_{mCh,cell}','fontsize',24)
+	set(ylhand,'string','F_{mCherry,cell}','fontsize',24)
 	boxH = get(get(gca,'children'),'children');   % Get the handles of all the objects
 	tags = get(boxH,'tag');   % List the names of all the objects
 	outliers = boxH(1:3);		% see tags for explanation of indexes

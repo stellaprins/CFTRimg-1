@@ -2,6 +2,8 @@ function [ imageStruct ] = findYelInsideOverTime( imageStruct )
 %UNTITLED24 Summary of this function goes here
 %   Detailed explanation goes here
 
+runmode = 'test';
+
 imageDim = 432;
 yelN = 70;
 
@@ -35,8 +37,9 @@ yelStandard = yelData(4);
 
 imageStruct.yelInsideOverT = yelData / yelStandard;
 
-% figure
-% showQuenchImage(redImage(:,:,1),yelImage(:,:,1),cellMask(:,:,1))
-
+if strcmp(runmode,'test')
+	showQuenchImage(imageStruct)
+end
+	
 end
 

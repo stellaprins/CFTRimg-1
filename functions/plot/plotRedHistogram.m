@@ -13,7 +13,7 @@ hist = histogram(ax,redEntire);
 	set(gca,'fontsize',20)
  	xlim([0 0.12])
  	ylim([0 500])
-	xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
+	xLab = xlabel('F_{mCherry,cell}');
 	set(xLab,'fontsize',24)
 	yLab = ylabel('Frequency');
 	set(yLab,'fontsize',24)
