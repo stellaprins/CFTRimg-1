@@ -23,9 +23,9 @@ resultsLocal = normalizeResultsWT(resultsLocal);
 meanYFPEntire		= zeros(1,conditionN);
 meanYFPMembrane     = zeros(1,conditionN);
 stdYFPEntire		= zeros(1,conditionN);
-stdYFPMembrane = zeros(1,conditionN);
-medianYFPMembrane = zeros(1,conditionN);
-iqrYFPMembrane = zeros(1,conditionN);
+stdYFPMembrane      = zeros(1,conditionN);
+medianYFPMembrane   = zeros(1,conditionN);
+iqrYFPMembrane      = zeros(1,conditionN);
 
 for i=1:conditionN
 
@@ -33,10 +33,10 @@ for i=1:conditionN
 	
 	meanYFPEntire(i)		= mean(res.yelEntire ./ res.redEntire);
 	stdYFPEntire(i)			= std(res.yelEntire ./ res.redEntire);
-	meanYFPMembrane(i)	= mean(res.yelMembrane ./ res.redEntire);
+	meanYFPMembrane(i)	    = mean(res.yelMembrane ./ res.redEntire);
 	stdYFPMembrane(i)		= std(res.yelMembrane ./ res.redEntire);
  	medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
- 	iqrYFPMembrane(i)			= iqr(res.yelMembrane ./ res.redEntire);
+ 	iqrYFPMembrane(i)		= iqr(res.yelMembrane ./ res.redEntire);
 
 end
 
@@ -117,8 +117,8 @@ end
 
 close all
 
-x=10;
-y=2;
+x=4;
+y=1;
 
 % cond(x).imageLocal(y).cellN
 
@@ -143,26 +143,26 @@ for i=1:cond(x).imageLocal(y).cellN(end)
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	
-	cellDisplay(cond1(x).imageLocal(y),'red',i)
+	cellDisplay(cond(x).imageLocal(y),'red',i)
 	subplot(3,3,2)
-	cellDisplay(cond1(x).imageLocal(y),'yel',i)
+	cellDisplay(cond(x).imageLocal(y),'yel',i)
 	subplot(3,3,3)
-	cellDisplay(cond1(x).imageLocal(y),'bw',i)
+	cellDisplay(cond(x).imageLocal(y),'bw',i)
 % 	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
 % 	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
 % 	subplot(5,3,6)
 % 	cellDisplay(cond1(x).imageLocal(y),'overlay',i)
 	subplot(3,1,[2,3],'position',[0.12 0.1 0.74 0.54])
-	plotFOverDistance(cond1(x).imageLocal(y),i)
+	plotFOverDistance(cond(x).imageLocal(y),i)
 	
 end
 
 
 %% IMAGE DISPLAY
 
-boundingBox1 = cond1(x).imageLocal(y).boundingBox(3,:);
-boundingBox2 = cond1(x).imageLocal(y).boundingBox(17,:);
-imgDisplayRectangle(cond1(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+boundingBox1 = cond(x).imageLocal(y).boundingBox(3,:);
+boundingBox2 = cond(x).imageLocal(y).boundingBox(1,:);
+imgDisplayRectangle(cond(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 
 
 %% QUENCHING OUTPUT

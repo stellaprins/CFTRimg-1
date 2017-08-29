@@ -15,40 +15,46 @@ global SITEN BINNING EXTRA
 BINNING = 1 / 2;
 EXTRA = ceil(BINNING*20);
 
-runMode = 'StellaTestLocal'; % 'test' OR 'full' OR 'StellaTest'
+
+% runMode = 'StellaTestLocal'; % 'test' OR 'full' OR 'StellaTest'
 
 %% IMPORT DATA
 
-if strcmp(runMode,'test')
-	inputDataTest
-	cond = createConditionStruct(exp);
-	cond = findImagePaths(exp,cond);
-elseif strcmp(runMode,'full')
 	SITEN = 9;
-	inputData;
-	cond = createConditionStruct(exp);
-	cond = findImagePaths(exp,cond);
-elseif strcmp(runMode,'Stella')
-	SITEN = 9;
-	inputDataStellaICL4;
-	cond = createConditionStruct(exp);
-	cond = findImagePaths(exp,cond);
-elseif strcmp(runMode,'StellaTest')
-	SITEN = 2;
-	inputDataStellaTestICL4;
-	cond = createConditionStruct(exp);
-	cond = findImagePaths(exp,cond);
-elseif strcmp(runMode,'StellaTestQuench')
-	SITEN = 1;
 	inputDataQuenchStellaTestICL4;
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
-elseif strcmp(runMode,'StellaTestLocal')
-	SITEN = 3;
-	inputDataLocalStellaTestICL4;
-	cond = createConditionStruct(exp);
-	cond = findImagePaths(exp,cond);
-end
+
+% if strcmp(runMode,'test')
+% 	inputDataTest
+% 	cond = createConditionStruct(exp);
+% 	cond = findImagePaths(exp,cond);
+% elseif strcmp(runMode,'full')
+% 	SITEN = 9;
+% 	inputData;
+% 	cond = createConditionStruct(exp);
+% 	cond = findImagePaths(exp,cond);
+% elseif strcmp(runMode,'Stella')
+% 	SITEN = 9;
+% 	inputDataStellaICL4;
+% 	cond = createConditionStruct(exp);
+% 	cond = findImagePaths(exp,cond);
+% elseif strcmp(runMode,'StellaTest')
+% 	SITEN = 2;
+% 	inputDataStellaTestICL4;
+% 	cond = createConditionStruct(exp);
+% 	cond = findImagePaths(exp,cond);
+% elseif strcmp(runMode,'StellaTestQuench')
+% 	SITEN = 1;
+% 	inputDataQuenchStellaTestICL4;
+% 	cond = createConditionStruct(exp);
+% 	cond = findImagePaths(exp,cond);
+% elseif strcmp(runMode,'StellaTestLocal')
+% 	SITEN = 1;
+% 	inputDataLocalStellaTestICL4;
+% 	cond = createConditionStruct(exp);
+% 	cond = findImagePaths(exp,cond);
+% end
 
 conditionN = length(cond);
 
@@ -129,4 +135,4 @@ time(5) = toc;
 
 disp('Full analysis completed')
 
-save('../stellalocal.mat')
+save('./test.mat')

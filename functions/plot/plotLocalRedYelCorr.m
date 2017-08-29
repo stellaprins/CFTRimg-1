@@ -4,8 +4,10 @@ function plotLocalRedYelCorr( resultsStruct,yelRegion )
 
 colors = get(groot,'DefaultAxesColorOrder');
 
-mutation	= resultsStruct.mutation;
-redEntire = resultsStruct.redEntire;
+
+for 1
+mutation	= cond.mutation;
+redEntire   = resultsStruct.redEntire;
 
 switch yelRegion
 	case 'entire'
