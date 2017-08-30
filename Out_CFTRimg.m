@@ -32,7 +32,7 @@ stdRedEntire		= zeros(1,conditionN);
 
 for i=1:conditionN
 
-	res = resultsLocal5(i);
+	res = resultsLocal(i);
 	
 	meanYFPEntire(i)		= mean(res.yelEntire ./ res.redEntire);
 	stdYFPEntire(i)			= std(res.yelEntire ./ res.redEntire);
@@ -47,20 +47,44 @@ for i=1:conditionN
 
 end
 
-disp({resultsLocal1.mutation})
+disp({resultsLocal.mutation})
 disp([meanRedEntire; stdRedEntire])
 % disp([meanYFPEntire; stdYFPEntire])
 % disp([meanYFPMembrane; stdYFPMembrane])
 % disp([medianYFPMembrane; iqrYFPMembrane])
-disp([resultsLocal5.localCellN])
+disp([resultsLocal.localCellN])
 
 
 %% TESTS FOR NORMALITY
 
-close all
+% close all
+% 
+% for i=1:conditionN
+% 	plotTestForNormality(resultsLocal(i));
+% end
 
-for i=1:conditionN
-	plotTestForNormality(resultsLocal(i));
+for b  = 1:length(cond)
+    MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
+    subplot(round(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
+    qqplot(MembraneDensity);
+    yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
+	set(yLab,'fontsize',9)
+    xLab = xlabel(sprintf('Standard Normal Quantiles'));
+    set(xLab,'fontsize',8)
+    title(cond(b).mutation);
+end
+
+figure;
+
+for b  = 1:length(cond)
+    MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
+    subplot(round(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
+    hist(MembraneDensity);
+    xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
+	set(xLab,'fontsize',9)
+	yLab = ylabel('Frequency');
+	set(yLab,'fontsize',8)
+    title(cond(b).mutation);
 end
 
 %% STATISTICS

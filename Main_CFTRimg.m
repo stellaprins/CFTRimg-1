@@ -21,7 +21,7 @@ EXTRA = ceil(BINNING*20);
 %% IMPORT DATA
 
 	SITEN = 9;
-	inputDataQuenchStellaTestICL4;
+	inputDataLocalStellaTestICL4;
 	cond = createConditionStruct(exp);
 	cond = findImagePaths(exp,cond);
 
@@ -135,4 +135,4 @@ time(5) = toc;
 
 disp('Full analysis completed')
 
-save('./test.mat')
+save('./al.mat')
