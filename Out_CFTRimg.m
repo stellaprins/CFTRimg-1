@@ -1,4 +1,7 @@
 
+saveLocalResultsHere='C:\Users\StellaPrins\Documents\results30082017.xls';
+
+%%
 colors = get(groot,'DefaultAxesColorOrder');
 % colors(1,:) --> blue
 % colors(2,:) --> red
@@ -27,7 +30,7 @@ stdYFPMembrane      = zeros(1,conditionN);
 medianYFPMembrane   = zeros(1,conditionN);
 iqrYFPMembrane      = zeros(1,conditionN);
 
-meanRedEntire = zeros(1,conditionN);
+meanRedEntire       = zeros(1,conditionN);
 stdRedEntire		= zeros(1,conditionN);
 
 for i=1:conditionN
@@ -39,20 +42,25 @@ for i=1:conditionN
 	meanYFPMembrane(i)	    = mean(res.yelMembrane ./ res.redEntire);
 	stdYFPMembrane(i)		= std(res.yelMembrane ./ res.redEntire);
  	medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
- 	iqrYFPMembrane(i)			= iqr(res.yelMembrane ./ res.redEntire);
+ 	iqrYFPMembrane(i)		= iqr(res.yelMembrane ./ res.redEntire);
 	
-	meanRedEntire(i) = mean(res.redEntire);
-	stdRedEntire(i) = std(res.redEntire);
+	meanRedEntire(i)        = mean(res.redEntire);
+	stdRedEntire(i)         = std(res.redEntire);
 
 
 end
+condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
+N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
+Ymem        = vertcat((horzcat(cellstr('Membrane density'), cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
 
-disp({resultsLocal.mutation})
-disp([meanRedEntire; stdRedEntire])
+horzcat(condition,N,Ymem)
+
+xlswrite([saveLocalResultsHere],[condition,N,Ymem]);
+
+% ([meanRedEntire; stdRedEntire]')
 % disp([meanYFPEntire; stdYFPEntire])
 % disp([meanYFPMembrane; stdYFPMembrane])
 % disp([medianYFPMembrane; iqrYFPMembrane])
-disp([resultsLocal.localCellN])
 
 
 %% TESTS FOR NORMALITY
@@ -91,10 +99,9 @@ end
 
 close all
 
-cellN = sum(vertcat(resultsLocal.localCellN));
-
-statsData = zeros(cellN,1);
-group = cell(cellN,1);
+cellN       = sum(vertcat(resultsLocal.localCellN));
+statsData   = zeros(cellN,1);
+group       = cell(cellN,1);
 
 cellCount = 1;
 for i=1:conditionN
