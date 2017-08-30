@@ -16,21 +16,11 @@ end
 
 maxX = max(redEntire) * 1;
 [slope, ~, stats] = glmfit(redEntire,yelData,'normal','constant','off');
-
 R = corrcoef(redEntire,yelData);
- if size(R)== [2 2];
-    r = R(1,2);
-    else
-    r = 1;
- end
-    
-% for i = length(resultsStruct)
-%     R = corrcoef(resultsLocal(i).redEntire, resultsLocal(i).yelEntire)
-%    
-% end
+r = R(1,2);
+
 % redSTD = std(redEntire);
 % yelSTD = std(yelData);
-% 
 % slope = redEntire(:)\yelData(:);
 % intercept = mean(yelData) - slope*mean(redEntire);
 
@@ -42,21 +32,20 @@ str = sprintf('R = %0.3f\nslope = %0.3f\nMSE = %0.5f'...
 
 plot(redEntire,yelData,'o')
 hold on
-set(gca,'fontsize',10)
+set(gca,'fontsize',18)
 plot([0 maxX],[0 maxX*slope],'-')
 % title(sprintf('%s - %s',mutation,yelRegion))
 ylhand = get(gca,'ylabel');
 switch yelRegion
 	case 'entire'
-		set(ylhand,'string','F_{YFP,cell}','fontsize',10)
+		set(ylhand,'string','F_{YFP,cell}','fontsize',22)
 	case 'membrane'
-		set(ylhand,'string','F_{YFP,membrane}','fontsize',10)
+		set(ylhand,'string','F_{YFP,membrane}','fontsize',22)
 end
 xlhand = get(gca,'xlabel');
-set(xlhand,'string','F_{mCh,cell}','fontsize',10)
+set(xlhand,'string','F_{mCh,cell}','fontsize',22)
 xlim([0 0.12])
 ylim([0 0.08])
-title(resultsStruct.mutation,'fontsize',10);
-annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',10);
+annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',16);
 
 end

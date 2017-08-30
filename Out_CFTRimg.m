@@ -137,20 +137,20 @@ figure
 
 close all
 
-for i=1:length(resultsLocal)
-	figure
-	plotLocalRedYelCorr(resultsLocal(i),'entire')
-% 	figure
+for i=1:(length(resultsLocal)/2);
+    subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
+             ceil(sqrt((length(resultsLocal)/2)*1.5)), i)
+	plotLocalRedYelCorr(resultsLocal(i),'entire');
 % 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
 end
-
-% figure
-% for i=1:length(cond)
-% 	subplot(3,3,i)
-% 	plotLocalRedYelCorr(cond(i),'entire')
-% 	subplot(3,3,i+3)
-% 	plotLocalRedYelCorr(cond(i),'membrane')
-% end
+figure
+for i=(length(resultsLocal)/2):length(resultsLocal);
+    k=i-((length(resultsLocal)/2)-1);
+    subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
+             ceil(sqrt((length(resultsLocal)/2)*1.5)), k);
+	plotLocalRedYelCorr(resultsLocal(i),'entire');
+% 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
+end
 
 %% CELL DISPLAY
 
