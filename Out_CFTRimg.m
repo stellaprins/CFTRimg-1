@@ -1,4 +1,7 @@
 
+saveLocalResultsHere='C:\Users\StellaPrins\Documents\results30082017.xls';
+
+%%
 colors = get(groot,'DefaultAxesColorOrder');
 % colors(1,:) --> blue
 % colors(2,:) --> red
@@ -27,50 +30,78 @@ stdYFPMembrane      = zeros(1,conditionN);
 medianYFPMembrane   = zeros(1,conditionN);
 iqrYFPMembrane      = zeros(1,conditionN);
 
-meanRedEntire = zeros(1,conditionN);
+meanRedEntire       = zeros(1,conditionN);
 stdRedEntire		= zeros(1,conditionN);
 
 for i=1:conditionN
 
-	res = resultsLocal5(i);
+	res = resultsLocal(i);
 	
 	meanYFPEntire(i)		= mean(res.yelEntire ./ res.redEntire);
 	stdYFPEntire(i)			= std(res.yelEntire ./ res.redEntire);
 	meanYFPMembrane(i)	    = mean(res.yelMembrane ./ res.redEntire);
 	stdYFPMembrane(i)		= std(res.yelMembrane ./ res.redEntire);
  	medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
- 	iqrYFPMembrane(i)			= iqr(res.yelMembrane ./ res.redEntire);
+ 	iqrYFPMembrane(i)		= iqr(res.yelMembrane ./ res.redEntire);
 	
-	meanRedEntire(i) = mean(res.redEntire);
-	stdRedEntire(i) = std(res.redEntire);
+	meanRedEntire(i)        = mean(res.redEntire);
+	stdRedEntire(i)         = std(res.redEntire);
 
 
 end
+condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
+N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
+Ymem        = vertcat((horzcat(cellstr('Membrane density'), cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
 
-disp({resultsLocal1.mutation})
-disp([meanRedEntire; stdRedEntire])
+horzcat(condition,N,Ymem)
+
+xlswrite([saveLocalResultsHere],[condition,N,Ymem]);
+
+% ([meanRedEntire; stdRedEntire]')
 % disp([meanYFPEntire; stdYFPEntire])
 % disp([meanYFPMembrane; stdYFPMembrane])
 % disp([medianYFPMembrane; iqrYFPMembrane])
-disp([resultsLocal5.localCellN])
 
 
 %% TESTS FOR NORMALITY
 
-close all
+% close all
+% 
+% for i=1:conditionN
+% 	plotTestForNormality(resultsLocal(i));
+% end
 
-for i=1:conditionN
-	plotTestForNormality(resultsLocal(i));
+for b  = 1:length(cond)
+    MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
+    subplot(round(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
+    qqplot(MembraneDensity);
+    yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
+	set(yLab,'fontsize',9)
+    xLab = xlabel(sprintf('Standard Normal Quantiles'));
+    set(xLab,'fontsize',8)
+    title(cond(b).mutation);
+end
+
+figure;
+
+for b  = 1:length(cond)
+    MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
+    subplot(round(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
+    hist(MembraneDensity);
+    xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
+	set(xLab,'fontsize',9)
+	yLab = ylabel('Frequency');
+	set(yLab,'fontsize',8)
+    title(cond(b).mutation);
 end
 
 %% STATISTICS
 
 close all
 
-cellN = sum(vertcat(resultsLocal.localCellN));
-
-statsData = zeros(cellN,1);
-group = cell(cellN,1);
+cellN       = sum(vertcat(resultsLocal.localCellN));
+statsData   = zeros(cellN,1);
+group       = cell(cellN,1);
 
 cellCount = 1;
 for i=1:conditionN
@@ -106,20 +137,20 @@ figure
 
 close all
 
-for i=1:length(resultsLocal)
-	figure
-	plotLocalRedYelCorr(resultsLocal(i),'entire')
-% 	figure
+for i=1:(length(resultsLocal)/2);
+    subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
+             ceil(sqrt((length(resultsLocal)/2)*1.5)), i)
+	plotLocalRedYelCorr(resultsLocal(i),'entire');
 % 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
 end
-
-% figure
-% for i=1:length(cond)
-% 	subplot(3,3,i)
-% 	plotLocalRedYelCorr(cond(i),'entire')
-% 	subplot(3,3,i+3)
-% 	plotLocalRedYelCorr(cond(i),'membrane')
-% end
+figure
+for i=(length(resultsLocal)/2):length(resultsLocal);
+    k=i-((length(resultsLocal)/2)-1);
+    subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
+             ceil(sqrt((length(resultsLocal)/2)*1.5)), k);
+	plotLocalRedYelCorr(resultsLocal(i),'entire');
+% 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
+end
 
 %% CELL DISPLAY
 
