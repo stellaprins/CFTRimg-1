@@ -1,5 +1,5 @@
 
-saveLocalResultsHere='C:\Users\StellaPrins\Documents\results30082017.xls';
+saveLocalResultsHere='C:\Users\StellaPrins\Documents\Emily01092017.xls';
 
 %%
 colors = get(groot,'DefaultAxesColorOrder');
@@ -33,6 +33,7 @@ iqrYFPMembrane      = zeros(1,conditionN);
 meanRedEntire       = zeros(1,conditionN);
 stdRedEntire		= zeros(1,conditionN);
 
+
 for i=1:conditionN
 
 	res = resultsLocal(i);
@@ -52,10 +53,14 @@ end
 condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
 N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
 Ymem        = vertcat((horzcat(cellstr('Membrane density'), cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
+Ymem_norm   = vertcat((horzcat(cellstr('Normalised membrane density'), cellstr('std'))),num2cell([meanYFPMembrane/meanYFPMembrane(4); stdYFPMembrane/meanYFPMembrane(4)]'));
 
-horzcat(condition,N,Ymem)
+% Index = strfind(condition, 'WT');
+% Index = 
+ 
+results = horzcat(condition,N,Ymem,Ymem_norm)
 
-xlswrite([saveLocalResultsHere],[condition,N,Ymem]);
+xlswrite([saveLocalResultsHere],[condition,N,Ymem,Ymem_norm]);
 
 % ([meanRedEntire; stdRedEntire]')
 % disp([meanYFPEntire; stdYFPEntire])
@@ -63,6 +68,22 @@ xlswrite([saveLocalResultsHere],[condition,N,Ymem]);
 % disp([medianYFPMembrane; iqrYFPMembrane])
 
 
+% BOXPLOT NORMALISED VALUES (EMILY)
+Ymem_norm_1 = resultsLocal(1).yelMembrane(:)./resultsLocal(1).redEntire(:)/meanYFPMembrane(4);
+Ymem_norm_2 = resultsLocal(2).yelMembrane(:)./resultsLocal(2).redEntire(:)/meanYFPMembrane(4);
+Ymem_norm_3 = resultsLocal(3).yelMembrane(:)./resultsLocal(3).redEntire(:)/meanYFPMembrane(4);
+Ymem_norm_4 = resultsLocal(4).yelMembrane(:)./resultsLocal(4).redEntire(:)/meanYFPMembrane(4);
+
+Ymem_norm               = [Ymem_norm_4; Ymem_norm_1; Ymem_norm_2; Ymem_norm_3];
+Ymem_norm_catogaries    = [zeros(length(Ymem_norm_4),1);...
+                           ones(length(Ymem_norm_1),1);...
+                           repmat(3,length(Ymem_norm_2),1);...
+                           repmat(4,length(Ymem_norm_3),1)];
+boxplot(Ymem_norm, Ymem_norm_catogaries, 'Labels', {'WT' 'F508del' 'G551D' 'V520F'});
+mean_YFP= [meanYFPMembrane(4)/meanYFPMembrane(4),meanYFPMembrane(1)/meanYFPMembrane(4),...
+     meanYFPMembrane(2)/meanYFPMembrane(4),meanYFPMembrane(3)/meanYFPMembrane(4)]
+    
+    ,'%c+/-%d',stdYFPMembrane(4)/meanYFPMembrane(4))...
 %% TESTS FOR NORMALITY
 
 % close all
@@ -73,7 +94,7 @@ xlswrite([saveLocalResultsHere],[condition,N,Ymem]);
 
 for b  = 1:length(cond)
     MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
-    subplot(round(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
+    subplot(ceil(sqrt((length(cond)/2))),ceil(sqrt((length(cond)*2))),b);
     qqplot(MembraneDensity);
     yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
 	set(yLab,'fontsize',9)
@@ -86,7 +107,7 @@ figure;
 
 for b  = 1:length(cond)
     MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
-    subplot(round(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
+    subplot(ceil(sqrt((length(cond)/2))),ceil(sqrt((length(cond)*2))),b);
     hist(MembraneDensity);
     xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
 	set(xLab,'fontsize',9)
@@ -156,12 +177,11 @@ end
 
 close all
 
-x=4;
+x=2;
 y=1;
 
 % cond(x).imageLocal(y).cellN
-
-% [maxGrad, maxGradLoc,refGrad] = findGradient(cond1(x).imageLocal(y));
+ [maxGrad, maxGradLoc,refGrad] = findGradient(cond(x).imageLocal(y));
 
 for i=1:cond(x).imageLocal(y).cellN(end)
 % for i=[9,18] % x=3, y=8
@@ -181,8 +201,7 @@ for i=1:cond(x).imageLocal(y).cellN(end)
 	
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
-	
-	cellDisplay(cond(x).imageLocal(y),'red',i)
+	cellDisplay(cond(x).imageLocal(y),'yel',i)
 	subplot(3,3,2)
 	cellDisplay(cond(x).imageLocal(y),'yel',i)
 	subplot(3,3,3)
