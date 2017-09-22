@@ -11,12 +11,12 @@ cellN = imageStruct.cellN(end);
 redBackground = imageStruct.redBackground;
 yelBackground = imageStruct.yelBackground;
 
-yelMeanEntire		= zeros(cellN,1);
+yelMeanEntire	= zeros(cellN,1);
 yelMeanOutside	= zeros(cellN,1);
 yelMeanMembrane	= zeros(cellN,1);
 yelMeanInterior	= zeros(cellN,1);
 
-redMeanEntire		= zeros(cellN,1);
+redMeanEntire	= zeros(cellN,1);
 redMeanOutside	= zeros(cellN,1);
 
 for i=1:cellN
@@ -48,12 +48,12 @@ for i=1:cellN
 
 end
 
-imageStruct.yelEntire				= yelMeanEntire;
+imageStruct.yelEntire			= yelMeanEntire;
 imageStruct.yelOutside			= yelMeanOutside;
 imageStruct.yelMembrane			= yelMeanMembrane;
 imageStruct.yelInterior			= yelMeanInterior;
 
-imageStruct.redEntire				= redMeanEntire;
+imageStruct.redEntire			= redMeanEntire;
 imageStruct.redOutside			= redMeanOutside;
 
 end

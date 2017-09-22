@@ -8,7 +8,7 @@ experimentN = length(experimentStructArray);
 
 conditionStr = unique(horzcat(experimentStructArray.conditionStr));
 
-for j=1:conditionN
+for j=1:experimentN
 	
 	currentCondition = conditionStr{j};
 	

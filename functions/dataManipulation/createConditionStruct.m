@@ -2,6 +2,7 @@ function  conditionStruct = createConditionStruct( experimentStruct )
 %CREATECONDITIONS create empty structs for each condition as listed in
 %'experimentStruct.conditionsStr'
 
+    
 conditionsStr = unique(horzcat(experimentStruct.conditionStr));
 
 conditionsN = length(conditionsStr);

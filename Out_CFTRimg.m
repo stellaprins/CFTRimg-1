@@ -1,5 +1,5 @@
 
-saveLocalResultsHere='C:\Users\StellaPrins\Documents\Emily01092017.xls';
+saveLocalResultsHere='C:\Users\StellaPrins\Documents\testEXP15092017.xls';
 
 %%
 colors = get(groot,'DefaultAxesColorOrder');
@@ -29,7 +29,6 @@ stdYFPEntire		= zeros(1,conditionN);
 stdYFPMembrane      = zeros(1,conditionN);
 medianYFPMembrane   = zeros(1,conditionN);
 iqrYFPMembrane      = zeros(1,conditionN);
-
 meanRedEntire       = zeros(1,conditionN);
 stdRedEntire		= zeros(1,conditionN);
 
@@ -56,7 +55,6 @@ Ymem        = vertcat((horzcat(cellstr('Membrane density'), cellstr('std'))),num
 Ymem_norm   = vertcat((horzcat(cellstr('Normalised membrane density'), cellstr('std'))),num2cell([meanYFPMembrane/meanYFPMembrane(4); stdYFPMembrane/meanYFPMembrane(4)]'));
 
 % Index = strfind(condition, 'WT');
-% Index = 
  
 results = horzcat(condition,N,Ymem,Ymem_norm)
 
@@ -69,6 +67,7 @@ xlswrite([saveLocalResultsHere],[condition,N,Ymem,Ymem_norm]);
 
 
 % BOXPLOT NORMALISED VALUES (EMILY)
+
 Ymem_norm_1 = resultsLocal(1).yelMembrane(:)./resultsLocal(1).redEntire(:)/meanYFPMembrane(4);
 Ymem_norm_2 = resultsLocal(2).yelMembrane(:)./resultsLocal(2).redEntire(:)/meanYFPMembrane(4);
 Ymem_norm_3 = resultsLocal(3).yelMembrane(:)./resultsLocal(3).redEntire(:)/meanYFPMembrane(4);
@@ -81,9 +80,9 @@ Ymem_norm_catogaries    = [zeros(length(Ymem_norm_4),1);...
                            repmat(4,length(Ymem_norm_3),1)];
 boxplot(Ymem_norm, Ymem_norm_catogaries, 'Labels', {'WT' 'F508del' 'G551D' 'V520F'});
 mean_YFP= [meanYFPMembrane(4)/meanYFPMembrane(4),meanYFPMembrane(1)/meanYFPMembrane(4),...
-     meanYFPMembrane(2)/meanYFPMembrane(4),meanYFPMembrane(3)/meanYFPMembrane(4)]
+     meanYFPMembrane(2)/meanYFPMembrane(4),meanYFPMembrane(3)/meanYFPMembrane(4)];
     
-    ,'%c+/-%d',stdYFPMembrane(4)/meanYFPMembrane(4))...
+  %  ,'%c+/-%d',stdYFPMembrane(4)/meanYFPMembrane(4))...
 %% TESTS FOR NORMALITY
 
 % close all
@@ -127,14 +126,16 @@ group       = cell(cellN,1);
 cellCount = 1;
 for i=1:conditionN
 	
-	% rearrange order of data to display box plots in correct order
+%	rearrange order of data to display box plots in correct order
 	switch i
 		case 1
-			x=3;
+			x=4;
 		case 2
 			x=1;
 		case 3
 			x=2;
+        case 4
+			x=3;
 	end
 			
 	res = resultsLocal(x);
