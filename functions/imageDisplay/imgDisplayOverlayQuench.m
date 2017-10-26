@@ -2,7 +2,6 @@ function imgDisplayOverlayQuench( imageStruct , colorStr )
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
-
 switch colorStr
 	case 'redOverlay'
 		rawImage = imadjust(im2double(imread(imageStruct.redPath{1})));
