@@ -1,79 +1,48 @@
 
-saveLocalResultsHere='C:\Users\StellaPrins\Documents\results30082017.xls';
-
+saveLocalResultsHere        ='C:\Users\StellaPrins\Desktop\local_demo2.xls';
+saveQuenchResultsHere       ='C:\Users\StellaPrins\Desktop\quench_demo.xls';
+saveQuenchingTimelineHere   ='C:\Users\StellaPrins\Desktop\quench_timeline.xls';
 %%
 colors = get(groot,'DefaultAxesColorOrder');
-% colors(1,:) --> blue
-% colors(2,:) --> red
-% colors(3,:) --> yellow
-% colors(4,:) --> purple
-% colors(5,:) --> green
-% colors(6,:) --> cyan
-% colors(7,:) --> brown?
 
 %% SET UP RESULTS STRUCT
-
 resultsLocal = createResultsLocalStruct(cond);
 for i=1:conditionN
 	resultsLocal(i) = filterNegativeMetric(resultsLocal(i));
 end
 
-% resultsLocal = normalizeResultsWT(resultsLocal);
-
-
 %% LOCALISATION OUTPUT
-
 meanYFPEntire		= zeros(1,conditionN);
 meanYFPMembrane     = zeros(1,conditionN);
 stdYFPEntire		= zeros(1,conditionN);
 stdYFPMembrane      = zeros(1,conditionN);
 medianYFPMembrane   = zeros(1,conditionN);
 iqrYFPMembrane      = zeros(1,conditionN);
-
 meanRedEntire       = zeros(1,conditionN);
 stdRedEntire		= zeros(1,conditionN);
 
 for i=1:conditionN
-
 	res = resultsLocal(i);
-	
 	meanYFPEntire(i)		= mean(res.yelEntire ./ res.redEntire);
 	stdYFPEntire(i)			= std(res.yelEntire ./ res.redEntire);
 	meanYFPMembrane(i)	    = mean(res.yelMembrane ./ res.redEntire);
 	stdYFPMembrane(i)		= std(res.yelMembrane ./ res.redEntire);
  	medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
  	iqrYFPMembrane(i)		= iqr(res.yelMembrane ./ res.redEntire);
-	
 	meanRedEntire(i)        = mean(res.redEntire);
 	stdRedEntire(i)         = std(res.redEntire);
-
-
 end
 condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
 N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
-Ymem        = vertcat((horzcat(cellstr('Membrane density'), cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
-
+Ymem        = vertcat((horzcat(cellstr('Membrane density'), ...
+              cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
 horzcat(condition,N,Ymem)
-
 xlswrite([saveLocalResultsHere],[condition,N,Ymem]);
 
-% ([meanRedEntire; stdRedEntire]')
-% disp([meanYFPEntire; stdYFPEntire])
-% disp([meanYFPMembrane; stdYFPMembrane])
-% disp([medianYFPMembrane; iqrYFPMembrane])
-
-
-%% TESTS FOR NORMALITY
-
-% close all
-% 
-% for i=1:conditionN
-% 	plotTestForNormality(resultsLocal(i));
-% end
-
+%% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY) %%
 for b  = 1:length(cond)
     MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
-    subplot(round(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
+    subplot(ceil(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
     qqplot(MembraneDensity);
     yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
 	set(yLab,'fontsize',9)
@@ -86,7 +55,7 @@ figure;
 
 for b  = 1:length(cond)
     MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
-    subplot(round(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
+    subplot(ceil(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
     hist(MembraneDensity);
     xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
 	set(xLab,'fontsize',9)
@@ -96,40 +65,22 @@ for b  = 1:length(cond)
 end
 
 %% STATISTICS
-
 close all
-
 cellN       = sum(vertcat(resultsLocal.localCellN));
 statsData   = zeros(cellN,1);
 group       = cell(cellN,1);
+cellCount   = 1;
 
-cellCount = 1;
 for i=1:conditionN
-	
-	% rearrange order of data to display box plots in correct order
-	switch i
-		case 1
-			x=3;
-		case 2
-			x=1;
-		case 3
-			x=2;
-	end
-			
-	res = resultsLocal(x);
-	
+	res = resultsLocal(i);
 	statsData(cellCount:(cellCount+res.localCellN-1)) = ...
-		res.yelMembrane ./ res.redEntire;
+    res.yelMembrane ./ res.redEntire;
 	group(cellCount:(cellCount+res.localCellN-1)) = {res.mutation};
-	
 	cellCount = cellCount + res.localCellN;
-	
 end
 
-
 [pKruskalWallis, statsKW] = plotKruskalWallis(statsData,group);
-
-figure
+figure;
 [c,m,~,gnames] = multcompare(statsKW,'CType','dunn-sidak');
 
 
@@ -137,160 +88,160 @@ figure
 
 close all
 
-for i=1:(length(resultsLocal)/2);
+for i=1:ceil(length(resultsLocal)/2);
     subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
              ceil(sqrt((length(resultsLocal)/2)*1.5)), i)
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
-% 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
 end
-figure
-for i=(length(resultsLocal)/2):length(resultsLocal);
+
+figure;
+
+for i=ceil(length(resultsLocal)/2):ceil(length(resultsLocal));
     k=i-((length(resultsLocal)/2)-1);
     subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
              ceil(sqrt((length(resultsLocal)/2)*1.5)), k);
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
-% 	plotLocalRedYelCorr(resultsLocal(i),'membrane')
 end
 
-%% CELL DISPLAY
-
+%% IMAGE DISPLAY
 close all
 
-x=4;
-y=1;
+x=1; % condition
+y=5; % image number
 
-% cond(x).imageLocal(y).cellN
+boundingBox1 = cond(x).imageLocal(y).boundingBox(3,:);
+boundingBox2 = cond(x).imageLocal(y).boundingBox(1,:);
+boundingBox3 = cond(x).imageLocal(y).boundingBox(3,:);
+imgDisplayRectangle(cond(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 
-% [maxGrad, maxGradLoc,refGrad] = findGradient(cond1(x).imageLocal(y));
+%% CELL DISPLAY
+close all
 
-for i=1:cond(x).imageLocal(y).cellN(end)
-% for i=[9,18] % x=3, y=8
-% for i=[3,17] % x=1, y=8
-	
-% 	str1 = sprintf('max %g\nloc %g\n\nref %g'...
-% 		,round(maxGrad(i),5)...
-% 		,maxGradLoc(i)...
-% 		,round(refGrad(i),5));
-% 	
-% 	str2 = sprintf('membrane %g\nentire %g'...
-% 		,round(cond1(x).imageLocal(y).yelMembrane(i)/cond1(x).imageLocal(y).redEntire(i),3)...
-% 		,round(cond1(x).imageLocal(y).yelEntire(i)/cond1(x).imageLocal(y).redEntire(i),3));
-% 	
-% 	dim1 = [.15 .65 .1 .1];
-% 	dim2 = [.45 .65 .1 .1];
-	
+x=1; % condition
+y=4; % image number
+
+for i=4:6 %cond(x).imageLocal(y).cellN(end)
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
-	
 	cellDisplay(cond(x).imageLocal(y),'red',i)
 	subplot(3,3,2)
 	cellDisplay(cond(x).imageLocal(y),'yel',i)
 	subplot(3,3,3)
 	cellDisplay(cond(x).imageLocal(y),'bw',i)
-% 	annotation('textbox',dim1,'String',str1,'FitBoxToText','on');
-% 	annotation('textbox',dim2,'String',str2,'FitBoxToText','on');
-% 	subplot(5,3,6)
-% 	cellDisplay(cond1(x).imageLocal(y),'overlay',i)
 	subplot(3,1,[2,3],'position',[0.12 0.1 0.74 0.54])
 	plotFOverDistance(cond(x).imageLocal(y),i)
-	
 end
 
+%%
 
-%% IMAGE DISPLAY
-
-boundingBox1 = cond(x).imageLocal(y).boundingBox(3,:);
-boundingBox2 = cond(x).imageLocal(y).boundingBox(1,:);
-imgDisplayRectangle(cond(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%% QUENCHING OUTPUT
+%% QUENCHING OUTPUT 1
 
-resultsQuench = createResultsQuenchStruct(cond);
+resultsQuench           = createResultsQuenchStruct(cond);
+influx_rate             = zeros(1,conditionN);
+influx_rate_std         = zeros(1,conditionN);
+Quench_N                = zeros(1,conditionN);
+influx_rate_DMSO        = zeros(1,conditionN);
+influx_rate_DMSO_std    = zeros(1,conditionN);
+Quench_DMSO_N           = zeros(1,conditionN);
+influx_rate_t           = zeros(1,conditionN);
+influx_rate_t_std       = zeros(1,conditionN);
+influx_rate_DMSO_t      = zeros(1,conditionN);
+influx_rate_DMSO_t_std  = zeros(1,conditionN);
 
-for i=1:conditionN
-	
-	res = resultsQuench(i);
-	
-	fprintf('\n%s - Test\n',res.mutation)
-	disp([mean(res.maxGradTest),std(res.maxGradTest)])
-	disp([mean(res.maxGradTestLoc),std(res.maxGradTestLoc)])
-	
-	fprintf('%s - Control\n',res.mutation)
-	disp([mean(res.maxGradControl),std(res.maxGradControl)])
-	disp([mean(res.maxGradControlLoc),std(res.maxGradControlLoc)])
-		
+for i = 1:conditionN
+	res                     = resultsQuench(i);
+    %FORSKOLIN
+    Quench_N(i)             = length(res.maxGradTest);
+    influx_rate(i)          = mean(res.maxGradTest);
+    influx_rate_std(i)      = std(res.maxGradTest);
+    influx_rate_t(i)        = mean(res.maxGradTestLoc);
+    influx_rate_t_std(i)    = std(res.maxGradTestLoc);
+    %DMSO CONTROL
+    Quench_DMSO_N(i)        = length(res.maxGradControl);
+    influx_rate_DMSO(i)     = mean(res.maxGradControl);
+    influx_rate_DMSO_std(i) = std(res.maxGradControl);
+    influx_rate_DMSO_t(i)   = mean(res.maxGradControlLoc);
+    influx_rate_DMSO_t_std(i)= std(res.maxGradControlLoc);
 end
 
+condition_quench  = vertcat(cellstr('condition'),cellstr({resultsQuench.mutation}'));
+N_quench_F        = vertcat(cellstr('N'),num2cell([Quench_N]'));
+max_rate_F        = vertcat((horzcat(cellstr('max rate I entry (F)'), ...
+                    cellstr('std'))),num2cell([influx_rate; influx_rate_std]'));
+max_rate_F_tp     = vertcat((horzcat(cellstr('timepoint at max rate I entry (F)'), ...
+                    cellstr('std'))),num2cell([influx_rate_t; influx_rate_t_std]'))       
+N_quench_DMSO     = vertcat(cellstr('N'),num2cell([Quench_DMSO_N]'));
+max_rate_DMSO     = vertcat((horzcat(cellstr('max rate I entry (DMSO)'), ...
+                    cellstr('std'))),num2cell([influx_rate_DMSO; influx_rate_DMSO_std]'));
+max_rate_DMSO_tp  = vertcat((horzcat(cellstr('timepoint at max rate I entry (DMSO)'), ...
+                    cellstr('std'))),num2cell([influx_rate_DMSO_t; influx_rate_DMSO_t_std]'))
 
-%% QUENCHING PLOTS
+horzcat     (condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
+             N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp)
+xlswrite    ([saveQuenchResultsHere],...
+            [condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
+            N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp]);    
+        
+%% QUENCHING OUTPUT 2 (TIMELINE)
 
+ count_col1   = 0;
+ for i = 1:conditionN
+ count_F     = cond(i).quenchImageTestN;
+ count_DMSO  = cond(i).quenchImageControlN;
+ count_col1  = count_col1 + count_F*2+count_DMSO*2+8;
+ end
+ 
+ l      = cond(1).imageQuench.yelInsideOverT;
+ l      = length(l)+2;
+ space  = cell(l,count_col1);
+ count_col2                   = zeros(1,conditionN);
+for i = 1:conditionN
+    results_quenching_timeline  = quenching_timeline(cond(i)); 
+    count_F                     = cond(i).quenchImageTestN;
+    count_DMSO                  = cond(i).quenchImageControlN;
+    count_col2(1,i)             = count_F*2+count_DMSO*2+8;
+    space(:,1+sum(count_col2(1:i-1)):sum(count_col2(1:i)))=results_quenching_timeline;
+end
+
+xlswrite([saveQuenchingTimelineHere], [space]);
+
+
+%% QUENCHING PLOTS 
 close all
-
 ymin = zeros(conditionN,1);
 ymax = zeros(conditionN,1);
+
 for i=1:conditionN
 	ymin(i) = min(vertcat(cond(i).imageQuench.yelInsideOverT));
 	ymax(i) = max(vertcat(cond(i).imageQuench.yelInsideOverT));
 end
 
-% disp([min(ymin), max(ymax)])
-
-% m=4;
-% 
-% figure
-% subplot(1,3,1)
-% plotYelOverTime(cond(1),m)
-% subplot(1,3,2)
-% plotYelOverTime(cond(2),m)
-% subplot(1,3,3)
-% plotYelOverTime(cond(3),m)
-
-
-% figure
-% for i=1:25
-%     subplot(5,5,i)
-%     plotYelOverTimeCollated(cond(i))
-% end
-% 
-% figure
-% for i=26:conditionN
-%     k = i-25;
-%     subplot(5,5,k)
-% end
-
+figure;
 for i=1:conditionN
-   figure
+   subplot(ceil(sqrt(conditionN)),ceil(sqrt(conditionN)),i)
    plotYelOverTimeCollated(cond(i))
 end
 
-
-plotMaxGradBarChart( resultsQuench )
-
+plotMaxGradBarChart(resultsQuench)
 
 %% TESTS FOR NORMALITY
-
 for i=1:conditionN
 	plotTestForNormalityQuench(resultsQuench(i));
 end
 
 %% STATISTICS
-
 close all
-
 statsDataQuench = horzcat(resultsQuench.maxGradTest);
-
 [pKWQuench,tblKWQuench,statsKWQuench] = kruskalwallis(statsDataQuench)
-
 figure
 [cQuench,mQuench] = multcompare(statsKWQuench,'CType','dunn-sidak');
 
-
 [p,h,stats] = ranksum(resultsQuench(1).maxGradTest,resultsQuench(1).maxGradControl);
-%p = 0.976970255321976
 [p,h,stats] = ranksum(resultsQuench(2).maxGradTest,resultsQuench(2).maxGradControl);
-%p = 3.658455353897101e-05
 [p,h,stats] = ranksum(resultsQuench(3).maxGradTest,resultsQuench(3).maxGradControl);
-%p = 3.658455353897101e-05
 
 

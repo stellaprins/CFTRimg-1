@@ -2,7 +2,6 @@ function plotYelOverTime( conditionStruct,idx )
 %UNTITLED20 Summary of this function goes here
 %   Detailed explanation goes here
 
-
 meanYel = conditionStruct.imageQuench(idx).yelInsideOverT;
 
 plot(1:70,meanYel)

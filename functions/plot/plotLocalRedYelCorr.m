@@ -24,16 +24,6 @@ R = corrcoef(redEntire,yelData);
     r = 1;
  end
     
-% for i = length(resultsStruct)
-%     R = corrcoef(resultsLocal(i).redEntire, resultsLocal(i).yelEntire)
-%    
-% end
-% redSTD = std(redEntire);
-% yelSTD = std(yelData);
-% 
-% slope = redEntire(:)\yelData(:);
-% intercept = mean(yelData) - slope*mean(redEntire);
-
 MSE = sum(stats.resid .^2) / length(stats);
 
 dim = [.654 .71 .2 .2];
@@ -57,6 +47,6 @@ set(xlhand,'string','F_{mCh,cell}','fontsize',10)
 xlim([0 0.12])
 ylim([0 0.08])
 title(resultsStruct.mutation,'fontsize',10);
-annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',10);
+% annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',10);
 
 end
