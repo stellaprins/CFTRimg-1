@@ -15,12 +15,16 @@ global SITEN BINNING EXTRA
 BINNING = 1 / 1;
 EXTRA = ceil(BINNING*20);
 
-%% IMPORT DATA
+%% STRUCTURING DATA
 	SITEN = 1;
-	cond = createConditionStruct(exp);
-	cond = findImagePaths(exp,cond);
-conditionN = length(cond);
-disp('Completed importing conditions')
+	plate = createPlateStruct(exp);
+	plate = findImagePathsPLATE(exp,plate);
+	plateN = length(plate);
+	
+% 	cond = createConditionStruct(exp);
+% 	cond = findImagePaths(exp,cond);
+%		conditionN = length(cond);
+disp('Completed setting up data structures')
 time(1) = toc;
 
 %% SEGMENTATION
