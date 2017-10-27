@@ -42,10 +42,10 @@ for j = 1:testN
 end
 
 for j = 1:controlN
-    for i = 2:length(mean_iodine_conc_DMSO-1)
+    for i = 2:length(mean_iodine_conc_DMSO)
         change_iodine_conc_DMSO(i,j) = ...
-       (mean_iodine_conc_DMSO(i,j) - ...
-        mean_iodine_conc_DMSO(i-1,j))/2; % mM s^(-1)
+       (iodine_conc_DMSO(i,j) - ...
+        iodine_conc_DMSO(i-1,j))/2; % mM s^(-1)
     end
 end
 
@@ -66,28 +66,42 @@ for j = 1:length(change_iodine_conc_DMSO);
 end
 
 % TIMELINE NORMALISED FLUORESCENCE INTENSITY 
-per_well_F          =   vertcat((horzcat(cellstr('Fluorescence intensity per well (F)')))...
-                        ,num2cell([yelTest]'));
-rate_well_F         =    vertcat((horzcat(cellstr('Rate of iodine entry per well (F)')))...
-                        ,num2cell([change_iodine_conc_F]'));
-per_cond_F          =   vertcat((horzcat(cellstr('Average fluorescence intensity (F)')))...
-                        ,num2cell([meanYelTest]'));
-rate_cond_F         =    vertcat((horzcat(cellstr('Average rate of iodine entry (F)')))...
-                        ,num2cell([change_iodine_conc_F]'));
-std_per_well_F      =   vertcat((horzcat(cellstr('std')))...
-                        ,num2cell([errYelTest]')); 
-                    
-per_well_DMSO       =   vertcat((horzcat(cellstr('Fluorescence intensity per well  (DMSO)')))...
-                        ,num2cell([yelControl]'));
-per_cond_DMSO       =   vertcat((horzcat(cellstr('Average fluorescence intensity (DMSO)')))...
-                        ,num2cell([meanYelControl]'));
-std_per_cond_DMSO   =   vertcat((horzcat(cellstr('std')))...
-                        ,num2cell([errYelControl]')); 
-          
-horzcat     (condition_quench,N_quench,max_rate_F,max_rate_F_tp,...
-             N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp)
-xlswrite    ([saveQuenchResultsHere],...
-            [condition_quench,N_quench,max_rate_F,max_rate_F_tp,...
-            N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp]);
-        
+header_F            =   cell(1,testN);
+header_F(1)         =   cellstr('Fluorescence intensity per well (F)');
+per_well_F          =   vertcat(header_F, num2cell([yelTest]));
+header_F(1)         =   cellstr('Rate of iodine entry per well (F)');
+rate_well_F         =   vertcat(header_F, num2cell([change_iodine_conc_F]));
+per_cond_F          =   vertcat(cellstr('Average fluorescence intensity (F)')...
+                        ,num2cell([meanYelTest]));          
+rate_cond_F         =    vertcat(cellstr('Average rate of iodine entry (F)')...
+                        ,num2cell([change_iodine_conc_F_mean]));
+rate_cond_F_std     =    vertcat(cellstr('std')...
+                        ,num2cell([change_iodine_conc_F_std]));           
+std_per_cond_F      =   vertcat(cellstr('std'),num2cell([errYelTest]));    
+
+header_DMSO         =   cell(1,controlN);
+header_DMSO(1)      =   cellstr('Fluorescence intensity per well (DMSO)');
+per_well_DMSO       =   vertcat(header_DMSO, num2cell([yelControl]));
+header_DMSO(1)      =   cellstr('Rate of iodine entry per well (DMSO)');
+rate_well_DMSO      =   vertcat(header_DMSO, num2cell([change_iodine_conc_DMSO]));
+per_cond_DMSO       =   vertcat(cellstr('Average fluorescence intensity (DMSO)')...
+                        ,num2cell([meanYelControl]));
+rate_cond_DMSO      =    vertcat(cellstr('Average rate of iodine entry (DMSO)')...
+                        ,num2cell([change_iodine_conc_DMSO_mean]));             
+std_per_cond_DMSO   =   vertcat(cellstr('std'),num2cell([errYelControl])); 
+rate_cond_DMSO_std  =    vertcat(cellstr('std')...
+                        ,num2cell([change_iodine_conc_DMSO_std]));                
+                 
+count_F             = conditionStruct.quenchImageTestN;
+count_DMSO          = conditionStruct.quenchImageControlN;
+count_col           = count_F*2+count_DMSO*2+8;
+header_condition    = cell(1,count_col);
+header_condition(1) = cellstr(conditionStruct.mutation);
+
+results_F           =   horzcat(per_well_F, per_cond_F,std_per_cond_F,...
+                        rate_well_F, rate_cond_F, rate_cond_F_std);
+results_DMSO        =   horzcat(per_well_DMSO, per_cond_DMSO,std_per_cond_DMSO,...
+                        rate_well_DMSO, rate_cond_DMSO, rate_cond_DMSO_std);
+results             =   horzcat(results_F,results_DMSO) ;      
+results             =   vertcat(header_condition, results);
         

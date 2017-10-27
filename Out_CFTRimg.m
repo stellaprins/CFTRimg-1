@@ -1,7 +1,7 @@
 
-saveLocalResultsHere    ='C:\Users\StellaPrins\Desktop\local_demo2.xls';
-saveQuenchResultsHere   ='C:\Users\StellaPrins\Desktop\quench_demo.xls';
-
+saveLocalResultsHere        ='C:\Users\StellaPrins\Desktop\local_demo2.xls';
+saveQuenchResultsHere       ='C:\Users\StellaPrins\Desktop\quench_demo.xls';
+saveQuenchingTimelineHere   ='C:\Users\StellaPrins\Desktop\quench_timeline.xls';
 %%
 colors = get(groot,'DefaultAxesColorOrder');
 
@@ -138,7 +138,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%% QUENCHING OUTPUT
+%% QUENCHING OUTPUT 1
 
 resultsQuench           = createResultsQuenchStruct(cond);
 influx_rate             = zeros(1,conditionN);
@@ -179,19 +179,36 @@ max_rate_DMSO     = vertcat((horzcat(cellstr('max rate I entry (DMSO)'), ...
                     cellstr('std'))),num2cell([influx_rate_DMSO; influx_rate_DMSO_std]'));
 max_rate_DMSO_tp  = vertcat((horzcat(cellstr('timepoint at max rate I entry (DMSO)'), ...
                     cellstr('std'))),num2cell([influx_rate_DMSO_t; influx_rate_DMSO_t_std]'))
-           
+
 horzcat     (condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
              N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp)
 xlswrite    ([saveQuenchResultsHere],...
             [condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
-            N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp]);
-%         
-%  % TIMELINE
-% for k = 1:conditionN
-%     quenching_timeline(cond(k));
-%     results_quenching_timeline(k,:) = ;
-%    subplot(ceil(sqrt(conditionN)),ceil(sqrt(conditionN)),i)
-% end
+            N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp]);    
+        
+%% QUENCHING OUTPUT 2 (TIMELINE)
+
+ count_col1   = 0;
+ for i = 1:conditionN
+ count_F     = cond(i).quenchImageTestN;
+ count_DMSO  = cond(i).quenchImageControlN;
+ count_col1  = count_col1 + count_F*2+count_DMSO*2+8;
+ end
+ 
+ l      = cond(1).imageQuench.yelInsideOverT;
+ l      = length(l)+2;
+ space  = cell(l,count_col1);
+ count_col2                   = zeros(1,conditionN);
+for i = 1:conditionN
+    results_quenching_timeline  = quenching_timeline(cond(i)); 
+    count_F                     = cond(i).quenchImageTestN;
+    count_DMSO                  = cond(i).quenchImageControlN;
+    count_col2(1,i)             = count_F*2+count_DMSO*2+8;
+    space(:,1+sum(count_col2(1:i-1)):sum(count_col2(1:i)))=results_quenching_timeline;
+end
+
+xlswrite([saveQuenchingTimelineHere], [space]);
+
 
 %% QUENCHING PLOTS 
 close all
