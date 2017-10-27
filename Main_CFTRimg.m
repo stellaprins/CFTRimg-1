@@ -1,16 +1,18 @@
 clc;
 clear;
+addpath(genpath('functions'));
+addpath(genpath('input'));
 %% 
-inputDataQuenchStellaTestICL4; %the name of your input file
+inputDataTestKatie
+% inputDataQuenchStellaTestICL4; %the name of your input file
 saveWorkspaceHere = './quench23102017.mat';
 
 %%
 tic;
 close all
 imtool close all
-addpath(genpath('functions'));
 global SITEN BINNING EXTRA
-BINNING = 1 / 2;
+BINNING = 1 / 1;
 EXTRA = ceil(BINNING*20);
 
 %% IMPORT DATA
