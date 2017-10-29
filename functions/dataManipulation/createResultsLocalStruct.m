@@ -1,10 +1,20 @@
-function resultsStructArray = createResultsLocalStruct( conditionStructArray )
+function resultsStructArray = createResultsLocalStruct( plateStructArray )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
-conditionN = length(conditionStructArray);
+plateN = length(plateStructArray);
+
+% create cell array of mutations across all plates
+conditions = cell(0,1);
+for i=1:plateN
+	conditions = unique(horzcat(conditions,{plateStructArray(i).imageLocal.mutation}));
+end
+
+conditionN = length(conditions);
+
+
 resultsTemplate = struct(...
-			'mutation',[]...
+			'mutation',''...
 			,'yelEntire',[]...
 			,'yelMembrane',[]...
 			,'redEntire',[]...
@@ -12,20 +22,7 @@ resultsTemplate = struct(...
 		
 for i=1:conditionN
 	resultsStructArray(i) = resultsTemplate;
-end
-
-for i=1:conditionN
-	
-	condStruct = conditionStructArray(i);
-	
-	resultsStructArray(i).mutation = condStruct.mutation;
-	resultsStructArray(i).yelEntire = vertcat(condStruct.imageLocal.yelEntire);
-	resultsStructArray(i).yelMembrane = vertcat(condStruct.imageLocal.yelMembrane);
-	resultsStructArray(i).redEntire = vertcat(condStruct.imageLocal.redEntire);
-	
-	fullCellN = vertcat(condStruct.imageLocal.cellN);
-	resultsStructArray(i).localCellN = sum(fullCellN(:,end));
-	
+	resultsStructArray(i).mutation = conditions{i};
 end
 	
 end

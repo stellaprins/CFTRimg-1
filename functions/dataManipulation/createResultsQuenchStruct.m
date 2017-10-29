@@ -1,10 +1,20 @@
-function resultsStructArray = createResultsQuenchStruct( conditionStructArray )
+function resultsStructArray = createResultsQuenchStruct( plateStructArray )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
-conditionN = length(conditionStructArray);
+
+plateN = length(plateStructArray);
+
+% create cell array of mutations across all plates
+conditions = cell(0,1);
+for i=1:plateN
+	conditions = unique(horzcat(conditions,{plateStructArray(i).imageLocal.mutation}));
+end
+
+conditionN = length(conditions);
+
 resultsTemplate = struct(...
-			'mutation',[]...
+			'mutation',''...
 			,'maxGradTest',[]...
 			,'maxGradControl',[]...
 			,'maxGradTestLoc',[]...
@@ -12,42 +22,7 @@ resultsTemplate = struct(...
 		
 for i=1:conditionN
 	resultsStructArray(i) = resultsTemplate;
-end
-
-for i=1:conditionN
-	condStruct                      = conditionStructArray(i);
-	resultsStructArray(i).mutation  = condStruct.mutation;
-	testLogical                     = zeros(length(condStruct.imageQuench),1);
-    
-        for a = 1:length(condStruct.imageQuench)
-            testLogical(a) = strcmp(condStruct.imageQuench(a).test_control,'test');
-        end
-        
-	maxGradTest         = zeros(sum(testLogical),1);
-	maxGradControl      = zeros(length(testLogical) - sum(testLogical),1);
-	maxGradTestLoc      = zeros(sum(testLogical),1);
-	maxGradControlLoc   = zeros(length(testLogical) - sum(testLogical),1.);
-	maxGrad             = vertcat(condStruct.imageQuench.maxGradIodine);
-	maxGradLoc          = vertcat(condStruct.imageQuench.maxGradLocation);
-	counterTest         = 1;
-	counterControl      = 1;
-    
-        for a=1:length(testLogical)
-            if testLogical(a) == 1
-                maxGradTest(counterTest)            = maxGrad(a);
-                maxGradTestLoc(counterTest)         = maxGradLoc(a);
-                counterTest                         = counterTest + 1;
-            elseif testLogical(a) == 0
-                maxGradControl(counterControl)      = maxGrad(a);
-                maxGradControlLoc(counterControl)   = maxGradLoc(a);
-                counterControl                      = counterControl + 1;
-            end
-        end
-        
-	resultsStructArray(i).maxGradTest       = maxGradTest;
-	resultsStructArray(i).maxGradControl    = maxGradControl;
-	resultsStructArray(i).maxGradTestLoc    = maxGradTestLoc;
-	resultsStructArray(i).maxGradControlLoc = maxGradControlLoc;
+	resultsStructArray(i).mutation  = conditions{i};
 end
 
 end

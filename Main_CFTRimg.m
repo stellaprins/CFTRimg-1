@@ -2,13 +2,12 @@ clc;
 clear;
 addpath(genpath('functions'));
 addpath(genpath('input'));
-%% 
-inputDataTestKatie
-% inputDataQuenchStellaTestICL4; % the name of your input file
+%%
+inputDataTestKatie; % the name of your input file
 saveWorkspaceHere = './quench23102017.mat';
 
 %%
-tic;
+tic
 close all
 imtool close all
 global SITEN BINNING EXTRA
@@ -77,7 +76,15 @@ end
 disp('Completed quenching analysis');
 time(5) = toc;
 
-%%
+%% CREATE RESULTS STRUCTS
+
+resultsLocal	= createResultsLocalStruct(plate);
+resultsQuench = createResultsQuenchStruct(plate);
+
+% for i=1:length(resultsLocal)
+% 	resultsLocal(i) = filterNegativeMetric(resultsLocal(i));
+% end
+
 
 disp('Full analysis completed')
 save(saveWorkspaceHere)
