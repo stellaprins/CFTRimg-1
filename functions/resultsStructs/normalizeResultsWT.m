@@ -1,28 +1,32 @@
-function [ resultsStructArray ] = normalizeResultsWT( resultsStructArray )
+function normStruct = normalizeResultsWT( normStruct )
 %UNTITLED7 Summary of this function goes here
 %   Detailed explanation goes here
 
-conditionN = length(resultsStructArray);
-meanYFPMembrane	= zeros(conditionN,1);
-meanYFPEntire	= zeros(conditionN,1);
+cellN	= length(normStruct.mutation);
 
-for i=1:conditionN
-	
-	res = resultsStructArray(i);
-
-	meanYFPMembrane(i)	= mean(res.yelMembrane ./ res.redEntire);
-	meanYFPEntire(i)	= mean(res.yelEntire ./ res.redEntire);
-
+% create a vector giving true/false for whether each cell is 'WT'
+locationWT = zeros(cellN,1);
+for i = 1:cellN
+	locationWT(i) = strcmp('WT',normStruct.mutation{i});
 end
 
-normalizeMembrane = 1 / meanYFPMembrane(3);
-normalizeEntire = 1 / meanYFPEntire(3);
+% calculate metrics for WT condition (membrane and entire)
+%			Here we are normalizing to the mCherry
+yelEntireWT = locationWT .* normStruct.yelEntire;
+yelMembraneWT = locationWT .* normStruct.yelMembrane;
+redEntireWT = locationWT .* normStruct.redEntire;
 
-for i=1:conditionN
-	res = resultsStructArray(i);
-	resultsStructArray(i).yelMembrane = res.yelMembrane * normalizeMembrane;
-	resultsStructArray(i).yelEntire = res.yelEntire * normalizeEntire;
-end
+meanYFPMembraneWT	= nansum(yelMembraneWT ./ redEntireWT) / sum(locationWT);
+meanYFPEntireWT		= nansum(yelEntireWT ./ redEntireWT) / sum(locationWT);
+
+% calculate the normalization constant
+normalizeMembrane	= 1 / meanYFPMembraneWT;
+normalizeEntire		= 1 / meanYFPEntireWT;
+
+% multiply all cells (for all conditions) by normalization constant
+normStruct.yelMembrane	= normStruct.yelMembrane * normalizeMembrane;
+normStruct.yelEntire		= normStruct.yelEntire * normalizeEntire;
+
 
 end
 

@@ -79,21 +79,18 @@ time(5) = toc;
 %% CREATE RESULTS STRUCTS
 
 % move key values into temporary a structure
-%		this structure allows the negative results to be easily filter and
+%		this structure allows the negative results to be easily filtered and
 %		normalized between plates.
-tempResults = createNormalizeStruct(plate);
+tempResultsLocal = createNormalizeStruct(plate);
 
 for i=1:plateN
-	tempResults(i) = filterNegativeMetric(tempResults(i));
-% 	tempResults = normalizeResultsWT(tempResults);
+	tempResultsLocal(i) = filterNegativeMetric(tempResultsLocal(i));
+	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i));
 end
 
 % resultsLocal	= createResultsLocalStruct(plate);
 % resultsQuench = createResultsQuenchStruct(plate);
-% 
-% for i=1:length(resultsLocal)
-% 	resultsLocal = populateResultsLocal(resultsLocal,plate);
-% end
+
 
 disp('Full analysis completed')
 save(saveWorkspaceHere)
