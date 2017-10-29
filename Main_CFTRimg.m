@@ -4,7 +4,7 @@ addpath(genpath('functions'));
 addpath(genpath('input'));
 %% 
 inputDataTestKatie
-% inputDataQuenchStellaTestICL4; %the name of your input file
+% inputDataQuenchStellaTestICL4; % the name of your input file
 saveWorkspaceHere = './quench23102017.mat';
 
 %%
@@ -23,51 +23,55 @@ EXTRA = ceil(BINNING*20);
 	
 	plateN = length(plate);
 	
+	
 disp('Completed setting up data structures')
 time(1) = toc;
 
 %% SEGMENTATION
 close all
-for j=1:conditionN
- 	for i=1:cond(j).localImageN
-		cond(j).imageLocal(i) = imgSegmentWatershed(cond(j).imageLocal(i));
+for j=1:plateN
+	localImageN = length(plate(j).imageLocal);
+ 	for i=1:localImageN
+		plate(j).imageLocal(i) = imgSegmentWatershed(plate(j).imageLocal(i));
 	end
 end
-store = cond;
+store = plate;
 disp('Completed image segmentation')
 time(2) = toc;
 
 %% FILTERING
-cond = store;
-for j=1:conditionN
-	for i=1:cond(j).localImageN
-		cond(j).imageLocal(i).cellN = cond(j).imageLocal(i).cellN(1);
-		cond(j).imageLocal(i) = imgFilterEdges(cond(j).imageLocal(i));
-		cond(j).imageLocal(i) = imgFilterUnmasked(cond(j).imageLocal(i));
-		cond(j).imageLocal(i) = imgFilterCellDimensions(cond(j).imageLocal(i));
-		cond(j).imageLocal(i) = imgFilterRedGrad(cond(j).imageLocal(i));
+plate = store;
+for j=1:plateN
+	localImageN = length(plate(j).imageLocal);
+ 	for i=1:localImageN
+		plate(j).imageLocal(i).cellN = plate(j).imageLocal(i).cellN(1);
+		plate(j).imageLocal(i) = imgFilterEdges(plate(j).imageLocal(i));
+		plate(j).imageLocal(i) = imgFilterUnmasked(plate(j).imageLocal(i));
+		plate(j).imageLocal(i) = imgFilterCellDimensions(plate(j).imageLocal(i));
+		plate(j).imageLocal(i) = imgFilterRedGrad(plate(j).imageLocal(i));
 	end
 end
 disp('Completed cell filtering')
 time(3) = toc;
 
 %% DISTANCE MAP
-for j=1:conditionN
-	for i=1:cond(j).localImageN
-		cond(j).imageLocal(i) = imgFindBackground(cond(j).imageLocal(i));
-		cond(j).imageLocal(i) = distanceMap(cond(j).imageLocal(i));
+for j=1:plateN
+	localImageN = length(plate(j).imageLocal);
+ 	for i=1:localImageN
+		plate(j).imageLocal(i) = imgFindBackground(plate(j).imageLocal(i));
+		plate(j).imageLocal(i) = distanceMap(plate(j).imageLocal(i));
 	end
 end
 disp('Completed localisation distance maps')
 time(4) = toc;
 
 %% QUENCHING ANALYSIS
-for j=1:conditionN
-	quenchImageN = cond(j).quenchImageTestN + cond(j).quenchImageControlN;
-	for i=1:quenchImageN
-		cond(j).imageQuench(i) = findRedMaskChange(cond(j).imageQuench(i));
-		cond(j).imageQuench(i) = findYelInsideOverTime(cond(j).imageQuench(i));
-		cond(j).imageQuench(i) = calculateConcIodine(cond(j).imageQuench(i));
+for j=1:plateN
+	quenchImageN = size(plate(j).imageQuench,1);
+ 	for i=1:quenchImageN
+		plate(j).imageQuench(i) = findRedMaskChange(plate(j).imageQuench(i));
+		plate(j).imageQuench(i) = findYelInsideOverTime(plate(j).imageQuench(i));
+		plate(j).imageQuench(i) = calculateConcIodine(plate(j).imageQuench(i));
 	end
 end
 disp('Completed quenching analysis');

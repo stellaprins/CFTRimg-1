@@ -13,7 +13,7 @@ wellsTestN = length(wellsTest);
 wellsControlN = length(wellsControl);
 
 tmpTestArray						= cell(wellsTestN,1);
-tmpControlArray					= cell(wellControlN,1);
+tmpControlArray					= cell(wellsControlN,1);
 tmpRedPathArrayTest			= cell(wellsTestN,2);
 tmpYelPathArrayTest			= cell(wellsTestN,70);
 tmpRedPathArrayControl	= cell(wellsControlN,2);

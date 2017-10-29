@@ -4,13 +4,11 @@ function imageStructArray = createImageQuenchStruct(...
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
-testN = size(redPathArrayTest,1);
-controlN = size(redPathArrayControl,1);
-pathN = testN+controlN;
+pathN = size(redPathArray,1);
 
 imageTemplate = struct(...
-			'mutation',[]...
-			,'test_control',[]...
+			'mutation',''...
+			,'test_control',''...
 			,'redPath',{{}}...
 			,'yelPath',{{}}...
 			,'yelInsideOverT',[]...
@@ -21,16 +19,11 @@ imageTemplate = struct(...
 
 imageStructArray(1:pathN,1) = imageTemplate;
 
-for i=1:testN
-	imageStructArray(i).test_control = 'test';
-	imageStructArray(i).redPath = redPathArrayTest(i,:);
-	imageStructArray(i).yelPath = yelPathArrayTest(i,:);
-end
-
-for i=1:controlN
-	imageStructArray(testN+i).test_control = 'control';
-	imageStructArray(testN+i).redPath = redPathArrayControl(i,:);
-	imageStructArray(testN+i).yelPath = yelPathArrayControl(i,:);
+for i=1:pathN
+	imageStructArray(i).mutation = mutationArray{i};
+	imageStructArray(i).test_control = test_controlArray{i};
+	imageStructArray(i).redPath = redPathArray(i,:);
+	imageStructArray(i).yelPath = yelPathArray(i,:);
 end
 
 end
