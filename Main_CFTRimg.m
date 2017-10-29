@@ -88,8 +88,11 @@ for i=1:plateN
 	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i));
 end
 
-% resultsLocal	= createResultsLocalStruct(plate);
-% resultsQuench = createResultsQuenchStruct(plate);
+resultsLocal	= createResultsLocalStruct(tempResultsLocal);
+resultsQuench = createResultsQuenchStruct(plate);
+
+% resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);
+% resultsQuench = populateResultsQuench(resultsQuench,plate);
 
 
 disp('Full analysis completed')
