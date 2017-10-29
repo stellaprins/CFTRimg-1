@@ -17,13 +17,12 @@ EXTRA = ceil(BINNING*20);
 
 %% STRUCTURING DATA
 	SITEN = 1;
-	plate = createPlateStruct(exp);
-	plate = findImagePathsPLATE(exp,plate);
+	plate = createPlateStruct(exp); % creates an empty struct for each plate
+	plate = findImagePaths(exp,plate);	% collects the path names for each image
+																			% and creates a struct for each image
+	
 	plateN = length(plate);
 	
-% 	cond = createConditionStruct(exp);
-% 	cond = findImagePaths(exp,cond);
-%		conditionN = length(cond);
 disp('Completed setting up data structures')
 time(1) = toc;
 
@@ -63,9 +62,9 @@ disp('Completed localisation distance maps')
 time(4) = toc;
 
 %% QUENCHING ANALYSIS
-for j=1:conditionN;
+for j=1:conditionN
 	quenchImageN = cond(j).quenchImageTestN + cond(j).quenchImageControlN;
-	for i=1:quenchImageN;
+	for i=1:quenchImageN
 		cond(j).imageQuench(i) = findRedMaskChange(cond(j).imageQuench(i));
 		cond(j).imageQuench(i) = findYelInsideOverTime(cond(j).imageQuench(i));
 		cond(j).imageQuench(i) = calculateConcIodine(cond(j).imageQuench(i));
