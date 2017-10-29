@@ -83,10 +83,10 @@ time(5) = toc;
 %		normalized between plates.
 tempResults = createNormalizeStruct(plate);
 
-% for i=1:plateN
-% 	tempResults = filterNegativeMetric(tempResults);
+for i=1:plateN
+	tempResults(i) = filterNegativeMetric(tempResults(i));
 % 	tempResults = normalizeResultsWT(tempResults);
-% end
+end
 
 % resultsLocal	= createResultsLocalStruct(plate);
 % resultsQuench = createResultsQuenchStruct(plate);
