@@ -1,27 +1,26 @@
-clc;
-clear;
-addpath(genpath('functions'));
-addpath(genpath('input'));
+clc
+clear
+addpath(genpath('functions'))
+addpath(genpath('input'))
 %%
-inputDataTestKatie; % the name of your input file
+inputDataTestKatie % the name of your input file
 saveWorkspaceHere = './quench23102017.mat';
 
 %%
-tic
 close all
 imtool close all
 global SITEN BINNING EXTRA
+SITEN		= 1;
 BINNING = 1 / 1;
-EXTRA = ceil(BINNING*20);
+EXTRA		= ceil(BINNING*20);
 
 %% STRUCTURING DATA
-	SITEN = 1;
+tic
+
 	plate = createPlateStruct(exp); % creates an empty struct for each plate
 	plate = findImagePaths(exp,plate);	% collects the path names for each image
 																			% and creates a struct for each image
-	
 	plateN = length(plate);
-	
 	
 disp('Completed setting up data structures')
 time(1) = toc;
@@ -73,14 +72,12 @@ for j=1:plateN
 		plate(j).imageQuench(i) = calculateConcIodine(plate(j).imageQuench(i));
 	end
 end
-disp('Completed quenching analysis');
+disp('Completed quenching analysis')
 time(5) = toc;
 
 %% CREATE RESULTS STRUCTS
 
 % move key values into temporary a structure
-%		this structure allows the negative results to be easily filtered and
-%		normalized between plates.
 tempResultsLocal = createNormalizeStruct(plate);
 
 for i=1:plateN
@@ -91,9 +88,9 @@ end
 resultsLocal	= createResultsLocalStruct(tempResultsLocal);
 resultsQuench = createResultsQuenchStruct(plate);
 
-% resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);
+resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);
 % resultsQuench = populateResultsQuench(resultsQuench,plate);
 
-
+time(6) = toc;
 disp('Full analysis completed')
 save(saveWorkspaceHere)

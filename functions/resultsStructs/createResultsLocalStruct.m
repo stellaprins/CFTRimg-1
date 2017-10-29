@@ -20,10 +20,29 @@ resultsTemplate = struct(...
 			,'redEntire',[]...
 			,'localCellN',[]);
 		
+% find out how many cells per condition across all plates
+cellsPerConditionPlate = zeros(plateN,conditionN);
+for j=1:conditionN
+	currentCondition = conditions{j};
+	for i=1:plateN
+		compareCondition = strcmp(currentCondition,normStructArray(i).mutation);
+		cellsPerConditionPlate(i,j) = sum(compareCondition);
+	end
+end
+
+% fill results structs with empty arrays
 for i=1:conditionN
 	
 	resultsStructArray(i) = resultsTemplate;
 	resultsStructArray(i).mutation = conditions{i};
+	
+	cellN = sum(cellsPerConditionPlate(:,i));
+	resultsStructArray(i).localCellN = cellN;
+	
+	resultsStructArray(i).yelEntire		= zeros(cellN,1);
+	resultsStructArray(i).yelMembrane	= zeros(cellN,1);
+	resultsStructArray(i).redEntire		= zeros(cellN,1);
+	
 	
 end
 	
