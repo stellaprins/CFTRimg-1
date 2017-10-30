@@ -1,50 +1,52 @@
-function [ conditionStructArray ] = findImagePaths( ...
-	experimentStructArray,conditionStructArray)
-%UNTITLED5 Summary of this function goes here
-%   Detailed explanation goes here
+function [ plateStructArray ] = findImagePaths( ...
+	experimentStructArray,plateStructArray)
+%FINDIMAGEPATHS construct image paths from inputted data
+%   Cycles through all plates. For each plate, the appropriate experiments
+%   are selected. The path names are then constructed in
+%   'findImagePathsLocal' and 'findImagePathsQuench'. Using these arrays of
+%   path names, a struct is created for each image (or well for quenching
+%   experiments).
 
-conditionN = length(conditionStructArray);
+plateN = length(plateStructArray);
 experimentN = length(experimentStructArray);
 
-conditionStr = unique(horzcat(experimentStructArray.conditionStr));
+plateStr = unique(horzcat(experimentStructArray.plateStr));
 
-for j=1:conditionN
+for j=1:plateN
 	
-	currentCondition = conditionStr{j};
+	currentPlate = plateStr{j};
+	
+	mutationArray = cell(0);
+	test_controlArray = cell(0);
 	
 	redPathArrayLocal = cell(0);
 	yelPathArrayLocal = cell(0);
-
-	redPathArrayTest = cell(0,2);
-	yelPathArrayTest = cell(0,70);
 	
-	redPathArrayControl = cell(0,2);
-	yelPathArrayControl = cell(0,70);
+	redPathArrayQuench = cell(0,2);
+	yelPathArrayQuench = cell(0,70);
 	
 	for i=1:experimentN
 		
 		expStruct = experimentStructArray(i);
 		
-		cmpCondition = strcmp(expStruct.conditionStr,currentCondition);
-		conditionLoc = sum(cmpCondition .* (1:length(expStruct.conditionStr)));
+		cmpPlate = strcmp(expStruct.plateStr,currentPlate);
 		
-		if sum(cmpCondition == 1)
+		if sum(cmpPlate == 1)
 		
 			switch expStruct.local_quench
 
 				case 'local'
 
-					[redPathArrayLocal,yelPathArrayLocal] = ...
-					findImagePathsLocal(conditionLoc,expStruct...
+					[mutationArray,redPathArrayLocal,yelPathArrayLocal] = ...
+					findImagePathsLocal(expStruct,mutationArray...
 					,redPathArrayLocal,yelPathArrayLocal);
 
 				case 'quench'
 
-					[redPathArrayTest,yelPathArrayTest,...
-					redPathArrayControl,yelPathArrayControl] = ...
-					findImagePathsQuench(conditionLoc,expStruct...
-					,redPathArrayTest,yelPathArrayTest...
-					,redPathArrayControl,yelPathArrayControl);
+					[mutationArray,test_controlArray,...
+						redPathArrayQuench,yelPathArrayQuench] = ...
+					findImagePathsQuench(expStruct,mutationArray,test_controlArray...
+					,redPathArrayQuench,yelPathArrayQuench);
 
 				otherwise
 					fprintf(strcat('In experimentStruct %d, exp(%d).local_quench',...
@@ -55,18 +57,12 @@ for j=1:conditionN
 		
 	end
 	
-	conditionStructArray(j).imageLocal = createImageLocalStruct(...
-		redPathArrayLocal,yelPathArrayLocal);
-	conditionStructArray(j).localImageN = length(redPathArrayLocal);
+	plateStructArray(j).imageLocal = createImageLocalStruct(mutationArray...
+		,redPathArrayLocal,yelPathArrayLocal);
 	
-	testN = size(redPathArrayTest,1);
-	controlN = size(redPathArrayControl,1);
-	conditionStructArray(j).quenchImageTestN = testN;
-	conditionStructArray(j).quenchImageControlN = controlN;
-	
-	conditionStructArray(j).imageQuench = ...
-		createImageQuenchStruct(redPathArrayTest,yelPathArrayTest...
-		,redPathArrayControl,yelPathArrayControl);
+	plateStructArray(j).imageQuench = ...
+		createImageQuenchStruct(mutationArray,test_controlArray...
+		,redPathArrayQuench,yelPathArrayQuench);
 	
 end
 
