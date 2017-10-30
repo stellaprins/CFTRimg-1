@@ -89,7 +89,7 @@ resultsLocal	= createResultsLocalStruct(tempResultsLocal);
 resultsQuench = createResultsQuenchStruct(plate);
 
 resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);
-% resultsQuench = populateResultsQuench(resultsQuench,plate);
+resultsQuench = populateResultsQuench(resultsQuench,plate);
 
 time(6) = toc;
 disp('Full analysis completed')
