@@ -1,21 +1,21 @@
-function [results] = quenching_timeline (conditionStruct)
-yelN            = 70;
-testN			= conditionStruct.quenchImageTestN;
-controlN        = conditionStruct.quenchImageControlN;
-yelTest			= zeros(yelN,testN);
+function [results] = quenching_timeline (resultsStruct)
+yelN          = 70;
+testN					= length(resultsStruct.maxGradTest);
+controlN      = length(resultsStruct.maxGradControl);
+yelTest				= zeros(yelN,testN);
 yelControl		= zeros(yelN,testN);
-countTest		= 1;
-countControl    = 1;
+countTest			= 1;
+countControl	= 1;
 
 % test=forskolin, control=dmso
-for i = 1:(testN+controlN)
-	if      strcmp(conditionStruct.imageQuench(i).test_control,'test')
-            yelTest(:,countTest)        = conditionStruct.imageQuench(i).yelInsideOverT;
-            countTest                   = countTest + 1;
-    elseif  strcmp(conditionStruct.imageQuench(i).test_control,'control')
-            yelControl(:,countControl)  = conditionStruct.imageQuench(i).yelInsideOverT;
-            countControl                = countControl + 1;
-    end
+for i=1:testN
+   yelTest(:,countTest) = resultsStruct.yelInsideOverTTest(i,:);
+   countTest            = countTest + 1;
+end
+
+for i=1:controlN
+	yelControl(:,countControl)	= resultsStruct.yelInsideOverTControl(i,:);
+	countControl                = countControl + 1;
 end
 	
 yelControl( :, all(~yelControl,1) )     = []; %remove all columns with only zeros
@@ -52,7 +52,7 @@ end
 change_iodine_conc_F_mean = zeros(length(change_iodine_conc_F),1);
 change_iodine_conc_F_std  = zeros(length(change_iodine_conc_F),1);
 
-for j = 1:length(change_iodine_conc_F);
+for j = 1:length(change_iodine_conc_F)
     change_iodine_conc_F_mean(j) = mean(change_iodine_conc_F(j,:));
     change_iodine_conc_F_std(j)  = std(change_iodine_conc_F(j,:));
 end
@@ -60,7 +60,7 @@ end
 change_iodine_conc_DMSO_mean = zeros(length(change_iodine_conc_DMSO),1);
 change_iodine_conc_DMSO_std  = zeros(length(change_iodine_conc_DMSO),1);
 
-for j = 1:length(change_iodine_conc_DMSO);
+for j = 1:length(change_iodine_conc_DMSO)
     change_iodine_conc_DMSO_mean(j) = mean(change_iodine_conc_DMSO(j,:));
     change_iodine_conc_DMSO_std(j)  = std(change_iodine_conc_DMSO(j,:));
 end
@@ -92,11 +92,11 @@ std_per_cond_DMSO   =   vertcat(cellstr('std'),num2cell([errYelControl]));
 rate_cond_DMSO_std  =    vertcat(cellstr('std')...
                         ,num2cell([change_iodine_conc_DMSO_std]));                
                  
-count_F             = conditionStruct.quenchImageTestN;
-count_DMSO          = conditionStruct.quenchImageControlN;
+count_F             = testN;
+count_DMSO          = controlN;
 count_col           = count_F*2+count_DMSO*2+8;
 header_condition    = cell(1,count_col);
-header_condition(1) = cellstr(conditionStruct.mutation);
+header_condition(1) = cellstr(resultsStruct.mutation);
 
 results_F           =   horzcat(per_well_F, per_cond_F,std_per_cond_F,...
                         rate_well_F, rate_cond_F, rate_cond_F_std);

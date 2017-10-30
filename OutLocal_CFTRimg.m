@@ -1,11 +1,11 @@
 
 saveLocalResultsHere        ='~/Desktop/outputLocal.xls';
 
-%%
+conditionN = length(resultsLocal);
+
 colors = get(groot,'DefaultAxesColorOrder');
 
 %% LOCALISATION OUTPUT
-conditionN = length(resultsLocal);
 
 meanYFPEntire			= zeros(1,conditionN);
 meanYFPMembrane   = zeros(1,conditionN);
@@ -32,6 +32,7 @@ outputResultsLocalToExcel(resultsLocal,saveLocalResultsHere)
 
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
+
 
 for b  = 1:length(cond)
     MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;

@@ -18,13 +18,15 @@ for k=1:conditionN
 			if strcmp(well.mutation,currentCondition)
 				switch well.test_control
 					case 'test'
-						res.maxGradTest(countTest)					= well.maxGradIodine;
-						res.maxGradTestLoc(countTest)				= well.maxGradLocation;
-						countTest														= countTest + 1;
+						res.maxGradTest(countTest)							= well.maxGradIodine;
+						res.maxGradTestLoc(countTest)						= well.maxGradLocation;
+						res.yelInsideOverTTest(countTest,:)			= well.yelInsideOverT';
+						countTest																= countTest + 1;
 					case 'control'
-						res.maxGradControl(countControl)    = well.maxGradIodine;
-						res.maxGradControlLoc(countControl)	= well.maxGradLocation;
-						countControl												= countControl + 1;
+						res.maxGradControl(countControl)				= well.maxGradIodine;
+						res.maxGradControlLoc(countControl)			= well.maxGradLocation;
+						res.yelInsideOverTControl(countControl,:)	= well.yelInsideOverT';
+						countControl														= countControl + 1;
 				end
 			end
 		end

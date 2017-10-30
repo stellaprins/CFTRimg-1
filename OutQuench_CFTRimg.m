@@ -2,6 +2,8 @@
 saveQuenchResultsHere       ='C:\Users\StellaPrins\Desktop\quench_demo.xls';
 saveQuenchingTimelineHere   ='C:\Users\StellaPrins\Desktop\quench_timeline.xls';
 
+conditionN = length(resultsQuench);
+
 %% QUENCHING OUTPUT 1
 
 influx_rate             = zeros(1,conditionN);
@@ -36,38 +38,39 @@ N_quench_F        = vertcat(cellstr('N'),num2cell([Quench_N]'));
 max_rate_F        = vertcat((horzcat(cellstr('max rate I entry (F)'), ...
                     cellstr('std'))),num2cell([influx_rate; influx_rate_std]'));
 max_rate_F_tp     = vertcat((horzcat(cellstr('timepoint at max rate I entry (F)'), ...
-                    cellstr('std'))),num2cell([influx_rate_t; influx_rate_t_std]'))       
+                    cellstr('std'))),num2cell([influx_rate_t; influx_rate_t_std]'));
 N_quench_DMSO     = vertcat(cellstr('N'),num2cell([Quench_DMSO_N]'));
 max_rate_DMSO     = vertcat((horzcat(cellstr('max rate I entry (DMSO)'), ...
                     cellstr('std'))),num2cell([influx_rate_DMSO; influx_rate_DMSO_std]'));
 max_rate_DMSO_tp  = vertcat((horzcat(cellstr('timepoint at max rate I entry (DMSO)'), ...
-                    cellstr('std'))),num2cell([influx_rate_DMSO_t; influx_rate_DMSO_t_std]'))
+                    cellstr('std'))),num2cell([influx_rate_DMSO_t; influx_rate_DMSO_t_std]'));
 
 horzcat     (condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
              N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp)
-xlswrite    ([saveQuenchResultsHere],...
+xlswrite    (saveQuenchResultsHere,...
             [condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
             N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp]);    
         
 %% QUENCHING OUTPUT 2 (TIMELINE)
 
- count_col1   = 0;
- for i = 1:conditionN
- count_F     = cond(i).quenchImageTestN;
- count_DMSO  = cond(i).quenchImageControlN;
- count_col1  = count_col1 + count_F*2+count_DMSO*2+8;
- end
- 
- l      = cond(1).imageQuench.yelInsideOverT;
- l      = length(l)+2;
- space  = cell(l,count_col1);
- count_col2                   = zeros(1,conditionN);
+count_col1   = 0;
 for i = 1:conditionN
-    results_quenching_timeline  = quenching_timeline(cond(i)); 
-    count_F                     = cond(i).quenchImageTestN;
-    count_DMSO                  = cond(i).quenchImageControlN;
-    count_col2(1,i)             = count_F*2+count_DMSO*2+8;
-    space(:,1+sum(count_col2(1:i-1)):sum(count_col2(1:i)))=results_quenching_timeline;
+	count_F     = length(resultsQuench(i).maxGradTest);
+	count_DMSO  = length(resultsQuench(i).maxGradControl);
+	count_col1  = count_col1 + count_F*2+count_DMSO*2+8;
+end
+
+l      = vertcat(resultsQuench(1).yelInsideOverTTest...
+	,resultsQuench(1).yelInsideOverTControl);
+l      = length(l)+2;
+space  = cell(l,count_col1);
+count_col2                   = zeros(1,conditionN);
+for i = 1:conditionN
+	results_quenching_timeline  = quenching_timeline(resultsQuench(i));
+	count_F                     = length(resultsQuench(i).maxGradTest);
+	count_DMSO                  = length(resultsQuench(i).maxGradControl);
+	count_col2(1,i)             = count_F*2+count_DMSO*2+8;
+	space(:,1+sum(count_col2(1:i-1)):sum(count_col2(1:i)))=results_quenching_timeline;
 end
 
 xlswrite([saveQuenchingTimelineHere], [space]);
@@ -75,18 +78,11 @@ xlswrite([saveQuenchingTimelineHere], [space]);
 
 %% QUENCHING PLOTS 
 close all
-ymin = zeros(conditionN,1);
-ymax = zeros(conditionN,1);
-
-for i=1:conditionN
-	ymin(i) = min(vertcat(cond(i).imageQuench.yelInsideOverT));
-	ymax(i) = max(vertcat(cond(i).imageQuench.yelInsideOverT));
-end
 
 figure;
 for i=1:conditionN
-   subplot(ceil(sqrt(conditionN)),ceil(sqrt(conditionN)),i)
-   plotYelOverTimeCollated(cond(i))
+	subplot(ceil(sqrt(conditionN)),ceil(sqrt(conditionN)),i)
+		plotYelOverTimeCollated(resultsQuench(i))
 end
 
 plotMaxGradBarChart(resultsQuench)
@@ -99,7 +95,7 @@ end
 %% STATISTICS
 close all
 statsDataQuench = horzcat(resultsQuench.maxGradTest);
-[pKWQuench,tblKWQuench,statsKWQuench] = kruskalwallis(statsDataQuench)
+[pKWQuench,tblKWQuench,statsKWQuench] = kruskalwallis(statsDataQuench);
 figure
 [cQuench,mQuench] = multcompare(statsKWQuench,'CType','dunn-sidak');
 

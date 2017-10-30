@@ -18,7 +18,9 @@ resultsTemplate = struct(...
 			,'maxGradTest',[]...
 			,'maxGradControl',[]...
 			,'maxGradTestLoc',[]...
-			,'maxGradControlLoc',[]);
+			,'maxGradControlLoc',[]...
+			,'yelInsideOverTTest',[]...
+			,'yelInsideOverTControl',[]);
 		
 % find out how many wells per condition across all plates
 wellsPerConditionPlateTest = zeros(plateN,conditionN);
@@ -39,6 +41,7 @@ for k=1:conditionN
 							wellsPerConditionPlateControl(j,k) + 1;
 				end
 			end
+		end
 	end
 end
 		
@@ -50,10 +53,12 @@ for i=1:conditionN
 	wellTestN			= sum(wellsPerConditionPlateTest(:,i));
 	wellControlN	= sum(wellsPerConditionPlateControl(:,i));
 	
-	resultsStructArray(i).maxGradTest				= zeros(wellTestN,1);
-	resultsStructArray(i).maxGradTestLoc		= zeros(wellTestN,1);
-	resultsStructArray(i).maxGradControl		= zeros(wellControlN,1);
-	resultsStructArray(i).maxGradControlLoc = zeros(wellControlN,1);
+	resultsStructArray(i).maxGradTest						= zeros(wellTestN,1);
+	resultsStructArray(i).maxGradTestLoc				= zeros(wellTestN,1);
+	resultsStructArray(i).yelInsideOverTTest		= zeros(wellTestN,70);
+	resultsStructArray(i).maxGradControl				= zeros(wellControlN,1);
+	resultsStructArray(i).maxGradControlLoc			= zeros(wellControlN,1);
+	resultsStructArray(i).yelInsideOverTControl = zeros(wellControlN,70);
 	
 end
 
