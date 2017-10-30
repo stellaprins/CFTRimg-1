@@ -27,6 +27,7 @@ plot([40 40],[0 1.3],':k','markersize',1)
 % a2=annotation('textbox',[0.38 0.22 0.05 0.05],'string',sprintf('Forskolin\naddition'),'fitboxtotext','on');
 ylim([0 1.3])
 xlim([-5 140])
+
 title(resultsStruct.mutation)
 xlhand = get(gca,'xlabel');
 set(xlhand,'string','Time (s)','fontsize',10)
