@@ -34,28 +34,28 @@ outputResultsLocalToExcel(resultsLocal,saveLocalResultsHere)
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
 
 
-for b  = 1:length(cond)
-    MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
-    subplot(ceil(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
-    qqplot(MembraneDensity);
-    yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
-	set(yLab,'fontsize',9)
-    xLab = xlabel(sprintf('Standard Normal Quantiles'));
-    set(xLab,'fontsize',8)
-    title(cond(b).mutation);
+for b  = 1:conditionN
+	MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
+	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
+		qqplot(MembraneDensity);
+		yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
+		set(yLab,'fontsize',9)
+		xLab = xlabel(sprintf('Standard Normal Quantiles'));
+		set(xLab,'fontsize',8)
+		title(resultsLocal(b).mutation);
 end
 
 figure;
 
-for b  = 1:length(cond)
-    MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
-    subplot(ceil(sqrt((length(cond)/2))),round(sqrt((length(cond)*2))),b);
-    hist(MembraneDensity);
-    xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
-	set(xLab,'fontsize',9)
-	yLab = ylabel('Frequency');
-	set(yLab,'fontsize',8)
-    title(cond(b).mutation);
+for b  = 1:conditionN
+	MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
+	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
+		hist(MembraneDensity);
+		xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
+		set(xLab,'fontsize',9)
+		yLab = ylabel('Frequency');
+		set(yLab,'fontsize',8)
+		title(resultsLocal(b).mutation);
 end
 
 %% STATISTICS
@@ -101,29 +101,29 @@ end
 close all
 
 x=1; % condition
-y=5; % image number
+y=1; % image number
 
-boundingBox1 = cond(x).imageLocal(y).boundingBox(3,:);
-boundingBox2 = cond(x).imageLocal(y).boundingBox(1,:);
-boundingBox3 = cond(x).imageLocal(y).boundingBox(3,:);
-imgDisplayRectangle(cond(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+boundingBox1 = plate(x).imageLocal(y).boundingBox(3,:);
+boundingBox2 = plate(x).imageLocal(y).boundingBox(1,:);
+boundingBox3 = plate(x).imageLocal(y).boundingBox(3,:);
+imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 
 %% CELL DISPLAY
 close all
 
 x=1; % condition
-y=4; % image number
+y=1; % image number
 
-for i=4:6 %cond(x).imageLocal(y).cellN(end)
+for i=4:6 %plate(x).imageLocal(y).cellN(end)
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
-	cellDisplay(cond(x).imageLocal(y),'red',i)
+	cellDisplay(plate(x).imageLocal(y),'red',i)
 	subplot(3,3,2)
-	cellDisplay(cond(x).imageLocal(y),'yel',i)
+	cellDisplay(plate(x).imageLocal(y),'yel',i)
 	subplot(3,3,3)
-	cellDisplay(cond(x).imageLocal(y),'bw',i)
+	cellDisplay(plate(x).imageLocal(y),'bw',i)
 	subplot(3,1,[2,3],'position',[0.12 0.1 0.74 0.54])
-	plotFOverDistance(cond(x).imageLocal(y),i)
+	plotFOverDistance(plate(x).imageLocal(y),i)
 end
 
 
