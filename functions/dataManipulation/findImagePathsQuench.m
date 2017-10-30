@@ -1,45 +1,75 @@
-function [ redPathArrayTest,yelPathArrayTest...
-	,redPathArrayControl,yelPathArrayControl] = findImagePathsQuench( ...
-	conditionLocation,experimentStruct...
-	,redPathArrayTest,yelPathArrayTest...
-	,redPathArrayControl,yelPathArrayControl)
+function [ mutationArray,test_controlArray,redPathArray,yelPathArray] = ...
+	findImagePathsQuench(experimentStruct,mutationArray,test_controlArray ...
+	,redPathArray,yelPathArray)
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 
 redTimePoints = {'1','70'};
 
-wellsTest = {experimentStruct.condWells{conditionLocation,:}};
-wellsControl = {experimentStruct.condWellsControl{conditionLocation,:}};
+wellsTest = {experimentStruct.condWells{:}};
+wellsControl = {experimentStruct.condWellsControl{:}};
 
-wellsTestN = sum(~cellfun(@isempty,experimentStruct.condWells(conditionLocation,:)));
-wellsControlN = sum(~cellfun(@isempty,experimentStruct.condWellsControl(conditionLocation,:)));
+wellsTestN = length(wellsTest);
+wellsControlN = length(wellsControl);
 
-tmpRedPathArrayTest = cell(wellsTestN,2);
-tmpYelPathArrayTest = cell(wellsTestN,70);
-tmpRedPathArrayControl = cell(wellsControlN,2);
-tmpYelPathArrayControl = cell(wellsControlN,70);
+tmpTestArray						= cell(wellsTestN,1);
+tmpControlArray					= cell(wellsControlN,1);
+tmpRedPathArrayTest			= cell(wellsTestN,2);
+tmpYelPathArrayTest			= cell(wellsTestN,70);
+tmpRedPathArrayControl	= cell(wellsControlN,2);
+tmpYelPathArrayControl	= cell(wellsControlN,70);
+
+tmpMutationArray				= cell(wellsTestN,1);
 
 for j=1:wellsTestN
 
+	% construct the path names for the test condition wells
 	[tmpRedPathArrayTest,tmpYelPathArrayTest] = ...
 		constructPathNameQuench(experimentStruct,wellsTest,j,redTimePoints...
 		,tmpRedPathArrayTest,tmpYelPathArrayTest);
+	
+	% create constant array of 'test' labels
+	tmpTestArray{j} = 'test';
+	
+	% find current mutation for this well
+	locationMatrix = strcmp(wellsTest{j},experimentStruct.condWells);
+	for i=1:size(experimentStruct.condWells,1)
+		if sum(locationMatrix(i,:)) == 1
+			tmpMutationArray{j} = experimentStruct.conditionStr{i};
+		end
+	end
 
 end
 
-for j=1:wellsControlN
+mutationArray = [mutationArray; tmpMutationArray];
 
+tmpMutationArray				= cell(wellsControlN,1);
+
+for j=1:wellsControlN
+ 
+	% construct the path names for the control condition wells
 	[tmpRedPathArrayControl,tmpYelPathArrayControl] = ...
 		constructPathNameQuench(experimentStruct,wellsControl,j,redTimePoints...
 		,tmpRedPathArrayControl,tmpYelPathArrayControl);
+	
+	% create constant array of 'control' labels
+	tmpControlArray{j} = 'control';
+	
+	% find current mutation for this well
+	locationMatrix = strcmp(wellsControl{j},experimentStruct.condWellsControl);
+	for i=1:size(experimentStruct.condWellsControl,1)
+		if sum(locationMatrix(i,:)) == 1
+			tmpMutationArray{j} = experimentStruct.conditionStr{i};
+		end
+	end
 
 end
 
-redPathArrayTest = [redPathArrayTest; tmpRedPathArrayTest];
-yelPathArrayTest = [yelPathArrayTest; tmpYelPathArrayTest];
+mutationArray = [mutationArray; tmpMutationArray];
+test_controlArray = [test_controlArray; tmpTestArray; tmpControlArray];
 
-redPathArrayControl = [redPathArrayControl; tmpRedPathArrayControl];
-yelPathArrayControl = [yelPathArrayControl; tmpYelPathArrayControl];
+redPathArray = [redPathArray; tmpRedPathArrayTest; tmpRedPathArrayControl];
+yelPathArray = [yelPathArray; tmpYelPathArrayTest; tmpYelPathArrayControl];
 
 end
 
