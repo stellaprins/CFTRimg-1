@@ -28,7 +28,6 @@ for j=1:plateN
 			,plateStruct.imageLocal(i).yelMembrane);
 		normStructArray(j).redEntire = vertcat(normStructArray(j).redEntire...
 			,plateStruct.imageLocal(i).redEntire);
-		
 	end
 	
 end

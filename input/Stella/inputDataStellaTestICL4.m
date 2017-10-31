@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 experimentN = 9;
-exp = createExperimentStruct(experimentN);
+exp			= createExperimentStruct(experimentN);
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -10,7 +10,12 @@ exp = createExperimentStruct(experimentN);
     exp(1).local_quench = 'local';
     exp(1).filePrefix   = 'Stella YFP mCh 60x localisation 30-06-2017_';
 	
-    exp(1).conditionStr = {'F508del/G1069W','F508del/G1069Y',...
+		% THESE ARE THE REAL CONDITIONS OF THIS PLATE
+% % %     exp(1).conditionStr = {'F508del/G1069W','F508del/G1069Y',...
+% % %     'F508del/G1069F','F508del/G1069H','F508del/G1069Q','F508del/G1069M',...
+% % %     'F508del/R1070Y','F508del/R1070F','F508del/R1070H'};
+
+    exp(1).conditionStr = {'WT','F508del/G1069Y',...
     'F508del/G1069F','F508del/G1069H','F508del/G1069Q','F508del/G1069M',...
     'F508del/R1070Y','F508del/R1070F','F508del/R1070H'};
 	exp(1).condWells(2,:) = {'B03'};
