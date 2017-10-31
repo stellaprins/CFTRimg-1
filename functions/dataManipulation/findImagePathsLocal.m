@@ -12,9 +12,9 @@ fileFolder = fullfile(experimentStruct.baseFolder...
 wells = {experimentStruct.condWells{:}};
 wellN = length(wells);
 
-tmpMutationArray = cell(wellN*SITEN,1);
-tmpRedPathArray = cell(wellN*SITEN,1);
-tmpYelPathArray = cell(wellN*SITEN,1);
+tmpMutationArray	= cell(wellN*SITEN,1);
+tmpRedPathArray		= cell(wellN*SITEN,1);
+tmpYelPathArray		= cell(wellN*SITEN,1);
 
 for j=1:wellN
 

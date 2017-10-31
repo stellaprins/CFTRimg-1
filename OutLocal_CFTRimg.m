@@ -1,9 +1,8 @@
 
-saveLocalResultsHere        ='~/Desktop/outputLocal.xls';
+saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\localtest2plates.xls';
 
-conditionN = length(resultsLocal);
-
-colors = get(groot,'DefaultAxesColorOrder');
+conditionN						= length(resultsLocal);
+colors								= get(groot,'DefaultAxesColorOrder');
 
 %% LOCALISATION OUTPUT
 
@@ -17,7 +16,7 @@ meanRedEntire     = zeros(1,conditionN);
 stdRedEntire			= zeros(1,conditionN);
 
 for i=1:conditionN
-	res = resultsLocal(i);
+	res										= resultsLocal(i);
 	meanYFPEntire(i)			= mean(res.yelEntire ./ res.redEntire);
 	stdYFPEntire(i)				= std(res.yelEntire ./ res.redEntire);
 	meanYFPMembrane(i)		= mean(res.yelMembrane ./ res.redEntire);
@@ -27,12 +26,18 @@ for i=1:conditionN
 	meanRedEntire(i)      = mean(res.redEntire);
 	stdRedEntire(i)       = std(res.redEntire);
 end
+			
+%outputResultsLocalToExcel(resultsLocal,saveLocalResultsHere)
+condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
+N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
+Ymem        = vertcat((horzcat(cellstr('Membrane density'), ...
+              cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
+results			=	horzcat(condition,N,Ymem)
 
-outputResultsLocalToExcel(resultsLocal,saveLocalResultsHere)
+xlswrite(saveLocalResultsHere,results);
 
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
-
 
 for b  = 1:conditionN
 	MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
@@ -111,10 +116,10 @@ imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 %% CELL DISPLAY
 close all
 
-x=1; % condition
-y=1; % image number
+x=1; % plate
+y=3; % image number
 
-for i=4:6 %plate(x).imageLocal(y).cellN(end)
+for i=1 %plate(x).imageLocal(y).cellN(end)
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)
@@ -125,9 +130,3 @@ for i=4:6 %plate(x).imageLocal(y).cellN(end)
 	subplot(3,1,[2,3],'position',[0.12 0.1 0.74 0.54])
 	plotFOverDistance(plate(x).imageLocal(y),i)
 end
-
-
-
-
-
-

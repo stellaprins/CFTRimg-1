@@ -14,9 +14,9 @@ plateStr = unique(horzcat(experimentStructArray.plateStr));
 
 for j=1:plateN
 	
-	currentPlate = plateStr{j};
+	currentPlate			= plateStr{j};
 	
-	mutationArray = cell(0);
+	mutationArray			= cell(0);
 	test_controlArray = cell(0);
 	
 	redPathArrayLocal = cell(0);
