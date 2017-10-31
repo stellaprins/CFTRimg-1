@@ -7,9 +7,13 @@ function [ mutationArray,test_controlArray,redPathArray,yelPathArray] = ...
 redTimePoints = {'1','70'};
 
 wellsTest = {experimentStruct.condWells{:}};
-wellsControl = {experimentStruct.condWellsControl{:}};
-
+emptyCellsTest = cellfun('isempty',wellsTest);
+wellsTest(emptyCellsTest) = [];
 wellsTestN = length(wellsTest);
+
+wellsControl = {experimentStruct.condWellsControl{:}};
+emptyCellsControl = cellfun('isempty',wellsControl);
+wellsControl(emptyCellsControl) = [];
 wellsControlN = length(wellsControl);
 
 tmpTestArray						= cell(wellsTestN,1);
