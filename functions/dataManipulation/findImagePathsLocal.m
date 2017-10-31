@@ -10,6 +10,8 @@ fileFolder = fullfile(experimentStruct.baseFolder...
 	,'TimePoint_1');
 
 wells = {experimentStruct.condWells{:}};
+emptyCells = cellfun('isempty',wells);
+wells(emptyCells) = [];
 wellN = length(wells);
 
 tmpMutationArray = cell(wellN*SITEN,1);
