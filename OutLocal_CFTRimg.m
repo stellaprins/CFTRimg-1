@@ -108,8 +108,8 @@ close all
 x=1; % condition
 y=1; % image number
 
-boundingBox1 = plate(x).imageLocal(y).boundingBox(3,:);
-boundingBox2 = plate(x).imageLocal(y).boundingBox(1,:);
+boundingBox1 = plate(x).imageLocal(y).boundingBox(1,:);
+boundingBox2 = plate(x).imageLocal(y).boundingBox(2,:);
 boundingBox3 = plate(x).imageLocal(y).boundingBox(3,:);
 imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 
