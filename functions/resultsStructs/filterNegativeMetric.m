@@ -1,41 +1,53 @@
-function [ normStruct ] = filterNegativeMetric( normStruct )
+function imageStruct = filterNegativeMetric( imageStruct )
 %UNTITLED7 Summary of this function goes here
 %   Detailed explanation goes here
 
-cellN = length(normStruct.mutation);
+cellN = imageStruct.cellN(end);
 
-yelEntireCompare		= normStruct.yelEntire < 0;
-yelMembraneCompare	= normStruct.yelMembrane < 0;
-redEntireCompare		= normStruct.redEntire < 0;
+yelEntireCompare		= imageStruct.yelEntire < 0;
+yelMembraneCompare	= imageStruct.yelMembrane < 0;
+redEntireCompare		= imageStruct.redEntire < 0;
 
 toDelete = yelEntireCompare | yelMembraneCompare | redEntireCompare;
 
 newCellN				= cellN - sum(toDelete);
 
-newMutation			= cell(newCellN,1);
-newYelEntire		= zeros(newCellN,1);
-newYelMembrane	= zeros(newCellN,1);
+newBoundingBox	= zeros(newCellN,4);
 newRedEntire		= zeros(newCellN,1);
+newRedOutside		= zeros(newCellN,1);
+newYelEntire		= zeros(newCellN,1);
+newYelOutside		= zeros(newCellN,1);
+newYelMembrane	= zeros(newCellN,1);
+newYelInterior	= zeros(newCellN,1);
 
 counter = 1;
 for i=1:cellN
 	
 	if toDelete(i) == 0
 		
-		newMutation(counter)		= normStruct.mutation(i);
-		newYelEntire(counter)		= normStruct.yelEntire(i);
-		newYelMembrane(counter) = normStruct.yelMembrane(i);
-		newRedEntire(counter)		= normStruct.redEntire(i);
+		newBoundingBox(counter,:)		= imageStruct.boundingBox(i,:);
+		newRedEntire(counter)				= imageStruct.redEntire(i);
+		newRedOutside(counter)			= imageStruct.redOutside(i);
+		newYelEntire(counter)				= imageStruct.yelEntire(i);
+		newYelOutside(counter)			= imageStruct.yelOutside(i);
+		newYelMembrane(counter)			= imageStruct.yelMembrane(i);
+		newYelInterior(counter)			= imageStruct.yelInterior(i);
+		
 		counter = counter + 1;
 		
 	end
 
 end
 
-normStruct.mutation			= newMutation;
-normStruct.yelEntire		= newYelEntire;
-normStruct.yelMembrane	= newYelMembrane;
-normStruct.redEntire		= newRedEntire;
+imageStruct.boundingBox			= newBoundingBox;
+imageStruct.redEntire				= newRedEntire;
+imageStruct.redOutside			= newRedOutside;
+imageStruct.yelEntire				= newYelEntire;
+imageStruct.yelEntire				= newYelEntire;
+imageStruct.yelMembrane			= newYelMembrane;
+imageStruct.yelEntire				= newYelEntire;
+imageStruct.cellN(1,end+1)	= newCellN;
 
 end
+
 
