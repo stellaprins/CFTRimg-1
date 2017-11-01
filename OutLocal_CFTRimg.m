@@ -105,21 +105,34 @@ end
 %% IMAGE DISPLAY
 close all
 
-x=1; % condition
+x=1; % plate
 y=1; % image number
 
-boundingBox1 = plate(x).imageLocal(y).boundingBox(1,:);
-boundingBox2 = plate(x).imageLocal(y).boundingBox(2,:);
-boundingBox3 = plate(x).imageLocal(y).boundingBox(3,:);
+fprintf('\nImage %d on plate %d has %d cells.\n'...
+	,y,x,plate(x).imageLocal(y).cellN(end))
+
+% display the image
+figure
+imgDisplay(plate(x).imageLocal(y),'yel')
+
+% display image with 2 cells boxed
+cell1 = 1;
+cell2 = 4;
+boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
+boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
+figure
 imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 
 %% CELL DISPLAY
 close all
 
 x=1; % plate
-y=3; % image number
+y=1; % image number
 
-for i=1 %plate(x).imageLocal(y).cellN(end)
+fprintf('\nImage %d on plate %d has %d cells.\n'...
+	,y,x,plate(x).imageLocal(y).cellN(end))
+
+for i=1:3
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)
