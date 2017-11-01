@@ -3,7 +3,7 @@ clear
 addpath(genpath('functions'))
 addpath(genpath('input'))
 %%
-inputDataTestKatie % the name of your input file
+inputDataLocalStellaTestICL4 % the name of your input file
 saveWorkspaceHere = './local123456pla.mat';
 
 %%
@@ -11,7 +11,7 @@ close all
 imtool close all
 global SITEN BINNING EXTRA
 SITEN		= 1;
-BINNING = 1 / 1;
+BINNING = 1 / 2;
 EXTRA		= ceil(BINNING*20);
 
 %% STRUCTURING DATA
