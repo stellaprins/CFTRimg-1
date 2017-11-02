@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-experimentN = 1 ;
+experimentN = 4 ;
 exp = createExperimentStruct(experimentN);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,42 +48,42 @@ exp(2).condWells(10,:) = {'B11','C11','D11','E11','F11','G11'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-exp(4).expStr       = 'Stella YFP mCh 60x localisation 12-07-2017_Plate_15453';
-exp(4).baseFolder	= 'C:\Users\StellaPrins\Documents\DATA\Stella\12-07-2017';
-exp(4).local_quench = 'local';
-exp(4).filePrefix   = 'Stella YFP mCh 60x localisation 12-07-2017_';
+exp(3).expStr       = 'Stella YFP mCh 60x localisation 12-07-2017_Plate_15453';
+exp(3).baseFolder	= 'C:\Users\StellaPrins\Documents\DATA\Stella\12-07-2017';
+exp(3).local_quench = 'local';
+exp(3).filePrefix   = 'Stella YFP mCh 60x localisation 12-07-2017_';
 
-exp(4).conditionStr = {'F508del/R1066Q','F508del/A1067W','F508del/A1067Q',...
+exp(3).conditionStr = {'F508del/R1066Q','F508del/A1067W','F508del/A1067Q',...
 	'F508del/F1068M','F508del/Y1073F','F508del/Y1073M','F508del/F1074W',...
 	'F508del/F1074Q'};
-exp(4).condWells(1,:)   = {'B02','C02','D02','E02','F02','G02'};
-exp(4).condWells(2,1:5) = {'C03','D03','E03','F03','G03'};
-exp(4).condWells(3,1:5) = {'C04','D04','E04','F04','G04'};
-exp(4).condWells(4,1:5) = {'C06','D06','E06','F06','G06'};
-exp(4).condWells(5,1:5) = {'C07','D07','E07','E08','F08'};
-exp(4).condWells(6,1:5) = {'C09','D09','E09','F09','G09'};
-exp(4).condWells(7,1:5) = {'C10','D10','E10','F10','G10'};
-exp(4).condWells(8,1:5) = {'C11','D11','E11','F11','G11'};
+exp(3).condWells(1,:)   = {'B02','C02','D02','E02','F02','G02'};
+exp(3).condWells(2,1:5) = {'C03','D03','E03','F03','G03'};
+exp(3).condWells(3,1:5) = {'C04','D04','E04','F04','G04'};
+exp(3).condWells(4,1:5) = {'C06','D06','E06','F06','G06'};
+exp(3).condWells(5,1:5) = {'C07','D07','E07','E08','F08'};
+exp(3).condWells(6,1:5) = {'C09','D09','E09','F09','G09'};
+exp(3).condWells(7,1:5) = {'C10','D10','E10','F10','G10'};
+exp(3).condWells(8,1:5) = {'C11','D11','E11','F11','G11'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-exp(5).expStr         = 'Stella YFP mCh 60x localisation 14-07-2017_Plate_15461';
-exp(5).baseFolder     = 'C:\Users\StellaPrins\Documents\DATA\Stella\14-07-2017';
-exp(5).local_quench   = 'local';
-exp(5).filePrefix     = 'Stella YFP mCh 60x localisation 14-07-2017_';
+exp(4).expStr         = 'Stella YFP mCh 60x localisation 14-07-2017_Plate_15461';
+exp(4).baseFolder     = 'C:\Users\StellaPrins\Documents\DATA\Stella\14-07-2017';
+exp(4).local_quench   = 'local';
+exp(4).filePrefix     = 'Stella YFP mCh 60x localisation 14-07-2017_';
 
-exp(5).conditionStr = {'F508del/F1074M','F508del/R1070M','F508del/R1070Q',...
+exp(4).conditionStr = {'F508del/F1074M','F508del/R1070M','F508del/R1070Q',...
 	'F508del/P1072Q','F508del/F1074Y','F508del/A1067F','F508del/F1068W',...
 	'F508del/F1068H','F508del/Q1071W','F508delY1073W'};
-exp(5).condWells(1,:)   = {'B02','C02','D02','E02','F02','G02'};
-exp(5).condWells(2,1:4) = {'B03','C03','F03','G03'};
-exp(5).condWells(3,1:4) = {'B04','C04','F04','G04'};
-exp(5).condWells(4,1:4) = {'B05','C05','F05','G05'};
-exp(5).condWells(5,1:4) = {'B06','C06','F06','G06'};
-exp(5).condWells(6,:)   = {'B07','C07','D07','E07','F07','G07'};
-exp(5).condWells(7,1:3) = {'B08','C08','D08'};
-exp(5).condWells(8,1:2) = {'B09','C09'};
-exp(5).condWells(9,1:4) = {'B10','C10','D10','F10'};
-exp(5).condWells(10,:)  = {'B11','C11','D11','E11','F11','G11'};
+exp(4).condWells(1,:)   = {'B02','C02','D02','E02','F02','G02'};
+exp(4).condWells(2,1:4) = {'B03','C03','F03','G03'};
+exp(4).condWells(3,1:4) = {'B04','C04','F04','G04'};
+exp(4).condWells(4,1:4) = {'B05','C05','F05','G05'};
+exp(4).condWells(5,1:4) = {'B06','C06','F06','G06'};
+exp(4).condWells(6,:)   = {'B07','C07','D07','E07','F07','G07'};
+exp(4).condWells(7,1:3) = {'B08','C08','D08'};
+exp(4).condWells(8,1:2) = {'B09','C09'};
+exp(4).condWells(9,1:4) = {'B10','C10','D10','F10'};
+exp(4).condWells(10,:)  = {'B11','C11','D11','E11','F11','G11'};
 
 

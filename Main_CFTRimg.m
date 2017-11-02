@@ -3,14 +3,14 @@ clear
 addpath(genpath('functions'))
 addpath(genpath('input'))
 %%
-inputDataLocalStellaTestICL4 % the name of your input file
-saveWorkspaceHere = './local123456pla.mat';
+Local_NO_WT % the name of your input file
+saveWorkspaceHere = './LOCAL_NO_WT.mat';
 
 %%
 close all
 imtool close all
 global SITEN BINNING EXTRA
-SITEN		= 1;
+SITEN		= 9;
 BINNING = 1 / 2;
 EXTRA		= ceil(BINNING*20);
 

@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\localtest2plates.xls';
+saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\local_NO_WT.xls';
 
 conditionN						= length(resultsLocal);
 colors								= get(groot,'DefaultAxesColorOrder');
@@ -106,20 +106,21 @@ end
 close all
 
 x=1; % condition
-y=1; % image number
+y=3; % image number
 
 boundingBox1 = plate(x).imageLocal(y).boundingBox(3,:);
 boundingBox2 = plate(x).imageLocal(y).boundingBox(1,:);
 boundingBox3 = plate(x).imageLocal(y).boundingBox(3,:);
-imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
 
 %% CELL DISPLAY
 close all
 
-x=1; % plate
-y=3; % image number
+condition = char('WT');
+x					= 1; % platenr
+y					= 7; % image number
 
-for i=1 %plate(x).imageLocal(y).cellN(end)
+for i = 1:plate(x).imageLocal(y).cellN(end)
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)
