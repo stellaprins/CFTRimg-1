@@ -76,12 +76,20 @@ time(5) = toc;
 
 %% CREATE RESULTS STRUCTS
 
-% move key values into temporary a structure
+% filter any cells giving a negative metric (yelMembrane/redEntire)
+for j=1:plateN
+	localImageN = length(plate(j).imageLocal);
+	for i=1:localImageN
+		plate(j).imageLocal(i) = filterNegativeMetric(plate(j).imageLocal(i));
+	end
+end
+
+% move key values into temporary a structure for normalizing
 tempResultsLocal = createNormalizeStruct(plate);
 for i = 1:plateN
-	tempResultsLocal(i) = filterNegativeMetric(tempResultsLocal(i));
 	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i));
 end
+
 resultsLocal	= createResultsLocalStruct(tempResultsLocal);
 resultsQuench = createResultsQuenchStruct(plate);
 resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);

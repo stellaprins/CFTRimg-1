@@ -105,6 +105,7 @@ end
 %% IMAGE DISPLAY
 close all
 
+<<<<<<< HEAD
 x=1; % condition
 y=3; % image number
 
@@ -112,15 +113,44 @@ boundingBox1 = plate(x).imageLocal(y).boundingBox(3,:);
 boundingBox2 = plate(x).imageLocal(y).boundingBox(1,:);
 boundingBox3 = plate(x).imageLocal(y).boundingBox(3,:);
 imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
+=======
+x=1; % plate
+y=1; % image number
+
+fprintf('\nImage %d on plate %d has %d cells.\n'...
+	,y,x,plate(x).imageLocal(y).cellN(end))
+
+% display the image
+figure
+imgDisplay(plate(x).imageLocal(y),'yel')
+
+% display image with 2 cells boxed
+cell1 = 1;
+cell2 = 4;
+boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
+boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
+figure
+imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+>>>>>>> c8f54faec82c37defb6a4acac7592c8473420421
 
 %% CELL DISPLAY
 close all
 
+<<<<<<< HEAD
 condition = char('WT');
 x					= 1; % platenr
 y					= 7; % image number
 
 for i = 1:plate(x).imageLocal(y).cellN(end)
+=======
+x=1; % plate
+y=1; % image number
+
+fprintf('\nImage %d on plate %d has %d cells.\n'...
+	,y,x,plate(x).imageLocal(y).cellN(end))
+
+for i=1:3
+>>>>>>> c8f54faec82c37defb6a4acac7592c8473420421
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)
