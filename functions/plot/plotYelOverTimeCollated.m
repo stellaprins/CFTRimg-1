@@ -12,12 +12,12 @@ meanYelControl      = mean((yelControl),2);
 errYelTest          = std((yelTest),0,2);
 errYelControl       = std((yelControl),0,2);
 
-x = 0:2:130;
+x = 0:2:138;
 
-shadedErrorBar(x,meanYelControl(5:70),errYelControl(5:70)...
+shadedErrorBar(x,meanYelControl,errYelControl...
 	,'lineprops',{'.','color',colors(5,:),'linewidth',0.8});
 hold on;
-shadedErrorBar(x,meanYelTest(5:70),errYelTest(5:70)...
+shadedErrorBar(x,meanYelTest(),errYelTest()...
 	,'lineprops',{'.','linewidth',0.8});
 p1 = plot(nan,nan,'-','color',colors(5,:),'linewidth',1);
 p2 = plot(nan,nan,'-', 'linewidth',1);

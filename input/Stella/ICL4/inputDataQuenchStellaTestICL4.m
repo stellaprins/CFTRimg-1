@@ -7,7 +7,7 @@ exp = createExperimentStruct(experimentN);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 exp(1).expStr           = 'Stella mCherry YFP 05-07-2017_Plate_15440';
-exp(1).baseFolder		= 'C:\Users\StellaPrins\Documents\DATA\Stella\05-07-2017';
+exp(1).baseFolder		    = 'C:\Users\StellaPrins\Documents\DATA\Stella\05-07-2017';
 exp(1).local_quench     = 'quench';
 exp(1).filePrefix       = 'Stella mCherry YFP 05-07-2017_';
 

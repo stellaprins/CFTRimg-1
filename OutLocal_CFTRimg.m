@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\local_NO_WT.xls';
+saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\local_VX809_28.xls';
 
 conditionN						= length(resultsLocal);
 colors								= get(groot,'DefaultAxesColorOrder');
@@ -27,7 +27,7 @@ for i=1:conditionN
 	stdRedEntire(i)       = std(res.redEntire);
 end
 			
-%outputResultsLocalToExcel(resultsLocal,saveLocalResultsHere)
+% outputResultsLocalToExcel(resultsLocal,saveLocalResultsHere)
 condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
 N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
 Ymem        = vertcat((horzcat(cellstr('Membrane density'), ...
@@ -106,7 +106,7 @@ end
 close all
 
 x=1; % plate
-y=1; % image number
+y=5; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))

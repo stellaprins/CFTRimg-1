@@ -1,6 +1,6 @@
 
-saveQuenchResultsHere       ='C:\Users\StellaPrins\Desktop\quench_demo.xls';
-saveQuenchingTimelineHere   ='C:\Users\StellaPrins\Desktop\quench_timeline.xls';
+saveQuenchResultsHere       ='C:\Users\StellaPrins\Desktop\Quench_VX809_28.xls';
+saveQuenchingTimelineHere   ='C:\Users\StellaPrins\Desktop\Quench_VX809_28_timeline.xls';
 
 conditionN = length(resultsQuench);
 
@@ -83,6 +83,12 @@ figure;
 for i=1:conditionN
 	subplot(ceil(sqrt(conditionN)),ceil(sqrt(conditionN)),i)
 		plotYelOverTimeCollated(resultsQuench(i))
+end
+
+figure;
+for i=1:conditionN
+	subplot(ceil(sqrt(conditionN)),ceil(sqrt(conditionN)),i)
+		plotYelOverTime(resultsQuench(i))
 end
 
 plotMaxGradBarChart(resultsQuench)

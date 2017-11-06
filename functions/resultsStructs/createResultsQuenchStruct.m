@@ -8,7 +8,7 @@ plateN = length(plateStructArray);
 % create cell array of mutations across all plates
 conditions = cell(0,1);
 for i=1:plateN
-	conditions = unique(horzcat(conditions,{plateStructArray(i).imageLocal.mutation}));
+	conditions = unique(horzcat(conditions,{plateStructArray(i).imageQuench.mutation}));
 end
 
 conditionN = length(conditions);
