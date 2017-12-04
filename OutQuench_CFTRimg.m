@@ -1,7 +1,7 @@
 
-saveQuenchResultsHere       ='C:\Users\StellaPrins\Desktop\VX809_quench_.xls';
-saveQuenchingTimelineHere   ='C:\Users\StellaPrins\Desktop\VX809_quench_timeline.xls';
-%%
+saveQuenchResultsHere       = fullfile('~','Desktop','VX809_quench_.xls');
+saveQuenchingTimelineHere   =fullfile('~','Desktop','VX809_quench_timeline.xls');
+%%'
 conditionN = length(resultsQuench);
 
 %% QUENCHING OUTPUT 1
@@ -48,14 +48,14 @@ if ispc == true
 											cellstr('std'))),num2cell([influx_rate_DMSO_t; influx_rate_DMSO_t_std]'));
 
 	horzcat     (condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
-							 N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp)
+							 N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp);
 	xlswrite    (saveQuenchResultsHere,...
 							[condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
 							N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp]);
 						
 elseif isunix == 1
 	
-	outputResultsLocalToExcelMAC( resultsQuench , saveQuenchResultsHere )
+	outputResultsQuenchToExcelMAC( resultsQuench , saveQuenchResultsHere );
 	
 end
 	
@@ -63,53 +63,46 @@ end
         
 %% QUENCHING OUTPUT 2 (TIMELINE)
 
-count_col1   = 0;
-for i = 1:conditionN
-	count_F     = length(resultsQuench(i).maxGradTest);
-	count_DMSO  = length(resultsQuench(i).maxGradControl);
-	count_col1  = count_col1 + count_F*2+count_DMSO*2+8;
-end
+if ispc == true
+	
+	count_col1   = 0;
+	for i = 1:conditionN
+		count_F     = length(resultsQuench(i).maxGradTest);
+		count_DMSO  = length(resultsQuench(i).maxGradControl);
+		count_col1  = count_col1 + count_F*2+count_DMSO*2+8;
+	end
 
-l      = vertcat(resultsQuench(1).yelInsideOverTTest...
-	,resultsQuench(1).yelInsideOverTControl);
-l      = length(l)+2;
-space  = cell(l,count_col1);
-count_col2                   = zeros(1,conditionN);
-for i = 1:conditionN
-	results_quenching_timeline  = quenching_timeline(resultsQuench(i));
-	count_F                     = length(resultsQuench(i).maxGradTest);
-	count_DMSO                  = length(resultsQuench(i).maxGradControl);
-	count_col2(1,i)             = count_F*2+count_DMSO*2+8;
-	space(:,1+sum(count_col2(1:i-1)):sum(count_col2(1:i)))=results_quenching_timeline;
-end
+	l      = vertcat(resultsQuench(1).yelInsideOverTTest...
+		,resultsQuench(1).yelInsideOverTControl);
+	l      = length(l)+2;
+	space  = cell(l,count_col1);
+	count_col2                   = zeros(1,conditionN);
+	for i = 1:conditionN
+		results_quenching_timeline  = quenching_timeline(resultsQuench(i));
+		count_F                     = length(resultsQuench(i).maxGradTest);
+		count_DMSO                  = length(resultsQuench(i).maxGradControl);
+		count_col2(1,i)             = count_F*2+count_DMSO*2+8;
+		space(:,1+sum(count_col2(1:i-1)):sum(count_col2(1:i)))=results_quenching_timeline;
+	end
 
-xlswrite([saveQuenchingTimelineHere], [space]);
+	xlswrite([saveQuenchingTimelineHere], [space]);
+	
+elseif isunix == true
+	
+	outputQuenchTimelineToExcelMAC(resultsQuench,saveQuenchingTimelineHere);
+	
+end
 
 
 %% QUENCHING PLOTS 
 close all
 figure;
-for i=1:conditionN;
-	  subplot(4,conditionN/2,i);
+for i=1:conditionN
+	  subplot(4,ceil(conditionN/2),i);
 		plotYelOverTimeCollated(resultsQuench(i));
-		subplot(4,conditionN/2,i+conditionN);
+		subplot(4,ceil(conditionN/2),i+conditionN);
 		plotYelOverTime(resultsQuench(i));
 end
-
-%%
-figure;
-for i=1:6;
-	  subplot(2,6,i);
-		for ii=7:11;
-		plotYelOverTimeCollated(resultsQuench(ii));
-		end
-		subplot(2,6,i+6);
-		for ii=7:11;
-		plotYelOverTime(resultsQuench(ii));
-		end
-
-end
-
 
 
 % figure

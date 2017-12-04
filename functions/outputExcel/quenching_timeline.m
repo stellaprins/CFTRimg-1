@@ -1,10 +1,11 @@
-function [results] = quenching_timeline (resultsStruct)
+function results = quenching_timeline (resultsStruct)
+
 yelN          = 70;
 testN         = length(resultsStruct.maxGradTest);
 controlN      = length(resultsStruct.maxGradControl);
 yelTest		  = zeros(yelN,testN);
 yelControl	  = zeros(yelN,testN);
-countTest	  = 1;
+countTest		= 1;
 countControl  = 1;
 
 % test=forskolin, control=dmso
@@ -105,3 +106,4 @@ results_DMSO        =   horzcat(per_well_DMSO, per_cond_DMSO,std_per_cond_DMSO,.
 results             =   horzcat(results_F,results_DMSO) ;
 results             =   vertcat(header_condition, results);
 
+end

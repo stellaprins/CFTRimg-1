@@ -1,49 +1,49 @@
 
-experimentN = 3;
+experimentN = 1;
 exp = createExperimentStruct(experimentN);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% exp(1).plateStr = {'Plate 1'};
+% exp(1).expStr = 'Stella YFP mCh 2017-06-29 Plate_15419 localisation';
+% 
+% 	exp(1).baseFolder		= '~/Desktop/data';
+% 	exp(1).local_quench = 'local';
+% 	exp(1).filePrefix = 'Stella YFP mCh 60x localisation_';
+% 	
+% 	exp(1).conditionStr = {'WT','F508del','R1070W'};
+% 		exp(1).condWells(1,:) = {'C02','D02'};
+% 		exp(1).condWells(2,1) = {'C03'};
+% 		exp(1).condWells(3,:) = {'C04','D04'};
+% 		
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% exp(2).plateStr = {'Plate 2'};
+% exp(2).expStr = 'Stella YFP mCh 2017-07-05 Plate_15433 localisation';
+% 
+% 	exp(2).baseFolder		= '~/Desktop/data';
+% 	exp(2).local_quench = 'local';
+% 	exp(2).filePrefix = 'Stella YFP mCh 60x localisation_';
+% 	
+% 	exp(2).conditionStr = {'WT','F508del','R1070W'};
+% 		exp(2).condWells(1,:) = {'C02','D02','E02'};
+% 		exp(2).condWells(2,1:2) = {'C03','D03'};
+% 		exp(2).condWells(3,1:2) = {'C04','D04'};
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 exp(1).plateStr = {'Plate 1'};
-exp(1).expStr = 'Stella YFP mCh 2017-06-29 Plate_15419 localisation';
+exp(1).expStr = 'Stella YFP mCh 2017-07-05 Plate_15435';
 
 	exp(1).baseFolder		= '~/Desktop/data';
-	exp(1).local_quench = 'local';
-	exp(1).filePrefix = 'Stella YFP mCh 60x localisation_';
+	exp(1).local_quench = 'quench';
+	exp(1).filePrefix = 'Stella mCherry YFP 05-07-2017 Katie_';
 	
-	exp(1).conditionStr = {'WT','F508del','R1070W'};
-		exp(1).condWells(1,:) = {'C02','D02'};
-		exp(1).condWells(2,1) = {'C03'};
-		exp(1).condWells(3,:) = {'C04','D04'};
+	exp(1).conditionStr = {'WT','F508del','R1070w'};
+		exp(1).condWells(1,:) = {'B02','C02','D02'};
+		exp(1).condWells(2,:) = {'B03','C03','D03'};
+		exp(1).condWells(3,:) = {'B04','C04','D04'};
 		
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-exp(2).plateStr = {'Plate 2'};
-exp(2).expStr = 'Stella YFP mCh 2017-07-05 Plate_15433 localisation';
-
-	exp(2).baseFolder		= '~/Desktop/data';
-	exp(2).local_quench = 'local';
-	exp(2).filePrefix = 'Stella YFP mCh 60x localisation_';
-	
-	exp(2).conditionStr = {'WT','F508del','R1070W'};
-		exp(2).condWells(1,:) = {'C02','D02','E02'};
-		exp(2).condWells(2,1:2) = {'C03','D03'};
-		exp(2).condWells(3,1:2) = {'C04','D04'};
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-exp(3).plateStr = {'Plate 2'};
-exp(3).expStr = 'Stella YFP mCh 2017-07-05 Plate_15435';
-
-	exp(3).baseFolder		= '~/Desktop/data';
-	exp(3).local_quench = 'quench';
-	exp(3).filePrefix = 'Stella mCherry YFP 05-07-2017 Katie_';
-	
-	exp(3).conditionStr = {'WT','F508del','R1070W'};
-		exp(3).condWells(1,:) = {'C02','D02'};
-		exp(3).condWells(2,1) = {'C03'};
-		exp(3).condWells(3,:) = {'C04','D04'};
-		
-		exp(3).condWellsControl(1,:) = {'F02','G02'};
-		exp(3).condWellsControl(2,:) = {'F03','G03'};
-		exp(3).condWellsControl(3,1) = {'F04'};
+		exp(1).condWellsControl(1,:) = {'E02','F02','G02'};
+		exp(1).condWellsControl(2,:) = {'E03','F03','G03'};
+		exp(1).condWellsControl(3,:) = {'E04','F04','G04'};
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % exp(4).plateStr = {'Plate 3'};
