@@ -1,7 +1,7 @@
 clc
 clear
 addpath(genpath('functions'))
-addpath(genpath('input'))
+addpath(genpath(fullfile('input'))) %% include the location of your input folder
 
 
 %%
