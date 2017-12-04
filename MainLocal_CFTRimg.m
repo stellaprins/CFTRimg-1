@@ -8,12 +8,14 @@ addpath(genpath('input'))
 inputDataTestKatie % the name of your input file
 saveWorkspaceHere = fullfile('~','Desktop','VX809_28_37_LOCAL.mat');
 
+normConditionStr = 'WT 37';
+
 %%
 close all
 imtool close all
 global SITEN BINNING EXTRA
-SITEN		= 1;
-BINNING = 1;
+SITEN		= 9;
+BINNING = 1/2;
 EXTRA		= ceil(BINNING*20);
 
 %% STRUCTURING DATA
@@ -77,7 +79,7 @@ end
 % move key values into temporary a structure for normalizing
 tempResultsLocal = createNormalizeStruct(plate);
 for i = 1:plateN
-	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i));
+	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr);
 end
 
 resultsLocal	= createResultsLocalStruct(tempResultsLocal);

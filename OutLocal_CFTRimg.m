@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  =fullfile('~','Desktop','local_VX809_28_37_6.xls');
+saveLocalResultsHere  = fullfile('~','Desktop','local_VX809_28_37_6.xls');
 
 conditionN						= length(resultsLocal);
 colors								= get(groot,'DefaultAxesColorOrder');
@@ -29,13 +29,13 @@ if ispc == true
 		stdRedEntire(i)       = std(res.redEntire);
 	end
 
-	condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
-	N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
-	Ymem        = vertcat((horzcat(cellstr('Membrane density'), ...
-								cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
+	condition   = vertcat({'condition'},{resultsLocal.mutation}');
+	N           = vertcat({'N'},{resultsLocal.localCellN}');
+	Ymem        = vertcat(horzcat({'Membrane density'},{'std'})...
+		,num2cell([meanYFPMembrane; stdYFPMembrane]'));
 	results			=	horzcat(condition,N,Ymem);
 
-	xlswrite(saveLocalResultsHere,results);
+	xlswrite(saveLocalResultsHere,results)
 
 elseif isunix==true
 
@@ -124,7 +124,7 @@ imgDisplay(plate(x).imageLocal(y),'yel')
 
 % display image with 2 cells boxed
 cell1 = 1;
-cell2 = 1;
+cell2 = 2;
 boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
 boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
 figure

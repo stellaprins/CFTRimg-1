@@ -1,4 +1,4 @@
-function normStruct = normalizeResultsWT( normStruct )
+function normStruct = normalizeResultsWT( normStruct , normConditionStr)
 %UNTITLED7 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,11 +7,12 @@ cellN				= length(normStruct.mutation);
 % create a vector giving true/false for whether each cell is 'WT'
 locationWT	= zeros(cellN,1);
 for i = 1:cellN
-	locationWT(i) = strcmp('WT',normStruct.mutation{i});
+	locationWT(i) = strcmp(normConditionStr,normStruct.mutation{i});
 end
 
 if sum(locationWT) == 0
-	disp('This plate does not contain "WT" condition and will not be normalized')
+	fprintf('This plate does not contain "%s" condition and will not be normalized\n'...
+		,normConditionStr)
 	return
 end
 
