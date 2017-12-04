@@ -5,15 +5,15 @@ addpath(genpath('input'))
 
 
 %%
-VX809_28_37_LOCAL % the name of your input file
-saveWorkspaceHere = './VX809_28_37_LOCAL.mat';
+inputDataTestKatie % the name of your input file
+saveWorkspaceHere = fullfile('~','Desktop','VX809_28_37_LOCAL.mat');
 
 %%
 close all
 imtool close all
 global SITEN BINNING EXTRA
-SITEN		= 9;
-BINNING = 1 / 2;
+SITEN		= 1;
+BINNING = 1;
 EXTRA		= ceil(BINNING*20);
 
 %% STRUCTURING DATA

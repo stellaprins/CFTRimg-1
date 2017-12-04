@@ -1,40 +1,47 @@
 
-saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\local_VX809_28_37_6.xls';
+saveLocalResultsHere  =fullfile('~','Desktop','local_VX809_28_37_6.xls');
 
 conditionN						= length(resultsLocal);
 colors								= get(groot,'DefaultAxesColorOrder');
 
 %% LOCALISATION OUTPUT
 
-meanYFPEntire			= zeros(1,conditionN);
-meanYFPMembrane   = zeros(1,conditionN);
-stdYFPEntire			= zeros(1,conditionN);
-stdYFPMembrane		= zeros(1,conditionN);
-medianYFPMembrane	= zeros(1,conditionN);
-iqrYFPMembrane    = zeros(1,conditionN);
-meanRedEntire     = zeros(1,conditionN);
-stdRedEntire			= zeros(1,conditionN);
+if ispc == true
 
-for i=1:conditionN
-	res										= resultsLocal(i);
-	meanYFPEntire(i)			= mean(res.yelEntire ./ res.redEntire);
-	stdYFPEntire(i)				= std(res.yelEntire ./ res.redEntire);
-	meanYFPMembrane(i)		= mean(res.yelMembrane ./ res.redEntire);
-	stdYFPMembrane(i)			= std(res.yelMembrane ./ res.redEntire);
- 	medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
- 	iqrYFPMembrane(i)			= iqr(res.yelMembrane ./ res.redEntire);
-	meanRedEntire(i)      = mean(res.redEntire);
-	stdRedEntire(i)       = std(res.redEntire);
+	meanYFPEntire			= zeros(1,conditionN);
+	meanYFPMembrane   = zeros(1,conditionN);
+	stdYFPEntire			= zeros(1,conditionN);
+	stdYFPMembrane		= zeros(1,conditionN);
+	medianYFPMembrane	= zeros(1,conditionN);
+	iqrYFPMembrane    = zeros(1,conditionN);
+	meanRedEntire     = zeros(1,conditionN);
+	stdRedEntire			= zeros(1,conditionN);
+
+	for i=1:conditionN
+		res										= resultsLocal(i);
+		meanYFPEntire(i)			= mean(res.yelEntire ./ res.redEntire);
+		stdYFPEntire(i)				= std(res.yelEntire ./ res.redEntire);
+		meanYFPMembrane(i)		= mean(res.yelMembrane ./ res.redEntire);
+		stdYFPMembrane(i)			= std(res.yelMembrane ./ res.redEntire);
+		medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
+		iqrYFPMembrane(i)			= iqr(res.yelMembrane ./ res.redEntire);
+		meanRedEntire(i)      = mean(res.redEntire);
+		stdRedEntire(i)       = std(res.redEntire);
+	end
+
+	condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
+	N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
+	Ymem        = vertcat((horzcat(cellstr('Membrane density'), ...
+								cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
+	results			=	horzcat(condition,N,Ymem);
+
+	xlswrite(saveLocalResultsHere,results);
+
+elseif isunix==true
+
+	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
+	
 end
-			
-% outputResultsLocalToExcel(resultsLocal,saveLocalResultsHere)
-condition   = vertcat(cellstr('condition'),cellstr({resultsLocal.mutation}'));
-N           = vertcat(cellstr('N'),num2cell([resultsLocal.localCellN]'));
-Ymem        = vertcat((horzcat(cellstr('Membrane density'), ...
-              cellstr('std'))),num2cell([meanYFPMembrane; stdYFPMembrane]'));
-results			=	horzcat(condition,N,Ymem)
-
-xlswrite(saveLocalResultsHere,results);
 
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
