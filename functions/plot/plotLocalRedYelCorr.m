@@ -44,8 +44,8 @@ switch yelRegion
 end
 xlhand = get(gca,'xlabel');
 set(xlhand,'string','F_{mCh,cell}','fontsize',10)
-xlim([0 0.12])
-ylim([0 0.08])
+% xlim([0 0.12])
+% ylim([0 0.08])
 title(resultsStruct.mutation,'fontsize',10);
 % annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',10);
 

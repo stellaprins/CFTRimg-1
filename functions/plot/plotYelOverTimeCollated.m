@@ -8,16 +8,20 @@ yelTest					= (resultsStruct.yelInsideOverTTest)';
 yelControl			= resultsStruct.yelInsideOverTControl';
 
 meanYelTest         = mean((yelTest),2);
+meanYelTest					= meanYelTest(5:70);
 meanYelControl      = mean((yelControl),2);
+meanYelControl			= meanYelControl(5:70);
 errYelTest          = std((yelTest),0,2);
+errYelTest					= errYelTest(5:70);
 errYelControl       = std((yelControl),0,2);
+errYelControl				= errYelControl(5:70);
 
-x = 0:2:130;
-
-shadedErrorBar(x,meanYelControl(5:70),errYelControl(5:70)...
+x = 0:2:138;
+x = x(1:66);
+shadedErrorBar(x,meanYelControl,errYelControl...
 	,'lineprops',{'.','color',colors(5,:),'linewidth',0.8});
 hold on;
-shadedErrorBar(x,meanYelTest(5:70),errYelTest(5:70)...
+shadedErrorBar(x,meanYelTest(),errYelTest()...
 	,'lineprops',{'.','linewidth',0.8});
 p1 = plot(nan,nan,'-','color',colors(5,:),'linewidth',1);
 p2 = plot(nan,nan,'-', 'linewidth',1);
