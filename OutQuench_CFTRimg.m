@@ -33,23 +33,33 @@ for i = 1:conditionN
     influx_rate_DMSO_t_std(i)= std(res.maxGradControlLoc);
 end
 
-condition_quench  = vertcat(cellstr('condition'),cellstr({resultsQuench.mutation}'));
-N_quench_F        = vertcat(cellstr('N'),num2cell([Quench_N]'));
-max_rate_F        = vertcat((horzcat(cellstr('max rate I entry (F)'), ...
-                    cellstr('std'))),num2cell([influx_rate; influx_rate_std]'));
-max_rate_F_tp     = vertcat((horzcat(cellstr('timepoint at max rate I entry (F)'), ...
-                    cellstr('std'))),num2cell([influx_rate_t; influx_rate_t_std]'));
-N_quench_DMSO     = vertcat(cellstr('N'),num2cell([Quench_DMSO_N]'));
-max_rate_DMSO     = vertcat((horzcat(cellstr('max rate I entry (DMSO)'), ...
-                    cellstr('std'))),num2cell([influx_rate_DMSO; influx_rate_DMSO_std]'));
-max_rate_DMSO_tp  = vertcat((horzcat(cellstr('timepoint at max rate I entry (DMSO)'), ...
-                    cellstr('std'))),num2cell([influx_rate_DMSO_t; influx_rate_DMSO_t_std]'));
+if ispc == true
 
-horzcat     (condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
-             N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp)
-xlswrite    (saveQuenchResultsHere,...
-            [condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
-            N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp]);    
+	condition_quench  = vertcat(cellstr('condition'),cellstr({resultsQuench.mutation}'));
+	N_quench_F        = vertcat(cellstr('N'),num2cell([Quench_N]'));
+	max_rate_F        = vertcat((horzcat(cellstr('max rate I entry (F)'), ...
+											cellstr('std'))),num2cell([influx_rate; influx_rate_std]'));
+	max_rate_F_tp     = vertcat((horzcat(cellstr('timepoint at max rate I entry (F)'), ...
+											cellstr('std'))),num2cell([influx_rate_t; influx_rate_t_std]'));
+	N_quench_DMSO     = vertcat(cellstr('N'),num2cell([Quench_DMSO_N]'));
+	max_rate_DMSO     = vertcat((horzcat(cellstr('max rate I entry (DMSO)'), ...
+											cellstr('std'))),num2cell([influx_rate_DMSO; influx_rate_DMSO_std]'));
+	max_rate_DMSO_tp  = vertcat((horzcat(cellstr('timepoint at max rate I entry (DMSO)'), ...
+											cellstr('std'))),num2cell([influx_rate_DMSO_t; influx_rate_DMSO_t_std]'));
+
+	horzcat     (condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
+							 N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp)
+	xlswrite    (saveQuenchResultsHere,...
+							[condition_quench,N_quench_F,max_rate_F,max_rate_F_tp,...
+							N_quench_DMSO,max_rate_DMSO,max_rate_DMSO_tp]);
+						
+elseif isunix == 1
+	
+	outputResultsLocalToExcelMAC( resultsQuench , saveQuenchResultsHere )
+	
+end
+	
+	
         
 %% QUENCHING OUTPUT 2 (TIMELINE)
 
