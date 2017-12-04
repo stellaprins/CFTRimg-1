@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\local_VX809_28.xls';
+saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\local_VX809_28_37_6.xls';
 
 conditionN						= length(resultsLocal);
 colors								= get(groot,'DefaultAxesColorOrder');
@@ -106,7 +106,7 @@ end
 close all
 
 x=1; % plate
-y=5; % image number
+y=2; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
@@ -117,7 +117,7 @@ imgDisplay(plate(x).imageLocal(y),'yel')
 
 % display image with 2 cells boxed
 cell1 = 1;
-cell2 = 4;
+cell2 = 1;
 boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
 boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
 figure
@@ -126,12 +126,12 @@ imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 %% CELL DISPLAY
 close all
 x=1; % plate
-y=1; % image number
+y=2; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
 
-for i=1:3
+for i=7:11
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)

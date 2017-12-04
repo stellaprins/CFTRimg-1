@@ -3,8 +3,8 @@ clear
 addpath(genpath('functions'))
 addpath(genpath('input'))
 %%
-VX809_28 % the name of your input file
-saveWorkspaceHere = './VX809_28_quench.mat';
+VX809_28_37 % the name of your input file
+saveWorkspaceHere = './VX809_28_37_plate1.mat';
 
 %%
 close all
@@ -90,19 +90,19 @@ for i = 1:plateN
 	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i));
 end
 
-if size(plate.imageLocal,1) == 0
-	resultsQuench = createResultsQuenchStruct(plate);
-	resultsQuench = populateResultsQuench(resultsQuench,plate);
-elseif  size(plate.imageQuench,1) == 0
- resultsLocal	= createResultsLocalStruct(tempResultsLocal);
- resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);
-else
-		resultsQuench = createResultsQuenchStruct(plate);
-		resultsQuench = populateResultsQuench(resultsQuench,plate);
+% if size(plate.imageLocal,1) == 0
+% 	resultsQuench = createResultsQuenchStruct(plate);
+% 	resultsQuench = populateResultsQuench(resultsQuench,plate);
+% elseif  size(plate.imageQuench,1) == 0
+%  resultsLocal	= createResultsLocalStruct(tempResultsLocal);
+%  resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);
+% else
+% 		resultsQuench = createResultsQuenchStruct(plate);
+% 		resultsQuench = populateResultsQuench(resultsQuench,plate);
 		resultsLocal	= createResultsLocalStruct(tempResultsLocal); 
 	  resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);
-
-end
+% 
+% end
 time(6)				= toc;
 disp					('Full analysis completed')
 save					(saveWorkspaceHere)

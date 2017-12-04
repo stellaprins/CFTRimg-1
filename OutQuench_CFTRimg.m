@@ -1,7 +1,7 @@
 
-saveQuenchResultsHere       ='C:\Users\StellaPrins\Desktop\Quench_VX809_28.xls';
-saveQuenchingTimelineHere   ='C:\Users\StellaPrins\Desktop\Quench_VX809_28_timeline.xls';
-
+saveQuenchResultsHere       ='C:\Users\StellaPrins\Desktop\VX809_quench_.xls';
+saveQuenchingTimelineHere   ='C:\Users\StellaPrins\Desktop\VX809_quench_timeline.xls';
+%%
 conditionN = length(resultsQuench);
 
 %% QUENCHING OUTPUT 1
@@ -78,20 +78,32 @@ xlswrite([saveQuenchingTimelineHere], [space]);
 
 %% QUENCHING PLOTS 
 close all
-
 figure;
-for i=1:conditionN
-	subplot(ceil(sqrt(conditionN)),ceil(sqrt(conditionN)),i)
-		plotYelOverTimeCollated(resultsQuench(i))
+for i=1:conditionN;
+	  subplot(4,conditionN/2,i);
+		plotYelOverTimeCollated(resultsQuench(i));
+		subplot(4,conditionN/2,i+conditionN);
+		plotYelOverTime(resultsQuench(i));
 end
 
+%%
 figure;
-for i=1:conditionN
-	subplot(ceil(sqrt(conditionN)),ceil(sqrt(conditionN)),i)
-		plotYelOverTime(resultsQuench(i))
+for i=1:6;
+	  subplot(2,6,i);
+		for ii=7:11;
+		plotYelOverTimeCollated(resultsQuench(ii));
+		end
+		subplot(2,6,i+6);
+		for ii=7:11;
+		plotYelOverTime(resultsQuench(ii));
+		end
+
 end
 
-plotMaxGradBarChart(resultsQuench)
+
+
+% figure
+% plotMaxGradBarChart(resultsQuench) %% not working
 
 %% TESTS FOR NORMALITY
 for i=1:conditionN
