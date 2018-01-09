@@ -1,6 +1,6 @@
 
-saveQuenchResultsHere       = fullfile('~','Desktop','VX809_quench_.xls');
-saveQuenchingTimelineHere   =fullfile('~','Desktop','VX809_quench_timeline.xls');
+saveQuenchResultsHere       = 'VX809_quench.xls';
+saveQuenchingTimelineHere   ='VX809_quench_timeline.xls';
 %%'
 conditionN = length(resultsQuench);
 
@@ -58,9 +58,7 @@ elseif isunix == 1
 	outputResultsQuenchToExcelMAC( resultsQuench , saveQuenchResultsHere );
 	
 end
-	
-	
-        
+	        
 %% QUENCHING OUTPUT 2 (TIMELINE)
 
 if ispc == true

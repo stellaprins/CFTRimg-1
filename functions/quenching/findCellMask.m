@@ -8,13 +8,13 @@ thresh = 0.8*graythresh(adjusted);
 
 Ibw = imbinarize(adjusted,thresh);
 
-se = strel('disk',1);
+se = strel('disk',5); % was 1
 
 tmp = Ibw;
 
-for i=1:4
+% for i=1:4
 	tmp = imdilate(tmp,se);
-end
+% end
 
 cellMask = tmp;
 
