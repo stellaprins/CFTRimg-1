@@ -15,6 +15,7 @@ conditionN = length(conditions);
 
 resultsTemplate = struct(...
 			'mutation',''...
+			,'cellLocation',[]...
 			,'yelEntire',[]...
 			,'yelMembrane',[]...
 			,'redEntire',[]...
@@ -39,9 +40,10 @@ for i=1:conditionN
 	cellN = sum(cellsPerConditionPlate(:,i));
 	resultsStructArray(i).localCellN = cellN;
 	
-	resultsStructArray(i).yelEntire		= zeros(cellN,1);
-	resultsStructArray(i).yelMembrane	= zeros(cellN,1);
-	resultsStructArray(i).redEntire		= zeros(cellN,1);
+	resultsStructArray(i).cellLocation	= zeros(cellN,3);
+	resultsStructArray(i).yelEntire			= zeros(cellN,1);
+	resultsStructArray(i).yelMembrane		= zeros(cellN,1);
+	resultsStructArray(i).redEntire			= zeros(cellN,1);
 	
 	
 end

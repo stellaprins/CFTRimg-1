@@ -1,6 +1,6 @@
 function resultsStructArray = populateResultsLocal( resultsStructArray ...
 	,normStructArray)
-%UNTITLED6 Summary of this function goes here
+%POPULATERESULTSSTURCT Summary of this function goes here
 %   Detailed explanation goes here
 
 conditionN	= length(resultsStructArray);
@@ -19,6 +19,7 @@ for k=1:conditionN
 		for i=1:length(locationVec)
 			
 			if locationVec(i) == 1
+				resultsStructArray(k).cellLocation(count,:) = normStruct.cellLocation(i,:);
 				resultsStructArray(k).yelEntire(count) = normStruct.yelEntire(i);
 				resultsStructArray(k).yelMembrane(count) = normStruct.yelMembrane(i);
 				resultsStructArray(k).redEntire(count) = normStruct.redEntire(i);
