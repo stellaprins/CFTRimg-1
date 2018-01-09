@@ -149,3 +149,12 @@ for i=1
 	subplot(3,1,[2,3],'position',[0.12 0.1 0.74 0.54])
 	plotFOverDistance(plate(x).imageLocal(y),i)
 end
+
+%% CELL DISPLAY
+
+cellDisplay(plate(1).imageLocal(4),'red',1)
+
+figure
+cellDisplayBorder(plate(1).imageLocal(4), 'redBorder' , 1 )
+
+
