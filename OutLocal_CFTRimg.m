@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  ='VX809_local.xls';
+saveLocalResultsHere  ='testing_local.xls';
 
 conditionN						= length(resultsLocal);
 colors								= get(groot,'DefaultAxesColorOrder');
@@ -150,11 +150,16 @@ for i=1
 	plotFOverDistance(plate(x).imageLocal(y),i)
 end
 
-%% CELL DISPLAY
+%% OUTPUT CELLS TO FILE
 
-cellDisplay(plate(1).imageLocal(4),'red',1)
+tic;
 
-figure
-cellDisplayBorder(plate(1).imageLocal(4), 'redBorder' , 1 )
+saveLocation = 'cells';
 
+fprintf('Saving cell images...\n')
 
+labelAndSaveCells(resultsLocal,plate,saveLocation)
+
+fprintf('Done\n')
+
+toc

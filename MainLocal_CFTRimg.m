@@ -76,6 +76,15 @@ for j=1:plateN
 	end
 end
 
+% log the location of each cell (plate index, image index and bounding box index)
+% so that the cells can be found later for image display
+for j=1:plateN
+	localImageN = length(plate(j).imageLocal);
+	for i=1:localImageN
+		plate(j).imageLocal(i) = logCellLocation(plate(j).imageLocal(i),j,i);
+	end
+end
+
 % move key values into temporary a structure for normalizing
 tempResultsLocal = createNormalizeStruct(plate);
 for i = 1:plateN
