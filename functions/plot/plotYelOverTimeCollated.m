@@ -33,10 +33,12 @@ ylim([0 1.3])
 xlim([-5 140])
 
 title(resultsStruct.mutation)
+ax = gca;
+ax.FontSize = 14;
 xlhand = get(gca,'xlabel');
-set(xlhand,'string','Time (s)','fontsize',10)
+set(xlhand,'string','Time (s)','fontsize',18)
 ylhand = get(gca,'ylabel');
-set(ylhand,'string','F/F_{max}','fontsize',10)
+set(ylhand,'string','F/F_{max}','fontsize',18)
 
 % legend([p1 p2],'DMSO','DMSO + Forskolin','location','northeast')
 % set(gca,'fontsize',10)
