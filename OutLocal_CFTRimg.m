@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  = fullfile('~','Desktop','local_VX809_28_37_6.xls');
+saveLocalResultsHere  ='VX809_local.xls';
 
 conditionN						= length(resultsLocal);
 colors								= get(groot,'DefaultAxesColorOrder');
@@ -113,7 +113,7 @@ end
 close all
 
 x=1; % plate
-y=2; % image number
+y=4; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
@@ -133,12 +133,12 @@ imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
 %% CELL DISPLAY
 close all
 x=1; % plate
-y=2; % image number
+y=3; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
 
-for i=7:11
+for i=1
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)

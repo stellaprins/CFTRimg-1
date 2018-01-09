@@ -5,8 +5,8 @@ addpath(genpath(fullfile('input'))) %% include the location of your input folder
 
 
 %%
-inputDataTestKatie % the name of your input file
-saveWorkspaceHere = fullfile('~','Desktop','VX809_28_37_LOCAL.mat');
+VX809_28_37_LOCAL % the name of your input file
+saveWorkspaceHere = 'VX809_local_BPS.mat';
 
 normConditionStr = 'WT 37';
 
