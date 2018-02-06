@@ -59,7 +59,7 @@ L = watershed(Imod);
 % figure, imshow(label2rgb(L))
 
 if strcmp(mode,'test')
- 	showWatershedProcess(dI,Ibw,background,smallEM,overlay,label2rgb(L))
+ 	showWatershedProcess(imageStruct,Ibw,background,smallEM,overlay,label2rgb(L))
 end
 
 properties = regionprops(L,'BoundingBox','Area');
