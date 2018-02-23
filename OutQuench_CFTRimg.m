@@ -1,6 +1,6 @@
 
-saveQuenchResultsHere       = 'VX809_quench.xls';
-saveQuenchingTimelineHere   ='VX809_quench_timeline.xls';
+saveQuenchResultsHere       = 'VX809_quench_310118.xls';
+saveQuenchingTimelineHere   ='VX809_quench_310118_timeline.xls';
 %%'
 conditionN = length(resultsQuench);
 
@@ -95,6 +95,7 @@ end
 %% QUENCHING PLOTS 
 close all
 figure;
+
 for i=1:conditionN
 	  subplot(4,ceil(conditionN/2),i);
 		plotYelOverTimeCollated(resultsQuench(i));
@@ -113,13 +114,33 @@ end
 
 %% STATISTICS
 close all
-statsDataQuench = horzcat(resultsQuench.maxGradTest);
-[pKWQuench,tblKWQuench,statsKWQuench] = kruskalwallis(statsDataQuench);
+
+count1	 = 1;
+for i=1:conditionN
+	for k					= count1: (count1+length(resultsQuench(i).maxGradTest)-1);
+	groupQ_FORS(k)	= {resultsQuench(i).mutation};
+	end
+	count1					= count1 + length(resultsQuench(i).maxGradTest);
+end
+groupQ_FORS			= 	groupQ_FORS';
+statsDataQuench = vertcat(resultsQuench.maxGradTest);
+
+[pKWQuench,tblKWQuench,statsKWQuench] = kruskalwallis(statsDataQuench,groupQ_FORS);
+
+
+plotKruskalWallisQuench(statsDataQuench,groupQ_FORS);
+
 figure
-[cQuench,mQuench] = multcompare(statsKWQuench,'CType','dunn-sidak');
+[cQuench,mQuench] = multcompare(statsKWQuench,'CType','bonferroni');
 
-[p,h,stats] = ranksum(resultsQuench(1).maxGradTest,resultsQuench(1).maxGradControl);
-[p,h,stats] = ranksum(resultsQuench(2).maxGradTest,resultsQuench(2).maxGradControl);
-[p,h,stats] = ranksum(resultsQuench(3).maxGradTest,resultsQuench(3).maxGradControl);
+for i = 1: conditionN
+[h,p,ci,stats] = ttest2(resultsQuench(i).maxGradTest,resultsQuench(i).maxGradControl);
+cond(i)     = {resultsQuench(i).mutation};
+p_Quench(i) = p;
+% rank_Quench(i)= stats.ranksum;
+end
 
-
+[h,p,ci,stats] = ttest2(x,y)
+% [p,h,stats] = ranksum(resultsQuench(1).maxGradTest,resultsQuench(1).maxGradControl);
+% [p,h,stats] = ranksum(resultsQuench(2).maxGradTest,resultsQuench(2).maxGradControl);
+% [p,h,stats] = ranksum(resultsQuench(3).maxGradTest,resultsQuench(3).maxGradControl);

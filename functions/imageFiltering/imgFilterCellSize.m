@@ -5,11 +5,12 @@ function [ imageStruct ] = imgFilterCellSize( imageStruct )
 global BINNING
 
 cellLength	= imageStruct.cellLength;
-cellWidth	= imageStruct.cellWidth;
+cellWidth		= imageStruct.cellWidth;
 boundingBox = imageStruct.boundingBox;
 
 cellLogical = 100*BINNING < cellLength & cellLength < 300*BINNING & ...
 	80*BINNING < cellWidth & cellWidth < 200*BINNING;
+
 
 cellN = sum(cellLogical);
 newBoundingBox = zeros(cellN,4);

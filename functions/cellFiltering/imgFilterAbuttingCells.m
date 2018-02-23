@@ -12,8 +12,9 @@ for idx=1:imageStruct.cellN(end)
 
 	redCropped = boundingBoxToCroppedImage(image,boundingBox);
 	
-	redCropAdj = im2double(redCropped) - redBackground;
-	
+ 		redCropAdj = redCropped
+% 	redCropAdj = im2double(redCropped) - redBackground;
+% 	
 	bw = cellBinarize(redCropAdj);
 	
 	edgeMask = zeros(size(redCropAdj));

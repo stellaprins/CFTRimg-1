@@ -3,8 +3,8 @@ clear
 addpath(genpath('functions'))
 addpath(genpath('input'))
 %%
-VX809_quench_ % the name of your input file
-saveWorkspaceHere = './VX809_quench.mat';
+VX809_quench_% the name of your input file
+saveWorkspaceHere = './VX809_quench_220118';
 
 %%
 close all
