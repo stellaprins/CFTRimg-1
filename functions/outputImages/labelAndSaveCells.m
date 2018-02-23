@@ -5,7 +5,6 @@ function labelAndSaveCells( resultsStructArray ,plateStructArray ...
 
 conditionN = length(resultsStructArray);
 
-
 for j=1:conditionN
 	resultsStruct = resultsStructArray(j);
 	cellN = length(resultsStruct.cellLocation);

@@ -6,7 +6,7 @@ addpath(genpath(fullfile('input'))) %% include the location of your input folder
 
 %%
 VX809_28_37_LOCAL % the name of your input file
-saveWorkspaceHere = 'VX809_local_BPS.mat';
+saveWorkspaceHere = 'segmentation_check2002.mat';
 
 normConditionStr = 'WT 37';
 
@@ -45,12 +45,13 @@ for j = 1:plateN
 	localImageN = length(plate(j).imageLocal);
 	for i = 1:localImageN
 		plate(j).imageLocal(i).cellN = plate(j).imageLocal(i).cellN(1);
-		plate(j).imageLocal(i) = imgFilterEdges(plate(j).imageLocal(i));
-		plate(j).imageLocal(i) = imgFilterUnmasked(plate(j).imageLocal(i));
+ 		plate(j).imageLocal(i) = imgFilterEdges(plate(j).imageLocal(i));
+%  		plate(j).imageLocal(i) = imgFilterUnmasked(plate(j).imageLocal(i));
 		plate(j).imageLocal(i) = imgFilterCellDimensions(plate(j).imageLocal(i));
-		plate(j).imageLocal(i) = imgFilterRedGrad(plate(j).imageLocal(i));
+% 		plate(j).imageLocal(i) = imgFilterRedGrad(plate(j).imageLocal(i));
 	end
 end
+
 disp		('Completed cell filtering')
 time(3) = toc;
 

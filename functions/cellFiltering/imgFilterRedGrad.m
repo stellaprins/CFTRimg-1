@@ -32,7 +32,7 @@ for idx=1:imageStruct.cellN(end)
 	redMax = max(redCropped(:));
 	
 	% define a reference gradient based on cell being approx 150 pixels wide
-	refGradient = (redMax - redMin) / (40*BINNING);
+	refGradient = (redMax - redMin) / (75*BINNING);
 	
 	% test if cell's max gradient is higher than reference
 	cellLogical(idx) = maxGradient(idx) > refGradient;
