@@ -1,7 +1,8 @@
 function [ mutationArray,redPathArray,yelPathArray ] = findImagePathsLocal...
 	(experimentStruct,mutationArray,redPathArray,yelPathArray)
-%UNTITLED5 Summary of this function goes here
-%   Detailed explanation goes here
+%FIND_IMAGE_PATHS_LOCAL construct path names for localization images
+%   Add to 'redPathArray' and 'yelPathArray' new path names constructed for
+%   each localization image. Done for all wells in an experiment.
 
 global SITEN
 

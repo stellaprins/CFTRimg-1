@@ -1,8 +1,12 @@
 function [ mutationArray,test_controlArray,redPathArray,yelPathArray] = ...
 	findImagePathsQuench(experimentStruct,mutationArray,test_controlArray ...
 	,redPathArray,yelPathArray)
-%UNTITLED5 Summary of this function goes here
-%   Detailed explanation goes here
+%FIND_IMAGE_PATHS_QUENCH construct path names for quenching images
+%   Add to 'redPathArray' and 'yelPathArray' new path names constructed for
+%   each quenching image, whether of test condition or control. Cycles
+%   through all wells in an experiment. More complicated than for
+%   localization images, and requires an additional function to construct
+%   path name.
 
 redTimePoints = {'1','70'};
 

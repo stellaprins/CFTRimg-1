@@ -1,8 +1,9 @@
 function imageStructArray = createImageQuenchStruct(...
 	mutationArray,test_controlArray...
 	,redPathArray,yelPathArray)
-%UNTITLED4 Summary of this function goes here
-%   Detailed explanation goes here
+%CREATE_IMAGE_QUENCH_STRUCT initializes empty struct for each quench well
+%   Defines all attributes of image_quench struct and assigns initial data
+%   to appropriate attributes.
 
 pathN = size(redPathArray,1);
 

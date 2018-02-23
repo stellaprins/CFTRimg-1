@@ -1,6 +1,8 @@
 function  imageStruct = createImageLocalStruct( mutationArray...
 	,redPathArray , yelPathArray )
-%CREATEIMAGELOCALSTRUCT create empty structs for each localisation image
+%CREATE_IMAGE_LOCAL_STRUCT initializes empty structs for each localisation image
+%   Defines all attributes of image_local struct and assigns initial data
+%   to appropriate attributes.
 
 pathN = length(redPathArray);
 imageTemplate = struct(...

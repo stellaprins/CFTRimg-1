@@ -1,8 +1,8 @@
 function [ tmpRedPathArray,tmpYelPathArray ] = ...
 	constructPathNameQuench( experimentStruct,wells,wellIdx,redTimePoints...
 	,tmpRedPathArray,tmpYelPathArray )
-%UNTITLED27 Summary of this function goes here
-%   Detailed explanation goes here
+%CONSTRUCT_PATH_NAME_QUENCH final process of making quenching path name
+%   Combine all sections of quenching path name strings
 
 % red
 		for i=1:2

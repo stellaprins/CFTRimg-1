@@ -1,6 +1,6 @@
 function [ plateStructArray ] = findImagePaths( ...
 	experimentStructArray,plateStructArray)
-%FINDIMAGEPATHS construct image paths from inputted data
+%FIND_IMAGE_PATHS construct image paths from inputted data
 %   Cycles through all plates. For each plate, the appropriate experiments
 %   are selected. The path names are then constructed in
 %   'findImagePathsLocal' and 'findImagePathsQuench'. Using these arrays of

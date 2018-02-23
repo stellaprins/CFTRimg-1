@@ -1,5 +1,5 @@
 function  exp = createExperimentStruct( experimentN )
-%CREATEEXPERIMENTS create empty structs for each experiment.
+%CREATEEXPERIMENTS create empty structs for each experiment folder.
 
 experimentTemplate = struct(...
 			'plateStr',[]...

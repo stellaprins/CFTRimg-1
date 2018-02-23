@@ -1,5 +1,5 @@
 function  plateStruct = createPlateStruct( experimentStruct )
-%CREATEPLATE create empty structs for each plate as listed in
+%CREATEPLATESTRUCT create empty structs for each plate as listed in
 %'experimentStruct.plateStr'
 
 plates = unique(horzcat(experimentStruct.plateStr));
