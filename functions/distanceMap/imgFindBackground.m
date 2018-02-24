@@ -1,6 +1,6 @@
 function [ imageStruct ] = imgFindBackground( imageStruct )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%IMG_FIND_BACKGROUND Calculate background fluorescence intensity for full
+%image
 
 global BINNING
 

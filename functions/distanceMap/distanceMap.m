@@ -1,6 +1,12 @@
 function [ imageStruct ] = distanceMap( imageStruct )
-%UNTITLED4 Summary of this function goes here
-%   Detailed explanation goes here
+%DISTANCE_MAP Calculate mean intensity values in different cell regions
+%using a map of distance from cell border
+%		For each cell, the distance from the cell border is calculated in
+%		pixels, with the cell border being definied by the binarized cell mask.
+%
+%		The membrane is defined as any (unbinned) pixel within 10 of the
+%		border. All values are adjusted by the background intensity for the
+%		full image.
 
 global BINNING
 
@@ -25,7 +31,7 @@ for i=1:cellN
 	
 	cellMask = boundingBoxToCellMask(redImage,boundingBox);
 	
-	distanceMap = makeDistanceMap(cellMask);
+	distanceMap = cellMaskToDistanceMap(cellMask);
 	
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
 	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
