@@ -1,6 +1,7 @@
 function normStruct = normalizeResultsWT( normStruct , normConditionStr)
-%UNTITLED7 Summary of this function goes here
-%   Detailed explanation goes here
+%NORMALIZE_RESULTS_WT normalize all conditions to Wild Type to account for
+%differences between different plates.
+%   If no WT condition is present on a plate, then an error will be raised.
 
 cellN				= length(normStruct.mutation);
 

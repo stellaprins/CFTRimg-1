@@ -1,7 +1,7 @@
 function resultsStructArray = populateResultsLocal( resultsStructArray ...
 	,normStructArray)
-%POPULATERESULTSSTURCT Summary of this function goes here
-%   Detailed explanation goes here
+%POPULATE_RESULTS_STURCT Move data from normalized temporary struct into
+%final struct ready for plotting
 
 conditionN	= length(resultsStructArray);
 plateN			= length(normStructArray);

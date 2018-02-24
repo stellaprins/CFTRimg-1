@@ -1,6 +1,8 @@
 function imageStruct = logCellLocation( imageStruct , plateIdx , imageIdx)
-%LOGCELLLOCATION Summary of this function goes here
-%   Detailed explanation goes here
+%LOG_CELL_LOCATION log the location of each cell
+%		The plate index, image index and bounding box index are saved so that
+%		the cells can be found later for image display
+
 
 cellLocation = zeros(imageStruct.cellN(end),3);
 

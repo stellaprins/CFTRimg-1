@@ -1,6 +1,8 @@
 function normStructArray = createNormalizeStruct( plateStructArray )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%CREATE_NORMALIZE_STRUCT initializes empty structs for data in preparation
+%for the normalization to WT process
+%   The structs are dummy, temporary structures to store the data while it
+%   is being normalized.
 
 plateN = length(plateStructArray);
 

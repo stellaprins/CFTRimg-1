@@ -1,6 +1,7 @@
 function resultsStructArray = createResultsLocalStruct( normStructArray )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%CREATE_RESULTS_LOCAL_STRUCT Initialize empty results struct
+%		Create struct to store all data after it has been normalized. The data
+%		is now sorted by condition rather than by plate.
 
 plateN = length(normStructArray);
 

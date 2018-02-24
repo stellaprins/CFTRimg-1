@@ -1,6 +1,8 @@
 function imageStruct = filterNegativeMetric( imageStruct )
-%UNTITLED7 Summary of this function goes here
-%   Detailed explanation goes here
+%FILTER_NEGATIVE_METRIC Remove any cells from analysis with metric below 0
+%		Any cells with a metric (yelMembrane/redEntire) below zero will skew
+%		the analysis and so are removed. Typically there are very few of
+%		these cells.
 
 cellN = imageStruct.cellN(end);
 
