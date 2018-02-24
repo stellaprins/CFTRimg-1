@@ -1,6 +1,6 @@
 function  cellMask  = findCellMask( redImage )
-%UNTITLED18 Summary of this function goes here
-%   Detailed explanation goes here
+%FIND_CELL_MASK Binarize quench image to create mask over cells, and dilate
+%this area.
 
 adjusted = imadjust(redImage);
 

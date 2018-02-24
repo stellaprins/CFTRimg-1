@@ -1,6 +1,8 @@
 function [ imageStruct ] = findRedMaskChange( imageStruct )
-%UNTITLED23 Summary of this function goes here
-%   Detailed explanation goes here
+%FIND_RED_MASK_CHANGE Calculate difference between red images at start and
+%finish
+%   The results is saved to the imageQuench struct under attribute
+%   'redMaskChange'.
 
 imageDim = 432;
 
