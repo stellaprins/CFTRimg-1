@@ -1,6 +1,6 @@
-function imgDisplayOverlayQuench( imageStruct , colorStr )
-%UNTITLED6 Summary of this function goes here
-%   Detailed explanation goes here
+function imgDisplayQuenchOverlay( imageStruct , colorStr )
+%IMG_DISPLAY_QUENCH_OVERLAY Options to display a quench image with cell
+%mask outline superimposed
 
 switch colorStr
 	case 'redOverlay'
