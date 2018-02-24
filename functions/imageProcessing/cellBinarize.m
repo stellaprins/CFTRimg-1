@@ -1,32 +1,32 @@
 function [ binaryImage ] = cellBinarize( croppedImage )
-%UNTITLED4 Summary of this function goes here
-%   Detailed explanation goes here
+%CELL_BINARIZE Create cell mask from cropped image
+%   Binarized cell mask is created from a cropped image. A series of
+%   morphological functions are performed to smooth the cell edges, and
+%   ensure there is a single connected binarized area.
 
 global BINNING
 
-adjusted = croppedImage; % imadjust(croppedImage);
+thresh = 0.9*graythresh(croppedImage);
 
-thresh = 0.9*graythresh(adjusted);
-
-bw = imbinarize(adjusted,thresh);
+bw = imbinarize(croppedImage,thresh);
 
 seOpen = strel('disk',floor(6*BINNING));
 opened = imopen(bw,seOpen);
 
 filled = imfill(opened,'holes');
-cleared = bwareaopen(filled,2400*BINNING);
+cleared = bwareaopen(filled,floor(2400*BINNING));
 
 seDilate = strel('disk',floor(6*BINNING));
 closed = imclose(cleared,seDilate);
 
 seUnit = strel('disk',1);
 eroded = closed;
-for i=1:6*BINNING
+for i=1:floor(6*BINNING)
 	eroded = imerode(eroded,seUnit);
 end
 
 dilated = eroded;
-for i=1:18*BINNING
+for i=1:floor(18*BINNING)
 	dilated = imdilate(closed,seUnit);
 end
 

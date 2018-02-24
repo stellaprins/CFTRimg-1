@@ -1,6 +1,5 @@
 function [ cellMask ] = boundingBoxToCellMask( fullImage, boundingBox )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%BOUNDING_BOX_TO_CELL_MASK
 	
 global EXTRA
 

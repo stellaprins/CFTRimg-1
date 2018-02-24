@@ -1,6 +1,5 @@
 function [ croppedImage ] = boundingBoxToCroppedImage( fullImage, boundingBox )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%BOUNDING_BOX_TO_CROPPED_IMAGE
 	
 global EXTRA
 

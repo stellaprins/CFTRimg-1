@@ -1,6 +1,5 @@
-function [ croppedImage ] = boundingBoxToCroppedImage( fullImage, boundingBox )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+function [ croppedImage ] = boundingBoxToCroppedColor( fullImage, boundingBox )
+%BOUNDING_BOX_TO_CROPPED_COLOR
 	
 global EXTRA
 
@@ -9,7 +8,7 @@ xmax = floor(boundingBox(1)) + boundingBox(3) + EXTRA;
 ymin = ceil(boundingBox(2)) - EXTRA;
 ymax = floor(boundingBox(2)) + boundingBox(4) + EXTRA;
 
-croppedImage = fullImage(ymin:ymax,xmin:xmax);
+croppedImage = fullImage(ymin:ymax,xmin:xmax,:);
 
 
 end
