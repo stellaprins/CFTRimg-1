@@ -1,6 +1,8 @@
 function [ imageStruct ] = imgFilterEdges( imageStruct )
-%IMGFILTEREDGES Summary of this function goes here
-%   Detailed explanation goes here
+%IMG_FILTER_EDGES Removes all cells from processing which sit on the edge
+%of the full image.
+%		These cells are removed due to the likelihood of them being only
+%		partially included within the larger image.
 
 global BINNING EXTRA
 

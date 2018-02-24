@@ -1,6 +1,11 @@
 function [ imageStruct ] = imgFilterCellDimensions( imageStruct )
-%UNTITLED8 Summary of this function goes here
-%   Detailed explanation goes here
+%IMG_FILTER_CELL_DIMENSIONS Remove cells from analysis according to cell
+%dimensions
+%   Cells are removed if they are
+%			* too large
+%			* too small
+%			* have a large cell perimeter relative to their area
+%		This last criterion ensures that selected cells are loosely circular.
 
 global BINNING
 

@@ -1,6 +1,10 @@
 function [ imageStruct ] = imgFilterUnmasked( imageStruct )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+%IMG_FILTER_UNMASKED Removes cells from analysis if binarizing creates an
+%cell mask either of all zeros or all ones.
+%   Occasionally the binarizing process to create a cell mask either
+%   includes every pixel in the cell bounding box or zero pixels.
+%   Effectively the cell mask creation process has failed. These cells are
+%   excluded from the analysis.
 
 redImage = im2double(imread(imageStruct.redPath));
 
