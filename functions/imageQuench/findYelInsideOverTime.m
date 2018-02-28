@@ -1,25 +1,30 @@
 function [ imageStruct ] = findYelInsideOverTime( imageStruct )
-%UNTITLED24 Summary of this function goes here
-%   Detailed explanation goes here
+%FIND_YEL_INSIDE_OVER_TIME Collect yellow fluorescence intensity data from
+%each quench image giving time series data.
+%   1. The red images from the start and finish are binarized to locate
+%   cells. The binarized cell masks are combined to give a larger cell
+%   area, accounting for the slight movement of cells over the time course
+%   due to fluid additions.
+%		2. Yellow intesity data are normalized.
+%			* Normalized by the red intensity data.
+%			* Normalized by the point just before the first fluid addition.
 
 
-imageDim    = 432; % for 20x objective, 5x binning
-yelN        = length(imageStruct.yelPath);
-redImage1   = im2double(imread(imageStruct.redPath{1})); % mCh at the start of the timelapse
-redImage2   = im2double(imread(imageStruct.redPath{2})); % mCh at the end of the timelapse
-cellMask1		= findCellMask(redImage1);
-cellMask2		= findCellMask(redImage2);
-cellMask		= im2bw(cellMask2+cellMask1);
-tmpRedIn1   = redImage1 .* cellMask;
-tmpRedOut1  = redImage1 .* ~cellMask;
-tmpRedIn2   = redImage2 .* cellMask;
-tmpRedOut2  = redImage2 .* ~cellMask;
-redInside   = sum(tmpRedIn2(:)) / sum(cellMask(:));
-redOutside  = sum(tmpRedOut2(:)) / sum(~cellMask(:));
-redSignal   = redInside - redOutside;
-yelImage    = zeros(imageDim,imageDim,yelN,'double');
-yelInside   = zeros(yelN,1);
-yelOutside  = zeros(yelN,1);
+imageDim			= 432; % for 20x objective, 5x binning
+yelN					= length(imageStruct.yelPath);
+redImageStart	= im2double(imread(imageStruct.redPath{1})); 
+redImageEnd		= im2double(imread(imageStruct.redPath{2}));
+cellMaskStart = findCellMask(redImageStart);
+cellMaskEnd		= findCellMask(redImageEnd);
+cellMask			= cellMaskStart | cellMaskEnd;
+tmpRedInside	= redImageEnd .* cellMask;
+tmpRedOutside = redImageEnd .* ~cellMask;
+redInside			= sum(tmpRedInside(:)) / sum(cellMask(:));
+redOutside		= sum(tmpRedOutside(:)) / sum(~cellMask(:));
+redSignal			= redInside - redOutside;
+yelImage			= zeros(imageDim,imageDim,yelN,'double');
+yelInside			= zeros(yelN,1);
+yelOutside		= zeros(yelN,1);
 
 for i=1:yelN
 	yelImage(:,:,i) = im2double(imread(imageStruct.yelPath{i}));
@@ -33,8 +38,8 @@ yelSignal   = yelInside - yelOutside;
 yelData			= yelSignal / redSignal;
 yelStandard = yelData(5);
 imageStruct.yelInsideOverT  = yelData / yelStandard;
-% figure
-% showQuenchImage(redImage(:,:,1),yelImage(:,:,1),cellMask(:,:,1))
+
+% showQuenchImage( imageStruct )
 
 end
 

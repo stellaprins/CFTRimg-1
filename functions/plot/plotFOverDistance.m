@@ -19,7 +19,7 @@ if sum(cellMask(:)) == 0
 	return
 end
 
-distanceMap = makeDistanceMap(cellMask);
+distanceMap = cellMaskToDistanceMap(cellMask);
 distanceGroups = distanceMap - min(distanceMap(:)) + 1;
 distanceLabels = unique(distanceMap) + (unique(distanceMap) >= 0);
 

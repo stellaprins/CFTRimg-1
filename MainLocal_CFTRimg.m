@@ -46,9 +46,8 @@ for j = 1:plateN
 	for i = 1:localImageN
 		plate(j).imageLocal(i).cellN = plate(j).imageLocal(i).cellN(1);
  		plate(j).imageLocal(i) = imgFilterEdges(plate(j).imageLocal(i));
-%  		plate(j).imageLocal(i) = imgFilterUnmasked(plate(j).imageLocal(i));
+ 		plate(j).imageLocal(i) = imgFilterUnmasked(plate(j).imageLocal(i));
 		plate(j).imageLocal(i) = imgFilterCellDimensions(plate(j).imageLocal(i));
-% 		plate(j).imageLocal(i) = imgFilterRedGrad(plate(j).imageLocal(i));
 	end
 end
 
