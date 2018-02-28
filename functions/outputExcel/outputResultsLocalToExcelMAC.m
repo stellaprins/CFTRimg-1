@@ -1,6 +1,8 @@
 function outputResultsLocalToExcelMAC( resultsStructArray , saveLocationPath )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+%OUTPUT_RESULTS_LOCAL_TO_EXCEL_MAC
+%   The 'xlswrite' function only works on Windows machines and the
+%   'writetable' function only works on Mac machine. Two functions have
+%   been created to circumvent this issue.
 
 conditionN = length(resultsStructArray);
 

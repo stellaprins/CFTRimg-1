@@ -2,41 +2,18 @@
 saveLocalResultsHere  ='segmentation_check2002.xls';
 
 conditionN						= length(resultsLocal);
+
+subplotDimM = 2; % ceil(sqrt(conditionN));
+subplotDimN = 3; % ceil(sqrt(conditionN));
+
 colors								= get(groot,'DefaultAxesColorOrder');
 
 %% LOCALISATION OUTPUT
 
 if ispc == true
-
-	meanYFPEntire			= zeros(1,conditionN);
-	meanYFPMembrane   = zeros(1,conditionN);
-	stdYFPEntire			= zeros(1,conditionN);
-	stdYFPMembrane		= zeros(1,conditionN);
-	medianYFPMembrane	= zeros(1,conditionN);
-	iqrYFPMembrane    = zeros(1,conditionN);
-	meanRedEntire     = zeros(1,conditionN);
-	stdRedEntire			= zeros(1,conditionN);
-
-	for i=1:conditionN
-		res										= resultsLocal(i);
-		meanYFPEntire(i)			= mean(res.yelEntire ./ res.redEntire);
-		stdYFPEntire(i)				= std(res.yelEntire ./ res.redEntire);
-		meanYFPMembrane(i)		= mean(res.yelMembrane ./ res.redEntire);
-		stdYFPMembrane(i)			= std(res.yelMembrane ./ res.redEntire);
-		medianYFPMembrane(i)	= median(res.yelMembrane ./ res.redEntire);
-		iqrYFPMembrane(i)			= iqr(res.yelMembrane ./ res.redEntire);
-		meanRedEntire(i)      = mean(res.redEntire);
-		stdRedEntire(i)       = std(res.redEntire);
-	end
-
-	condition   = vertcat({'condition'},{resultsLocal.mutation}');
-	N           = vertcat({'N'},{resultsLocal.localCellN}');
-	Ymem        = vertcat(horzcat({'mean membrane density'},{'median membrane density'},{'std'})...
-		,num2cell([meanYFPMembrane; medianYFPMembrane; stdYFPMembrane]'));
-	results			=	horzcat(condition,N,Ymem)
-
-	xlswrite(saveLocalResultsHere,results)
-
+	
+	outputResultsLocalToExcelPC(resultsLocal,saveLocalResultsHere)
+	
 elseif isunix==true
 
 	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
@@ -46,29 +23,10 @@ end
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
 
-for b  = 1:conditionN
-	MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
-	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
-		qqplot(MembraneDensity);
-		yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
-		set(yLab,'fontsize',9)
-		xLab = xlabel(sprintf('Standard Normal Quantiles'));
-		set(xLab,'fontsize',8)
-		title(resultsLocal(b).mutation);
-end
+plotLocalQQPlot(resultsLocal, subplotDimM, subplotDimN )
 
-figure;
+plotLocalHistogram(resultsLocal, subplotDimM, subplotDimN )
 
-for b  = 1:conditionN
-	MembraneDensity = resultsLocal(b).yelMembrane./resultsLocal(b).redEntire;
-	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
-		histogram(MembraneDensity,150,'BinLimits',[0,6],'Orientation', 'vertical');
-		xLab = xlabel('F_{YFP,membrane} / F_{mCh,cell}');
-		set(xLab,'fontsize',9)
-		yLab = ylabel('Frequency');
-		set(yLab,'fontsize',8)
-		title(resultsLocal(b).mutation);
-end
 
 %% STATISTICS
 close all
