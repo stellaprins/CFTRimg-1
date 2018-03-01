@@ -21,20 +21,38 @@ elseif isunix==true
 end
 
 
-%% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
+%% KSTEST, QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
+% perform the Kolmogorov-Smirnov test to see if data is normally
+% distributed. 1 means NOT normally distributed at 0.05 significance.
+KSTestResults = zeros(conditionN,1);
+KSTestPValues = zeros(conditionN,1);
+for i=1:conditionN
+	
+	res = resultsLocal(i);
+	memDensity = res.yelMembrane ./ res.redEntire;
+	[h,p,ksstat] = kstest(memDensity);
+	KSTestResults(i) = h;
+	KSTestPValues(i) = p;
+
+end
 
 plotLocalQQPlot(resultsLocal, subplotDimM, subplotDimN )
 
 plotLocalHistogram(resultsLocal, subplotDimM, subplotDimN )
 
 
-%% STATISTICS
+%% FIND STATISTICS TO FIND WHICH CONDITIONS ARE SIGNIFICANTLY DIFFERENT
+% Before running this section, it is important to verify that your data is
+% NOT normally distributed. The section above allows for this. If your data
+% IS normally distributed a test other than the Kruskal-Wallis must be
+% employed, i.e. the two-way ANOVA.
 close all
 cellN       = sum(vertcat(resultsLocal.localCellN));
 statsData   = zeros(cellN,1);
 group       = cell(cellN,1);
 cellCount   = 1;
 
+% arrange the data for the kruskalWallis function.
 for i=1:conditionN
 	res = resultsLocal(i);
 	statsData(cellCount:(cellCount+res.localCellN-1)) = ...
@@ -43,24 +61,37 @@ for i=1:conditionN
 	cellCount = cellCount + res.localCellN;
 end
 
-[pKruskalWallis, statsKW] = plotKruskalWallis(statsData,group);
-figure;
-[c,m,~,gnames] = multcompare(statsKW,'CType','bonferroni');
+% perform the Kruskal-Wallis test, and also use the 'multcompare' function
+% to find the p-values for each pairwise comparison. The correction method
+% for multiple comparison is variable. Examples are 'bonferroni' and
+% 'dunn-sidak'.
+[pKruskalWallis, statsKW] = plotLocalKruskalWallis(statsData,group);
+figure
+[c,m,~,gnames] = multcompare(statsKW,'CType','dunn-sidak');
 
+% the multiple comparison p-values are stored in array c. However they are
+% difficult to read in this form. Therefore, transfer the data into
+% 'multComparePValues'.
+comparisonN = ((conditionN-1)*conditionN)/2;
+multComparePValues = cell(comparisonN,3);
+for i=1:comparisonN
+	multComparePValues{i,1} = gnames{c(i,1)};
+	multComparePValues{i,2} = gnames{c(i,2)};
+	multComparePValues{i,3} = c(i,6);
+end
 
 %% CORRELATION PLOTS
 
 close all
-figure;
 
+figure
 for i=1:ceil(length(resultsLocal)/2)
     subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
              ceil(sqrt((length(resultsLocal)/2)*1.5)), i)
 	plotLocalRedYelCorr(resultsLocal(i),'membrane');
 end
 
-figure;
-
+figure
 for i=ceil(length(resultsLocal)/2):ceil(length(resultsLocal))
     k=i-((length(resultsLocal)/2)-1);
     subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
