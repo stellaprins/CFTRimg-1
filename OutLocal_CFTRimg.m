@@ -96,7 +96,7 @@ end
 
 disp(redYelCorrStats)
 
-%% IMAGE DISPLAY
+%% IMAGE DISPLAY (with all selected cells boxed)
 close all
 
 x=5; % plate
@@ -105,43 +105,16 @@ y=29; % image number
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
 
-% display the image
-% enter "red", "yel", "blend" as the second argument of imgDisplay.'
+allBoundingBoxes = plate(x).imageLocal(y).boundingBox(:,:);
 
 figure
-imgDisplay(plate(x).imageLocal(y),'blend')
-
-% display image with 2 cells boxed
-cell1 = 1;
-cell2 = 2;
-
-boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
-boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
-
+localDisplayImage(plate(x).imageLocal(y),'red')
+localAddRectangleToImage( allBoundingBoxes )
 figure
-imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+localDisplayImage(plate(x).imageLocal(y),'yel')
+localAddRectangleToImage( allBoundingBoxes )
 figure
-imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
-
-%% display image with all selected cells boxed
-close all
-
-x=5; % plate
-y=29; % image number
-
-fprintf('\nImage %d on plate %d has %d cells.\n'...
-	,y,x,plate(x).imageLocal(y).cellN(end))
-
-for ii= 1:plate(x).imageLocal(y).cellN(end)
-B(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);	
-end
-
-figure
-imgDisplayRectangle_SP(plate(x).imageLocal(y),'red',B)
-figure
-imgDisplayRectangle_SP(plate(x).imageLocal(y),'yel',B)
-figure
-imgDisplay(plate(x).imageLocal(y),'blend')
+localDisplayImage(plate(x).imageLocal(y),'combine')
 	
 
 %% CELL DISPLAY
