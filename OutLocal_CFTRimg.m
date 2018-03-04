@@ -6,8 +6,6 @@ conditionN						= length(resultsLocal);
 subplotDimM = 2; % ceil(sqrt(conditionN));
 subplotDimN = 3; % ceil(sqrt(conditionN));
 
-colors								= get(groot,'DefaultAxesColorOrder');
-
 %% LOCALISATION OUTPUT
 
 if ispc == true
@@ -62,9 +60,7 @@ for i=1:conditionN
 end
 
 % perform the Kruskal-Wallis test, and also use the 'multcompare' function
-% to find the p-values for each pairwise comparison. The correction method
-% for multiple comparison is variable. Examples are 'bonferroni' and
-% 'dunn-sidak'.
+% to find the p-values for each pairwise comparison.
 [pKruskalWallis, statsKW] = plotLocalKruskalWallis(statsData,group);
 figure
 [c,m,~,gnames] = multcompare(statsKW,'CType','dunn-sidak');
@@ -81,32 +77,24 @@ for i=1:comparisonN
 end
 
 %% CORRELATION PLOTS
+% plot redEntire data against either yelEntire or yelMembrane (second
+% parameter). It is important to see whether these data are correlated as
+% it implies the validity of memDensity measure (yelMem / redEnt).
 
 close all
 
-figure
-for i=1:ceil(length(resultsLocal)/2)
-    subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
-             ceil(sqrt((length(resultsLocal)/2)*1.5)), i)
-	plotLocalRedYelCorr(resultsLocal(i),'membrane');
-end
+redYelCorrStats = cell(conditionN + 1,4);
+redYelCorrStats(1,:) = {'Condition','R value','Slope','MSE'};
 
 figure
-for i=ceil(length(resultsLocal)/2):ceil(length(resultsLocal))
-    k=i-((length(resultsLocal)/2)-1);
-    subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
-             ceil(sqrt((length(resultsLocal)/2)*1.5)), k);
-	plotLocalRedYelCorr(resultsLocal(i),'membrane');
+for i=1:conditionN
+	redYelCorrStats{i+1,1} = resultsLocal(i).mutation;
+  subplot( subplotDimM, subplotDimN, i )
+	stats = plotLocalRedYelCorr(resultsLocal(i),'membrane');
+	redYelCorrStats(i+1,2:end) = num2cell(stats);
 end
 
-figure
-for i=1:length(resultsLocal)
-    subplot(1,length(resultsLocal),i)
-	plotLocalRedYelCorr(resultsLocal(i),'membrane');
-	hold on
-end
-
-
+disp(redYelCorrStats)
 
 %% IMAGE DISPLAY
 close all
