@@ -2,11 +2,15 @@ function [ imageStruct ] = distanceMap( imageStruct )
 %DISTANCE_MAP Calculate mean intensity values in different cell regions
 %using a map of distance from cell border
 %		For each cell, the distance from the cell border is calculated in
-%		pixels, with the cell border being definied by the binarized cell mask.
+%		pixels, with the cell border being defined by the binarized cell mask.
 %
 %		The membrane is defined as any (unbinned) pixel within 10 of the
 %		border. All values are adjusted by the background intensity for the
 %		full image.
+%
+%		The membrane density metric 'memDens' is also calculated and its
+%		log-transformed value 'logMemDens'. The log-transformation is
+%		calculated so that the data approximates a normal distribution.
 
 global BINNING
 
@@ -25,12 +29,13 @@ yelMeanInterior	= zeros(cellN,1);
 redMeanEntire		= zeros(cellN,1);
 redMeanOutside	= zeros(cellN,1);
 
+memDens					= zeros(cellN,1);
+logMemDens	  	= zeros(cellN,1);
+
 for i=1:cellN
 	
 	boundingBox = imageStruct.boundingBox(i,:);
-	
 	cellMask = boundingBoxToCellMask(redImage,boundingBox);
-	
 	distanceMap = cellMaskToDistanceMap(cellMask);
 	
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
@@ -50,6 +55,9 @@ for i=1:cellN
 	
 	redMeanEntire(i) = sum(cellMask .* redCropAdj) / sum(cellMask);
 	redMeanOutside(i) = sum(~cellMask .* redCropped) / sum(~cellMask);
+	
+	memDens(i)		= yelMeanMembrane(i)./redMeanEntire(i);
+	logMemDens(i) = real(log10(yelMeanMembrane(i)./redMeanEntire(i)));
 	%%%%%%%
 
 end
@@ -61,6 +69,9 @@ imageStruct.yelInterior			= yelMeanInterior;
 
 imageStruct.redEntire				= redMeanEntire;
 imageStruct.redOutside			= redMeanOutside;
+
+imageStruct.memDens					= memDens;
+imageStruct.logMemDens			= logMemDens;
 
 end
 
