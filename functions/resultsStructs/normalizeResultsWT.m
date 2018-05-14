@@ -16,22 +16,32 @@ if sum(locationWT) == 0
 	return
 end
 
-% calculate metrics for WT condition (membrane and entire)
-%			Here we are normalizing to the mCherry
+%			calculate metrics for WT condition (membrane and entire)
 yelEntireWT				= locationWT .* normStruct.yelEntire;
 yelMembraneWT			= locationWT .* normStruct.yelMembrane;
 redEntireWT				= locationWT .* normStruct.redEntire;
-meanYFPMembraneWT	= nansum(yelMembraneWT ./ redEntireWT) / sum(locationWT);
-meanYFPEntireWT		= nansum(yelEntireWT ./ redEntireWT) / sum(locationWT);
+memDensWT					=	locationWT .* normStruct.memDens;
+logMemDensWT			= locationWT .* normStruct.logMemDens;
 
-% calculate the normalization constant
-normalizeMembrane	= 1 / meanYFPMembraneWT;
-normalizeEntire		= 1 / meanYFPEntireWT;
+yelEntireWT(yelEntireWT==0)			=[];
+yelMembraneWT(yelMembraneWT==0)	=[];
+redEntireWT(redEntireWT==0)			=[];
+memDensWT(memDensWT==0)					=[];
+logMemDensWT(logMemDensWT==0)		=[];
 
+meanYFPMembraneWT		= nansum(yelMembraneWT ./ redEntireWT) / sum(locationWT);
+meanYFPEntireWT			= nansum(yelEntireWT ./ redEntireWT) / sum(locationWT);
+medianYFPMembraneWT	= median((yelMembraneWT ./ redEntireWT) );
+medianYFPEntireWT		= median((yelEntireWT ./ redEntireWT) );
+
+% backtransform the mean of the log(F(YFP-membrane)/F(mCherry-total))
+meanlogMemDensWT	= 10^(nansum(logMemDensWT) / sum(locationWT)); 
+
+% calculate the normalization constant (meanlogMemDensWT!)
+norm	= 1 / meanlogMemDensWT;
 
 % multiply all cells (for all conditions) by normalization constant
-normStruct.yelMembrane	= normStruct.yelMembrane * normalizeMembrane;
-normStruct.yelEntire		= normStruct.yelEntire * normalizeEntire;
-
+ normStruct.normMemDens			= normStruct.memDens * norm;
+ normStruct.logNormMemDens  = real(log10(normStruct.memDens * norm));
 end
 

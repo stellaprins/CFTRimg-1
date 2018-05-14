@@ -1,7 +1,7 @@
 
-saveQuenchResultsHere       = 'VX809_quench_310118.xls';
-saveQuenchingTimelineHere   ='VX809_quench_310118_timeline.xls';
-%%'
+saveQuenchResultsHere       = 'VX809_quench_260218.xls';
+saveQuenchingTimelineHere   ='VX809_quench_260218_timeline.xls';
+%%
 conditionN = length(resultsQuench);
 
 %% QUENCHING OUTPUT 1
@@ -127,7 +127,6 @@ statsDataQuench = vertcat(resultsQuench.maxGradTest);
 
 [pKWQuench,tblKWQuench,statsKWQuench] = kruskalwallis(statsDataQuench,groupQ_FORS);
 
-
 plotKruskalWallisQuench(statsDataQuench,groupQ_FORS);
 
 figure
@@ -140,7 +139,7 @@ p_Quench(i) = p;
 % rank_Quench(i)= stats.ranksum;
 end
 
-[h,p,ci,stats] = ttest2(x,y)
+% [h,p,ci,stats] = ttest2(x,y)
 % [p,h,stats] = ranksum(resultsQuench(1).maxGradTest,resultsQuench(1).maxGradControl);
 % [p,h,stats] = ranksum(resultsQuench(2).maxGradTest,resultsQuench(2).maxGradControl);
 % [p,h,stats] = ranksum(resultsQuench(3).maxGradTest,resultsQuench(3).maxGradControl);

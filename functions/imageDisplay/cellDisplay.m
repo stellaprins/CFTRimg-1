@@ -4,7 +4,7 @@ function cellDisplay(imageStruct, colorStr, boundingBox_idx )
 
 switch colorStr
 	case 'red'
-		image       = imadjust(im2double(imread(imageStruct.redPath)),[0.008 .2]);
+		image       = imadjust(im2double(imread(imageStruct.redPath)),[0.001 .2]);
 		[imX,map]   = gray2ind(image,256);
 		redMap      = [map(:,1),zeros(256,1),zeros(256,1)];
 		image       = ind2rgb(imX,redMap);

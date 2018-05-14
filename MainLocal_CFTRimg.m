@@ -5,17 +5,16 @@ addpath(genpath(fullfile('input'))) %% include the location of your input folder
 
 
 %%
-VX809_28_37_LOCAL % the name of your input file
-saveWorkspaceHere = 'segmentation_check2002.mat';
-
-normConditionStr = 'WT 37';
+input_local_EH % the name of your input file
+saveWorkspaceHere = 'C:\Users\StellaPrins\Desktop\EH_local 1108-05-18)';
+normConditionStr	= 'WT 37';
 
 %%
 close all
 imtool close all
 global SITEN BINNING EXTRA
 SITEN		= 9;
-BINNING = 1/2;
+BINNING = 1/2;  % 1/2 for 2*2
 EXTRA		= ceil(BINNING*20);
 
 %% STRUCTURING DATA
@@ -88,8 +87,8 @@ end
 
 % move key values into temporary a structure for normalizing
 tempResultsLocal = createNormalizeStruct(plate);
-for i = 1:plateN
-	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr);
+for i = 1:plateN		
+	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr); % normalise
 end
 
 resultsLocal	= createResultsLocalStruct(tempResultsLocal);

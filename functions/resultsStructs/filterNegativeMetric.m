@@ -7,8 +7,9 @@ cellN = imageStruct.cellN(end);
 yelEntireCompare		= imageStruct.yelEntire < 0;
 yelMembraneCompare	= imageStruct.yelMembrane < 0;
 redEntireCompare		= imageStruct.redEntire < 0;
+memDensCompare			= imageStruct.memDens == 0;
 
-toDelete = yelEntireCompare | yelMembraneCompare | redEntireCompare;
+toDelete = yelEntireCompare | yelMembraneCompare | redEntireCompare | memDensCompare;
 
 newCellN				= cellN - sum(toDelete);
 
@@ -19,12 +20,12 @@ newYelEntire		= zeros(newCellN,1);
 newYelOutside		= zeros(newCellN,1);
 newYelMembrane	= zeros(newCellN,1);
 newYelInterior	= zeros(newCellN,1);
+newMemDens			= zeros(newCellN,1);
+newLogMemDens		= zeros(newCellN,1);
 
 counter = 1;
 for i=1:cellN
-	
 	if toDelete(i) == 0
-		
 		newBoundingBox(counter,:)		= imageStruct.boundingBox(i,:);
 		newRedEntire(counter)				= imageStruct.redEntire(i);
 		newRedOutside(counter)			= imageStruct.redOutside(i);
@@ -32,11 +33,10 @@ for i=1:cellN
 		newYelOutside(counter)			= imageStruct.yelOutside(i);
 		newYelMembrane(counter)			= imageStruct.yelMembrane(i);
 		newYelInterior(counter)			= imageStruct.yelInterior(i);
-		
+		newMemDens(counter)					= imageStruct.memDens(i);
+		newLogMemDens(counter)			= imageStruct.logMemDens(i);
 		counter = counter + 1;
-		
 	end
-
 end
 
 imageStruct.boundingBox			= newBoundingBox;
@@ -48,6 +48,8 @@ imageStruct.yelMembrane			= newYelMembrane;
 imageStruct.yelEntire				= newYelEntire;
 imageStruct.cellN(1,end+1)	= newCellN;
 
+imageStruct.memDens					= newMemDens;
+imageStruct.logMemDens			= newLogMemDens;
 end
 
 
