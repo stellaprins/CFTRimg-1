@@ -1,12 +1,14 @@
-function plotLocalRedYelCorr( resultsStruct,yelRegion )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function stats = plotLocalRedYelCorr( resultsStruct,yelRegion )
+%PLOT_LOCAL_RED_YEL_CORR scatter plot of yelRegion against redEntire
+%   The user can choose to either plot yelEntire against redEntire, or
+%   yelMembrane against redEntire by changing the second parameter
+%   'yelRegion'.
+%
+%		This function creates a scatter plot and also outputs the correlation
+%		statistics, R the Pearson correlation coefficient, the slope of the
+%		linear line of best fit and MSE, the mean-squared error.
 
-colors = get(groot,'DefaultAxesColorOrder');
-
-mutation	= resultsStruct.mutation;
 redEntire   = resultsStruct.redEntire;
-
 switch yelRegion
 	case 'entire'
 		yelData		= resultsStruct.yelEntire;
@@ -18,23 +20,20 @@ maxX = max(redEntire) * 1;
 [slope, ~, stats] = glmfit(redEntire,yelData,'normal','constant','off');
 
 R = corrcoef(redEntire,yelData);
- if size(R)== [2 2];
-    r = R(1,2);
-    else
-    r = 1;
- end
+if size(R) == [2 2]
+	r = R(1,2);
+	else
+	r = 1;
+end
     
 MSE = sum(stats.resid .^2) / length(stats);
 
-dim = [.654 .71 .2 .2];
-str = sprintf('R = %0.3f\nslope = %0.3f\nMSE = %0.5f'...
-	,r,slope,MSE);
+stats = [r slope MSE];
 
 plot(redEntire,yelData,'o')
 hold on
 set(gca,'fontsize',10)
 plot([0 maxX],[0 maxX*slope],'-')
-% title(sprintf('%s - %s',mutation,yelRegion))
 ylhand = get(gca,'ylabel');
 switch yelRegion
 	case 'entire'
@@ -47,6 +46,5 @@ set(xlhand,'string','F_{mCh,cell}','fontsize',10)
 % xlim([0 0.12])
 % ylim([0 0.08])
 title(resultsStruct.mutation,'fontsize',10);
-% annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',10);
 
 end

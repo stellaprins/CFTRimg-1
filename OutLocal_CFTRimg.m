@@ -6,8 +6,6 @@ conditionN						= length(resultsLocal);
 subplotDimM = 2; % ceil(sqrt(conditionN));
 subplotDimN = 3; % ceil(sqrt(conditionN));
 
-colors								= get(groot,'DefaultAxesColorOrder');
-
 %% LOCALISATION OUTPUT
 
 if ispc == true
@@ -21,20 +19,38 @@ elseif isunix==true
 end
 
 
-%% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
+%% KSTEST, QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
+% perform the Kolmogorov-Smirnov test to see if data is normally
+% distributed. 1 means NOT normally distributed at 0.05 significance.
+KSTestResults = zeros(conditionN,1);
+KSTestPValues = zeros(conditionN,1);
+for i=1:conditionN
+	
+	res = resultsLocal(i);
+	memDensity = res.yelMembrane ./ res.redEntire;
+	[h,p,ksstat] = kstest(memDensity);
+	KSTestResults(i) = h;
+	KSTestPValues(i) = p;
+
+end
 
 plotLocalQQPlot(resultsLocal, subplotDimM, subplotDimN )
 
 plotLocalHistogram(resultsLocal, subplotDimM, subplotDimN )
 
 
-%% STATISTICS
+%% FIND STATISTICS TO FIND WHICH CONDITIONS ARE SIGNIFICANTLY DIFFERENT
+% Before running this section, it is important to verify that your data is
+% NOT normally distributed. The section above allows for this. If your data
+% IS normally distributed a test other than the Kruskal-Wallis must be
+% employed, i.e. the two-way ANOVA.
 close all
 cellN       = sum(vertcat(resultsLocal.localCellN));
 statsData   = zeros(cellN,1);
 group       = cell(cellN,1);
 cellCount   = 1;
 
+% arrange the data for the kruskalWallis function.
 for i=1:conditionN
 	res = resultsLocal(i);
 	statsData(cellCount:(cellCount+res.localCellN-1)) = ...
@@ -43,41 +59,44 @@ for i=1:conditionN
 	cellCount = cellCount + res.localCellN;
 end
 
-[pKruskalWallis, statsKW] = plotKruskalWallis(statsData,group);
-figure;
-[c,m,~,gnames] = multcompare(statsKW,'CType','bonferroni');
+% perform the Kruskal-Wallis test, and also use the 'multcompare' function
+% to find the p-values for each pairwise comparison.
+[pKruskalWallis, statsKW] = plotLocalKruskalWallis(statsData,group);
+figure
+[c,m,~,gnames] = multcompare(statsKW,'CType','dunn-sidak');
 
+% the multiple comparison p-values are stored in array c. However they are
+% difficult to read in this form. Therefore, transfer the data into
+% 'multComparePValues'.
+comparisonN = ((conditionN-1)*conditionN)/2;
+multComparePValues = cell(comparisonN,3);
+for i=1:comparisonN
+	multComparePValues{i,1} = gnames{c(i,1)};
+	multComparePValues{i,2} = gnames{c(i,2)};
+	multComparePValues{i,3} = c(i,6);
+end
 
 %% CORRELATION PLOTS
+% plot redEntire data against either yelEntire or yelMembrane (second
+% parameter). It is important to see whether these data are correlated as
+% it implies the validity of memDensity measure (yelMem / redEnt).
 
 close all
-figure;
 
-for i=1:ceil(length(resultsLocal)/2)
-    subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
-             ceil(sqrt((length(resultsLocal)/2)*1.5)), i)
-	plotLocalRedYelCorr(resultsLocal(i),'membrane');
-end
-
-figure;
-
-for i=ceil(length(resultsLocal)/2):ceil(length(resultsLocal))
-    k=i-((length(resultsLocal)/2)-1);
-    subplot( ceil(sqrt((length(resultsLocal)/2)/1.5)),...
-             ceil(sqrt((length(resultsLocal)/2)*1.5)), k);
-	plotLocalRedYelCorr(resultsLocal(i),'membrane');
-end
+redYelCorrStats = cell(conditionN + 1,4);
+redYelCorrStats(1,:) = {'Condition','R value','Slope','MSE'};
 
 figure
-for i=1:length(resultsLocal)
-    subplot(1,length(resultsLocal),i)
-	plotLocalRedYelCorr(resultsLocal(i),'membrane');
-	hold on
+for i=1:conditionN
+	redYelCorrStats{i+1,1} = resultsLocal(i).mutation;
+  subplot( subplotDimM, subplotDimN, i )
+	stats = plotLocalRedYelCorr(resultsLocal(i),'membrane');
+	redYelCorrStats(i+1,2:end) = num2cell(stats);
 end
 
+disp(redYelCorrStats)
 
-
-%% IMAGE DISPLAY
+%% IMAGE DISPLAY (with all selected cells boxed)
 close all
 
 x=5; % plate
@@ -86,43 +105,16 @@ y=29; % image number
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
 
-% display the image
-% enter "red", "yel", "blend" as the second argument of imgDisplay.'
+allBoundingBoxes = plate(x).imageLocal(y).boundingBox(:,:);
 
 figure
-imgDisplay(plate(x).imageLocal(y),'blend')
-
-% display image with 2 cells boxed
-cell1 = 1;
-cell2 = 2;
-
-boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
-boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
-
+localDisplayImage(plate(x).imageLocal(y),'red')
+localAddRectangleToImage( allBoundingBoxes )
 figure
-imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+localDisplayImage(plate(x).imageLocal(y),'yel')
+localAddRectangleToImage( allBoundingBoxes )
 figure
-imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
-
-%% display image with all selected cells boxed
-close all
-
-x=5; % plate
-y=29; % image number
-
-fprintf('\nImage %d on plate %d has %d cells.\n'...
-	,y,x,plate(x).imageLocal(y).cellN(end))
-
-for ii= 1:plate(x).imageLocal(y).cellN(end)
-B(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);	
-end
-
-figure
-imgDisplayRectangle_SP(plate(x).imageLocal(y),'red',B)
-figure
-imgDisplayRectangle_SP(plate(x).imageLocal(y),'yel',B)
-figure
-imgDisplay(plate(x).imageLocal(y),'blend')
+localDisplayImage(plate(x).imageLocal(y),'combine')
 	
 
 %% CELL DISPLAY
