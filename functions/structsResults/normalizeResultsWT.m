@@ -22,17 +22,20 @@ end
 yelEntireWT				= locationWT .* normStruct.yelEntire;
 yelMembraneWT			= locationWT .* normStruct.yelMembrane;
 redEntireWT				= locationWT .* normStruct.redEntire;
-meanYFPMembraneWT	= nansum(yelMembraneWT ./ redEntireWT) / sum(locationWT);
-meanYFPEntireWT		= nansum(yelEntireWT ./ redEntireWT) / sum(locationWT);
+memDensWT					=	locationWT .* normStruct.memDens;
+logMemDensWT			= locationWT .* normStruct.logMemDens;
+
+meanLogMemDensWT = nansum(logMemDensWT) / sum(locationWT);
+
+% backtransform the mean of the log(F(YFP-membrane)/F(mCherry-total))
+meanMemDensWT	= 10^(nansum(logMemDensWT) / sum(locationWT)); 
 
 % calculate the normalization constant
-normalizeMembrane	= 1 / meanYFPMembraneWT;
-normalizeEntire		= 1 / meanYFPEntireWT;
-
+norm	= 1 / meanMemDensWT;
 
 % multiply all cells (for all conditions) by normalization constant
-normStruct.yelMembrane	= normStruct.yelMembrane * normalizeMembrane;
-normStruct.yelEntire		= normStruct.yelEntire * normalizeEntire;
+normStruct.normMemDens			= normStruct.memDens * norm;
+normStruct.logNormMemDens  = real(log10(normStruct.memDens * norm));
 
 end
 
