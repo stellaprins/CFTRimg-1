@@ -140,7 +140,7 @@ p_Quench(i) = p;
 % rank_Quench(i)= stats.ranksum;
 end
 
-[h,p,ci,stats] = ttest2(x,y)
+% [h,p,ci,stats] = ttest2(x,y)
 % [p,h,stats] = ranksum(resultsQuench(1).maxGradTest,resultsQuench(1).maxGradControl);
 % [p,h,stats] = ranksum(resultsQuench(2).maxGradTest,resultsQuench(2).maxGradControl);
 % [p,h,stats] = ranksum(resultsQuench(3).maxGradTest,resultsQuench(3).maxGradControl);

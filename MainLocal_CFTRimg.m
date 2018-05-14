@@ -15,7 +15,7 @@ close all
 imtool close all
 global SITEN BINNING EXTRA
 SITEN		= 9;
-BINNING = 1/2;
+BINNING = 1/2;	% 1/2 for 2*2
 EXTRA		= ceil(BINNING*20);
 
 %% STRUCTURING DATA
