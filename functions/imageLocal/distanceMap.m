@@ -35,7 +35,7 @@ for i=1:cellN
 	
 	boundingBox = imageStruct.boundingBox(i,:);
 	cellMask		= boundingBoxToCellMask(redImage,boundingBox);
-	distanceMap = makeDistanceMap(cellMask);
+	distanceMap = cellMaskToDistanceMap(cellMask);
 	
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
 	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
