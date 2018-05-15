@@ -17,7 +17,7 @@ global BINNING
 redImage = im2double(imread(imageStruct.redPath));
 yelImage = im2double(imread(imageStruct.yelPath));
 
-cellN = imageStruct.cellN(end);
+cellN					= imageStruct.cellN(end);
 redBackground = imageStruct.redBackground;
 yelBackground = imageStruct.yelBackground;
 
@@ -25,7 +25,6 @@ yelMeanEntire		= zeros(cellN,1);
 yelMeanOutside	= zeros(cellN,1);
 yelMeanMembrane	= zeros(cellN,1);
 yelMeanInterior	= zeros(cellN,1);
-
 redMeanEntire		= zeros(cellN,1);
 redMeanOutside	= zeros(cellN,1);
 
@@ -35,12 +34,11 @@ logMemDens	  	= zeros(cellN,1);
 for i=1:cellN
 	
 	boundingBox = imageStruct.boundingBox(i,:);
-	cellMask = boundingBoxToCellMask(redImage,boundingBox);
-	distanceMap = cellMaskToDistanceMap(cellMask);
+	cellMask		= boundingBoxToCellMask(redImage,boundingBox);
+	distanceMap = makeDistanceMap(cellMask);
 	
 	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
 	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
-	
 	redCropAdj = redCropped - redBackground;
 	yelCropAdj = yelCropped - yelBackground;
 	
@@ -61,12 +59,10 @@ for i=1:cellN
 	%%%%%%%
 
 end
-
 imageStruct.yelEntire				= yelMeanEntire;
 imageStruct.yelOutside			= yelMeanOutside;
 imageStruct.yelMembrane			= yelMeanMembrane;
 imageStruct.yelInterior			= yelMeanInterior;
-
 imageStruct.redEntire				= redMeanEntire;
 imageStruct.redOutside			= redMeanOutside;
 

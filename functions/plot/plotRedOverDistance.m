@@ -2,27 +2,20 @@ function plotRedOverDistance( imageStruct,idx )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
-colors = get(groot,'DefaultAxesColorOrder');
-
-redImage = imread(imageStruct.redPath);
-
+colors				= get(groot,'DefaultAxesColorOrder');
+redImage			= imread(imageStruct.redPath);
 redBackground = imageStruct.redBackground * 65535;
-
-
-
-boundingBox = imageStruct.boundingBox(idx,:);
-
-redCropped = boundingBoxToCroppedImage(redImage,boundingBox) - redBackground;
-
-cellMask = boundingBoxToCellMask(redImage,boundingBox);
+boundingBox		= imageStruct.boundingBox(idx,:);
+redCropped		= boundingBoxToCroppedImage(redImage,boundingBox) - redBackground;
+cellMask			= boundingBoxToCellMask(redImage,boundingBox);
 
 if sum(cellMask(:)) == 0
 	return
 end
 
-distanceMap = makeDistanceMap(cellMask);
-distanceGroups = distanceMap - min(distanceMap(:)) + 1;
-distanceLabels = unique(distanceMap) + (unique(distanceMap) >= 0);
+distanceMap			= makeDistanceMap(cellMask);
+distanceGroups	= distanceMap - min(distanceMap(:)) + 1;
+distanceLabels	= unique(distanceMap) + (unique(distanceMap) >= 0);
 
 redMeanData = splitapply(@mean,redCropped(:),distanceGroups(:));
 

@@ -3,8 +3,8 @@ clear
 addpath(genpath('functions'))
 addpath(genpath('input'))
 %%
-VX809_quench_% the name of your input file
-saveWorkspaceHere = './VX809_quench_220118';
+MAX_CFTR_ENH% the name of your input file
+saveWorkspaceHere = './MAX_CFTR_ENH';
 
 %%
 close all
@@ -22,7 +22,7 @@ time(1) = toc;
 for j=1:plateN
 	quenchImageN = size(plate(j).imageQuench,1);
 	for i=1:quenchImageN
-		plate(j).imageQuench(i) = findRedMaskChange(plate(j).imageQuench(i));
+ 		plate(j).imageQuench(i) = findRedMaskChange(plate(j).imageQuench(i));
 		plate(j).imageQuench(i) = findYelInsideOverTime(plate(j).imageQuench(i));
 		plate(j).imageQuench(i) = calculateConcIodine(plate(j).imageQuench(i));
 	end

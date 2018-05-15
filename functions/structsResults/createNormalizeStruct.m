@@ -16,7 +16,7 @@ normalizeTemplate = struct(...
 			,'logMemDens',[]...			
 			,'normMemDens',[]...
 			,'logNormMemDens',[]);
-		
+
 for j=1:plateN
 	
 	plateStruct = plateStructArray(j);
@@ -41,9 +41,8 @@ for j=1:plateN
 			,plateStruct.imageLocal(i).memDens);
 		normStructArray(j).logMemDens = vertcat(normStructArray(j).logMemDens...
 			,plateStruct.imageLocal(i).logMemDens);
-			
+		
 	end
 	
 end
-	
 end

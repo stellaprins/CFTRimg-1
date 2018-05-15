@@ -20,9 +20,10 @@ for k=1:conditionN
 			
 			if locationVec(i) == 1
 				resultsStructArray(k).cellLocation(count,:) = normStruct.cellLocation(i,:);
-				resultsStructArray(k).yelEntire(count) = normStruct.yelEntire(i);
-				resultsStructArray(k).yelMembrane(count) = normStruct.yelMembrane(i);
-				resultsStructArray(k).redEntire(count) = normStruct.redEntire(i);
+
+				resultsStructArray(k).yelEntire(count)			= normStruct.yelEntire(i);
+				resultsStructArray(k).yelMembrane(count)		= normStruct.yelMembrane(i);
+				resultsStructArray(k).redEntire(count)			= normStruct.redEntire(i);
 				
 				resultsStructArray(k).logMemDens(count)			= normStruct.logMemDens(i);
 				resultsStructArray(k).memDens(count)				= normStruct.memDens(i);
