@@ -6,56 +6,34 @@ mode = 'full'; % 'full' OR 'test';
 
 global BINNING
 
-I = im2double(imread(imageStruct.redPath));
-% imshow(I,[])
- 
-Ieq = adapthisteq(I,'NumTiles',[20 20]);
-% figure, imshow(Ieq,[])
-
-Ibw = imbinarize(Ieq,'adaptive');
-% figure, imshow(Ibw)
-
-closeSE = strel('disk',4*BINNING);
-Iclosed = imclose(Ibw,closeSE);
-% figure, imshow(Iclosed)
-
-Icleared = bwareaopen(Iclosed,ceil(4800*BINNING));
-% figure, imshow(Icleared)
-
-Ifilled = imfill(Icleared,'holes');
-% figure, imshow(Ifilled)
-
-dilateSE = strel('disk',ceil(4*BINNING));
-Idilated = imopen(Ifilled,dilateSE);
-% figure, imshow(Idilated)
-
+I					= im2double(imread(imageStruct.redPath));
+Ieq				= adapthisteq(I,'NumTiles',[20 20]);
+Ibw				= imbinarize(Ieq,'adaptive');
+closeSE		= strel('disk',4*BINNING);
+Iclosed		= imclose(Ibw,closeSE);
+Icleared	= bwareaopen(Iclosed,ceil(4800*BINNING));
+Ifilled		= imfill(Icleared,'holes');
+dilateSE	= strel('disk',ceil(4*BINNING));
+Idilated	= imopen(Ifilled,dilateSE);
 smallEM = imextendedmax(I, 0.9*median(I(:)));
 smallEM = imclose(smallEM, closeSE);
 smallEM = bwareaopen(smallEM, 120);
 smallEM = imerode(smallEM, ones(6*BINNING));
-% figure, imshow(smallEM)
-
 largeEM = imextendedmax(I, median(I(:)));
 largeEM = imclose(largeEM, closeSE);
 largeEM = imfill(largeEM, 'holes');
 largeEM = bwareaopen(largeEM, 1200);
-% figure, imshow(largeEM)
-
 BGmarkers = largeEM | Idilated;
-% figure, imshow(BGmarkers)
 
 if strcmp(mode,'test')
 	IbwPerim = bwperim(BGmarkers);
 	overlay = imoverlay(Ieq, IbwPerim|smallEM, [.3 1 .3]);
-% 	figure, imshow(overlay)
 end
 
-complement = imcomplement(I);
+complement	= imcomplement(I);
+Imod				= imimposemin(complement, ~BGmarkers | smallEM);
+L						= watershed(Imod);
 
-Imod = imimposemin(complement, ~BGmarkers | smallEM);
-
-L = watershed(Imod);
-% figure, imshow(label2rgb(L))
 
 if strcmp(mode,'test')
  	showWatershedProcess(imageStruct,Ibw,BGmarkers,smallEM,overlay,label2rgb(L))

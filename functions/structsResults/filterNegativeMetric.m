@@ -27,9 +27,7 @@ newLogMemDens		= zeros(newCellN,1);
 
 counter = 1;
 for i=1:cellN
-	
 	if toDelete(i) == 0
-		
 		newBoundingBox(counter,:)		= imageStruct.boundingBox(i,:);
 		newRedEntire(counter)				= imageStruct.redEntire(i);
 		newRedOutside(counter)			= imageStruct.redOutside(i);
@@ -41,9 +39,7 @@ for i=1:cellN
 		newLogMemDens(counter)			= imageStruct.logMemDens(i);
 		
 		counter = counter + 1;
-		
 	end
-
 end
 
 imageStruct.boundingBox			= newBoundingBox;
@@ -58,6 +54,8 @@ imageStruct.logMemDens			= newLogMemDens;
 
 imageStruct.cellN(1,end+1)	= newCellN;
 
+imageStruct.memDens					= newMemDens;
+imageStruct.logMemDens			= newLogMemDens;
 end
 
 

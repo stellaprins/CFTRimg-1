@@ -17,8 +17,7 @@ if sum(locationWT) == 0
 	return
 end
 
-% calculate metrics for WT condition (membrane and entire)
-%			Here we are normalizing to the mCherry
+%			calculate metrics for WT condition (membrane and entire)
 yelEntireWT				= locationWT .* normStruct.yelEntire;
 yelMembraneWT			= locationWT .* normStruct.yelMembrane;
 redEntireWT				= locationWT .* normStruct.redEntire;
@@ -34,8 +33,7 @@ meanMemDensWT	= 10^(nansum(logMemDensWT) / sum(locationWT));
 norm	= 1 / meanMemDensWT;
 
 % multiply all cells (for all conditions) by normalization constant
-normStruct.normMemDens			= normStruct.memDens * norm;
-normStruct.logNormMemDens  = real(log10(normStruct.memDens * norm));
-
+ normStruct.normMemDens			= normStruct.memDens * norm;
+ normStruct.logNormMemDens  = real(log10(normStruct.memDens * norm));
 end
 
