@@ -133,10 +133,13 @@ for i=1:length(resultsLocal)
 	figure
 %     subplot(1,length(resultsLocal),i)
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
-	hold on
+% 	hold on
 end
 
-
+for i=1:length(resultsLocal)
+	figure
+	plotLocalSizeRhoCorr(resultsLocal(i),plate);
+end
 
 %% IMAGE DISPLAY
 close all
