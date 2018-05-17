@@ -1,6 +1,8 @@
 function [ imageStruct ] = calculateConcIodine( imageStruct )
-%UNTITLED26 Summary of this function goes here
-%   Detailed explanation goes here
+%CALCULATE_CONC_IODINE Find the point in the time series, where the
+%influx of iodine is at its maximum.
+%   Log both the value of maximum influx and the time point at which it
+%   occurs.
 
 yelInside = imageStruct.yelInsideOverT;
 
