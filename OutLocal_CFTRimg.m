@@ -94,7 +94,7 @@ for i=1:length(resultsLocal)																										% for each condition
 end
 
 [p,tbl,stats]		= anova1(statsData_exp, group_exp);
-[c,m,~,gnames]  = multcompare(stats,'CType','');
+[c,m,~,gnames]  = multcompare(stats,'CType','dunn-sidak');
 c_titles	= cellstr(char('g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'))';
 vertcat			(c_titles,num2cell(c))
@@ -128,12 +128,15 @@ end
 %% CORRELATION PLOTS
 
 close all
-figure
+% figure
 for i=1:length(resultsLocal)
-    subplot(1,length(resultsLocal),i)
-	plotLocalRedYelCorr(resultsLocal(i),'membrane');
+	figure
+%     subplot(1,length(resultsLocal),i)
+	plotLocalRedYelCorr(resultsLocal(i),'entire');
 	hold on
 end
+
+
 
 %% IMAGE DISPLAY
 close all
