@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\EH_local 11-05-18';
+saveLocalResultsHere  ='~/Desktop/output_2018_05_17';
 conditionN						= length(resultsLocal);
 
 %% DESCRIPTIVES (each cell as sample)
@@ -162,8 +162,8 @@ imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
 %% display image with all selected cells boxed
 close all
 
-x=5; % plate
-y=24; % image number
+x=1; % plate
+y=1; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
@@ -172,22 +172,23 @@ for ii= 1:plate(x).imageLocal(y).cellN(end)
 D(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);	
 end
 
-figure;
-imgDisplayRectangle_SP(plate(x).imageLocal(y),'red',D)
-figure;
-imgDisplayRectangle_SP(plate(x).imageLocal(y),'yel',D)
-figure;
-imgDisplay(plate(x).imageLocal(y),'blend')
+figure
+localDisplayImage(plate(x).imageLocal(y),'red')
+localAddRectangleToImage(D)
+figure
+localDisplayImage(plate(x).imageLocal(y),'yel')
+figure
+localDisplayImage(plate(x).imageLocal(y),'blend')
 	
 
 %% CELL DISPLAY
 % close all
-x=5; % plate
-y=29; % image number
+x=1; % plate
+y=1; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n',y,x,plate(x).imageLocal(y).cellN(end))
 
-for i=4
+for i=1:min([2,plate(x).imageLocal(y).cellN(end)])
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)
