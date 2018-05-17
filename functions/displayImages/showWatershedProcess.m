@@ -7,7 +7,7 @@ n=3;
 
 figure
 set(gcf, 'Position', get(0, 'Screensize'));
-subplot(m,n,1), imgDisplay(imageStruct,'red')
+subplot(m,n,1), localDisplayImage(imageStruct,'red')
 subplot(m,n,2), imshow(Icleared,[])
 subplot(m,n,3), imshow(overlay)
 subplot(m,n,4), imshow(maskEM)

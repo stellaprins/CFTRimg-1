@@ -6,8 +6,9 @@ addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of yo
 
 %%
 
-inputDataTestCato % the name of your input file
-saveWorkspaceHere = '~/Desktop/test_workspace.mat';
+input_local_EH % the name of your input file
+saveWorkspaceHere = 'C:\Users\StellaPrins\Desktop\EH_local 1108-05-18)';
+
 normConditionStr	= 'WT 37';
 
 %%
@@ -89,8 +90,8 @@ end
 
 % move key values into temporary a structure for normalizing
 tempResultsLocal = createNormalizeStruct(plate);
-for i = 1:plateN
-	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr);
+for i = 1:plateN		
+	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr); % normalise
 end
 
 resultsLocal	= createResultsLocalStruct(tempResultsLocal);

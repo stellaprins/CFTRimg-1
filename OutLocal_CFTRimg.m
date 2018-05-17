@@ -1,120 +1,183 @@
 
-saveLocalResultsHere  ='segmentation_check2002.xls';
-
+saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\EH_local 11-05-18';
 conditionN						= length(resultsLocal);
 
-subplotDimM = 2; % ceil(sqrt(conditionN));
-subplotDimN = 3; % ceil(sqrt(conditionN));
+%% DESCRIPTIVES (each cell as sample)
 
-%% LOCALISATION OUTPUT
-
-if ispc == true
-	
-	outputResultsLocalToExcelPC(resultsLocal,saveLocalResultsHere)
-	
-elseif isunix==true
-
-	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
-	
+for i=1:length(resultsLocal)																								% for all conditions
+	meanMemDens			= mean(resultsLocal(i).logNormMemDens);										% mean log rho
+	C(:,i)					= 10.^meanMemDens;																				% back transformed mean per condition
+end
+for i=1:length(resultsLocal)			
+	x					= resultsLocal(i).logNormMemDens;							% log transformed rho CFTR membrane
+	SEM				= std(x)/sqrt(length(x));											% Standard Error (after log transform)
+	ts				= tinv([0.025  0.975],length(x)-1);						% T-Score (for 95% Confidence Interval)									
+	cond_MemDens_cellN(i,:)		= cellstr(resultsLocal(i).mutation);
+	mean_MemDens_cellN(i,:)		= 10^mean(x);
+	median_MemDens_cellN(i,:)	= 10^median(x);
+	CI_MemDens_cellN(i,:)			= 10.^(mean(x) + ts*SEM);			% 95% Confidence Interval 
+	N_MemDens_cellN(i,:)			= length(x);
 end
 
+titles      = cellstr(char('conditions', 'N', 'mean rho','lower CI','upper CI', 'median rho'))';
+results			=	horzcat(cond_MemDens_cellN,num2cell(N_MemDens_cellN),...
+							num2cell(mean_MemDens_cellN), num2cell(CI_MemDens_cellN), ...
+							num2cell(median_MemDens_cellN));
+vertcat			 (titles,results)
+% if ispc == true
+% 	xlswrite(saveLocalResultsHere,results)
+% elseif isunix==true
+% 	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
+% end
 
-%% KSTEST, QQ-PLOTS & FREQUENCY DISTRIBUTIONS (TO TEST NORMALITY)
-% perform the Kolmogorov-Smirnov test to see if data is normally
-% distributed. 1 means NOT normally distributed at 0.05 significance.
-KSTestResults = zeros(conditionN,1);
-KSTestPValues = zeros(conditionN,1);
-for i=1:conditionN
-	
-	res = resultsLocal(i);
-	memDensity = res.yelMembrane ./ res.redEntire;
-	[h,p,ksstat] = kstest(memDensity);
-	KSTestResults(i) = h;
-	KSTestPValues(i) = p;
+%% STATISTICS (each cell as sample)
 
-end
-
-plotLocalQQPlot(resultsLocal, subplotDimM, subplotDimN )
-
-plotLocalHistogram(resultsLocal, subplotDimM, subplotDimN )
-
-
-%% FIND STATISTICS TO FIND WHICH CONDITIONS ARE SIGNIFICANTLY DIFFERENT
-% Before running this section, it is important to verify that your data is
-% NOT normally distributed. The section above allows for this. If your data
-% IS normally distributed a test other than the Kruskal-Wallis must be
-% employed, i.e. the two-way ANOVA.
 close all
 cellN       = sum(vertcat(resultsLocal.localCellN));
 statsData   = zeros(cellN,1);
 group       = cell(cellN,1);
 cellCount   = 1;
-
-% arrange the data for the kruskalWallis function.
-for i=1:conditionN
+for i=1:length(resultsLocal) % for each condition
 	res = resultsLocal(i);
-	statsData(cellCount:(cellCount+res.localCellN-1)) = ...
-    res.yelMembrane ./ res.redEntire;
-	group(cellCount:(cellCount+res.localCellN-1)) = {res.mutation};
-	cellCount = cellCount + res.localCellN;
+	statsData_cell(cellCount:(cellCount+res.localCellN-1)) = res.logNormMemDens;
+	group(cellCount:(cellCount+res.localCellN-1))					 = {res.mutation};
+	cellCount																							 = cellCount + res.localCellN;
 end
 
-% perform the Kruskal-Wallis test, and also use the 'multcompare' function
-% to find the p-values for each pairwise comparison.
-[pKruskalWallis, statsKW] = plotLocalKruskalWallis(statsData,group);
-figure
-[c,m,~,gnames] = multcompare(statsKW,'CType','dunn-sidak');
+[p,tbl,stats]		= anova1(statsData_cell, group); % on the log transformed normalised data
+[c,m,~,gnames]	= multcompare(stats,'CType','bonferroni'); % multiple comparisons between all groups with bonferroni correction
+c_titles	= cellstr(char('g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
+						'UL mean dif CI','P-value'))';
+vertcat			(c_titles,num2cell(c))
+%% DESCRIPTIVES (each experiment as sample)
+B = NaN(length(plate),length(resultsLocal)); 
+for i=1:length(resultsLocal)																								% for the number of conditions
+	G								=	findgroups(resultsLocal(i).cellLocation(:,1));					% G = different plates
+	meanMemDens			= splitapply(@mean,resultsLocal(i).logNormMemDens,G);			% mean per plate (rows) per condition (colums)
+	B(1:length(meanMemDens),i) = 10.^meanMemDens;																				% back transformed mean per plate
+end
 
-% the multiple comparison p-values are stored in array c. However they are
-% difficult to read in this form. Therefore, transfer the data into
-% 'multComparePValues'.
-comparisonN = ((conditionN-1)*conditionN)/2;
-multComparePValues = cell(comparisonN,3);
-for i=1:comparisonN
-	multComparePValues{i,1} = gnames{c(i,1)};
-	multComparePValues{i,2} = gnames{c(i,2)};
-	multComparePValues{i,3} = c(i,6);
+for i=1:length(resultsLocal)															% for the number of conditions
+	x					= B(:,i);																			% Data points
+	SEM				= nanstd(x)/sqrt(length(x(~isnan(x))));											% Standard Error
+	ts				= tinv([0.025  0.975],length(B(:,i))-1);			% T-Score (for 95% Confidence Interval)				 
+	cond_MemDens_plateN(i,:)		= cellstr(resultsLocal(i).mutation);
+	mean_MemDens_plateN(i,:)		= nanmean(x);
+	median_MemDens_plateN(i,:)	= nanmedian(x);
+	sem_MemDens_plateN(i,:)			= SEM;
+	CI_MemDens_plateN(i,:)			= nanmean(x) + ts*SEM; 				% 95% Confidence Interval
+	N_MemDens_plateN(i,:)				= length(x(~isnan(x)));
+	STDEV_MemDens_plateN(i,:)		= nanstd(x);
+end
+
+titles      = cellstr(char('conditions', 'N', 'mean rho','STDEV rho', 'SEM rho',...
+							'lower CI','upper CI', 'median rho'))';
+results			=	horzcat(cond_MemDens_plateN,num2cell(N_MemDens_plateN),...
+							num2cell(mean_MemDens_plateN),num2cell(STDEV_MemDens_plateN),...
+							num2cell(sem_MemDens_plateN),...
+							num2cell(CI_MemDens_plateN), num2cell(median_MemDens_plateN));
+vertcat(titles,results)
+
+
+%% STATISTICS (each experiment as sample)
+
+close all
+statsData_exp				= [];
+group_exp						= [];
+for i=1:length(resultsLocal)																										% for each condition
+	G										=	findgroups(resultsLocal(i).cellLocation(:,1));					% define experiment groups 
+	meanMemDens					= splitapply(@mean,resultsLocal(i).logNormMemDens,G);			% mean log transformed normalised rho per plate (rows) per condition (colums)
+	meanMemDens_back   	= 10.^meanMemDens;																				% back transformation
+	statsData_exp       = vertcat(statsData_exp,meanMemDens_back);
+ 	group     					= repmat({resultsLocal(i).mutation},length(meanMemDens),1);
+	group_exp						= vertcat(group_exp,group);
+end
+
+[p,tbl,stats]		= anova1(statsData_exp, group_exp);
+[c,m,~,gnames]  = multcompare(stats,'CType','');
+c_titles	= cellstr(char('g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
+						'UL mean dif CI','P-value'))';
+vertcat			(c_titles,num2cell(c))
+
+%% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
+
+for b  = 1:conditionN
+	MembraneDensity = resultsLocal(b).normMemDens;
+	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
+		qqplot(MembraneDensity);
+		yLab = ylabel(sprintf('F_{YFP,membrane} / F_{mCh,cell}\nQuantiles'));
+		set(yLab,'fontsize',9)
+		xLab = xlabel(sprintf('Standard Normal Quantiles'));
+		set(xLab,'fontsize',8)
+		title(resultsLocal(b).mutation);
+end
+
+figure;
+
+for b  = 1:conditionN
+	MembraneDensity = resultsLocal(b).normMemDens;
+	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
+		histogram(MembraneDensity,50,'BinLimits',[0,3],'Orientation', 'vertical');
+		xLab = xlabel('Rho CFTR membrane');
+		set(xLab,'fontsize',9)
+		yLab = ylabel('Frequency');
+		set(yLab,'fontsize',8)
+		title(resultsLocal(b).mutation);
 end
 
 %% CORRELATION PLOTS
-% plot redEntire data against either yelEntire or yelMembrane (second
-% parameter). It is important to see whether these data are correlated as
-% it implies the validity of memDensity measure (yelMem / redEnt).
 
 close all
-
-redYelCorrStats = cell(conditionN + 1,4);
-redYelCorrStats(1,:) = {'Condition','R value','Slope','MSE'};
-
 figure
-for i=1:conditionN
-	redYelCorrStats{i+1,1} = resultsLocal(i).mutation;
-  subplot( subplotDimM, subplotDimN, i )
-	stats = plotLocalRedYelCorr(resultsLocal(i),'membrane');
-	redYelCorrStats(i+1,2:end) = num2cell(stats);
+for i=1:length(resultsLocal)
+    subplot(1,length(resultsLocal),i)
+	plotLocalRedYelCorr(resultsLocal(i),'membrane');
+	hold on
 end
 
-disp(redYelCorrStats)
-
-%% IMAGE DISPLAY (with all selected cells boxed)
+%% IMAGE DISPLAY
 close all
 
 x=5; % plate
 y=29; % image number
 
+fprintf('\nImage %d on plate %d has %d cells.\n'	,y,x,plate(x).imageLocal(y).cellN(end))
+
+% display the image
+% enter "red", "yel", "blend" as the second argument of imgDisplay.'
+figure
+imgDisplay(plate(x).imageLocal(y),'blend')
+
+% display image with 2 cells boxed
+cell1 = 1;
+cell2 = 2;
+boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
+boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
+
+figure
+imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+figure
+imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
+
+%% display image with all selected cells boxed
+close all
+
+x=5; % plate
+y=24; % image number
+
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
 
-allBoundingBoxes = plate(x).imageLocal(y).boundingBox(:,:);
+for ii= 1:plate(x).imageLocal(y).cellN(end)
+D(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);	
+end
 
-figure
-localDisplayImage(plate(x).imageLocal(y),'red')
-localAddRectangleToImage( allBoundingBoxes )
-figure
-localDisplayImage(plate(x).imageLocal(y),'yel')
-localAddRectangleToImage( allBoundingBoxes )
-figure
-localDisplayImage(plate(x).imageLocal(y),'combine')
+figure;
+imgDisplayRectangle_SP(plate(x).imageLocal(y),'red',D)
+figure;
+imgDisplayRectangle_SP(plate(x).imageLocal(y),'yel',D)
+figure;
+imgDisplay(plate(x).imageLocal(y),'blend')
 	
 
 %% CELL DISPLAY
@@ -122,8 +185,7 @@ localDisplayImage(plate(x).imageLocal(y),'combine')
 x=5; % plate
 y=29; % image number
 
-fprintf('\nImage %d on plate %d has %d cells.\n'...
-	,y,x,plate(x).imageLocal(y).cellN(end))
+fprintf('\nImage %d on plate %d has %d cells.\n',y,x,plate(x).imageLocal(y).cellN(end))
 
 for i=4
 	figure('position',[400 400 500 600])
@@ -140,13 +202,8 @@ end
 %% OUTPUT CELLS TO FILE
 
 tic;
-
-saveLocation = 'cells_segmentation_2102';
-
-fprintf('Saving cell images...\n')
-
-labelAndSaveCells(resultsLocal,plate,saveLocation)
-
-fprintf('Done\n')
-
+saveLocation			= 'C:\Users\StellaPrins\Desktop\CFTR\cells\test';
+fprintf						('Saving cell images...\n')
+labelAndSaveCells (resultsLocal,plate,saveLocation)
+fprintf						('Done\n')
 toc

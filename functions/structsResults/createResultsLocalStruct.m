@@ -20,6 +20,10 @@ resultsTemplate = struct(...
 			,'yelEntire',[]...
 			,'yelMembrane',[]...
 			,'redEntire',[]...
+			,'memDens',[]...
+			,'logMemDens',[]...			
+			,'normMemDens',[]...
+			,'logNormMemDens',[]...
 			,'localCellN',[]);
 		
 % find out how many cells per condition across all plates
@@ -34,19 +38,18 @@ end
 
 % fill results structs with empty arrays
 for i=1:conditionN
-	
-	resultsStructArray(i) = resultsTemplate;
-	resultsStructArray(i).mutation = conditions{i};
-	
-	cellN = sum(cellsPerConditionPlate(:,i));
-	resultsStructArray(i).localCellN = cellN;
-	
+	resultsStructArray(i)								= resultsTemplate;
+	resultsStructArray(i).mutation			= conditions{i};
+	cellN																= sum(cellsPerConditionPlate(:,i));
+	resultsStructArray(i).localCellN		= cellN;
 	resultsStructArray(i).cellLocation	= zeros(cellN,3);
 	resultsStructArray(i).yelEntire			= zeros(cellN,1);
 	resultsStructArray(i).yelMembrane		= zeros(cellN,1);
 	resultsStructArray(i).redEntire			= zeros(cellN,1);
-	
-	
+	resultsStructArray(i).memDens    		= zeros(cellN,1);
+	resultsStructArray(i).logMemDens		= zeros(cellN,1);
+	resultsStructArray(i).normMemDens		= zeros(cellN,1);
+	resultsStructArray(i).logNormMemDens= zeros(cellN,1);
 end
 	
 end
