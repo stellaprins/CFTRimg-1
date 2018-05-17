@@ -1,21 +1,23 @@
 clc
 clear
 addpath(genpath('functions'))
-addpath(genpath(fullfile('input'))) %% include the location of your input folder
+addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of your input folder
 
 
 %%
-VX809_28_37_LOCAL % the name of your input file
-saveWorkspaceHere = 'segmentation_check2002.mat';
 
-normConditionStr = 'WT 37';
+inputDataTestCato % the name of your input file
+saveWorkspaceHere = '~/Desktop/test_workspace.mat';
+normConditionStr	= 'WT 37';
 
 %%
 close all
 imtool close all
 global SITEN BINNING EXTRA
-SITEN		= 9;
-BINNING = 1/2;
+
+SITEN		= 1;
+BINNING = 1;	% 1/2 for 2*2
+
 EXTRA		= ceil(BINNING*20);
 
 %% STRUCTURING DATA
