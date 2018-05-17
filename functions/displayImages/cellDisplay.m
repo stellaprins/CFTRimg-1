@@ -4,7 +4,7 @@ function cellDisplay(imageStruct, colorStr, boundingBox_idx )
 
 switch colorStr
 	case 'red'
-		image       = imadjust(im2double(imread(imageStruct.redPath)),[0.001 .2]);
+		image       = imadjust(im2double(imread(imageStruct.redPath)));
 		[imX,map]   = gray2ind(image,256);
 		redMap      = [map(:,1),zeros(256,1),zeros(256,1)];
 		image       = ind2rgb(imX,redMap);
@@ -14,7 +14,7 @@ switch colorStr
  %		set(gca,'position',[0 0 1 1])
  		title('mCherry')
 	case 'yel'
-		image       = imadjust(im2double(imread(imageStruct.yelPath)),[0.02 .05]);
+		image       = imadjust(im2double(imread(imageStruct.yelPath)));
 		[imX,map]   = gray2ind(image,256);
 		yelMap      = [map(:,1),map(:,1),zeros(256,1)];
 		image       = ind2rgb(imX,yelMap);
