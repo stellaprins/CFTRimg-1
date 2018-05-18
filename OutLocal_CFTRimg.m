@@ -141,50 +141,28 @@ for i=1:length(resultsLocal)
 	plotLocalSizeRhoCorr(resultsLocal(i),plate);
 end
 
-%% IMAGE DISPLAY
+
+%% IMAGE DISPLAY with all selected cells boxed
 close all
 
-x=5; % plate
-y=29; % image number
-
-fprintf('\nImage %d on plate %d has %d cells.\n'	,y,x,plate(x).imageLocal(y).cellN(end))
-
-% display the image
-% enter "red", "yel", "blend" as the second argument of imgDisplay.'
-figure
-imgDisplay(plate(x).imageLocal(y),'blend')
-
-% display image with 2 cells boxed
-cell1 = 1;
-cell2 = 2;
-boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
-boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
-
-figure
-imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
-figure
-imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
-
-%% display image with all selected cells boxed
-close all
-
-x=1; % plate
+x=1; % plate number
 y=1; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
 
+BB = zeros(plate(x).imageLocal(y).cellN(end),4);
 for ii= 1:plate(x).imageLocal(y).cellN(end)
-D(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);	
+	BB(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);
 end
 
 figure
 localDisplayImage(plate(x).imageLocal(y),'red')
-localAddRectangleToImage(D)
-figure
-localDisplayImage(plate(x).imageLocal(y),'yel')
-figure
-localDisplayImage(plate(x).imageLocal(y),'blend')
+localAddRectangleToImage(BB)
+% figure
+% localDisplayImage(plate(x).imageLocal(y),'yel')
+% figure
+% localDisplayImage(plate(x).imageLocal(y),'blend')
 	
 
 %% CELL DISPLAY
@@ -206,10 +184,11 @@ for i=1:min([2,plate(x).imageLocal(y).cellN(end)])
 	plotFOverDistance(plate(x).imageLocal(y),i)
 end
 
+
 %% OUTPUT CELLS TO FILE
 
 tic;
-saveLocation			= 'C:\Users\StellaPrins\Desktop\CFTR\cells\test';
+saveLocation			= '~/Desktop/CFTR/cells/test';
 fprintf						('Saving cell images...\n')
 labelAndSaveCells (resultsLocal,plate,saveLocation)
 fprintf						('Done\n')
