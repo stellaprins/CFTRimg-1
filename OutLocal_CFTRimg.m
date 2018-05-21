@@ -157,13 +157,15 @@ for ii= 1:plate(x).imageLocal(y).cellN(end)
 end
 
 figure
-localDisplayImage(plate(x).imageLocal(y),'red')
-localAddRectangleToImage(BB)
-% figure
+redAxes		= localDisplayImage(plate(x).imageLocal(y),'red');
+redAxes		= localAddRectangleToImage(redAxes,BB);
+redFrame	= getframe(redAxes);
+imwrite(redFrame.cdata,'image.jpg')
+
 % localDisplayImage(plate(x).imageLocal(y),'yel')
 % figure
 % localDisplayImage(plate(x).imageLocal(y),'blend')
-	
+
 
 %% CELL DISPLAY
 % close all
