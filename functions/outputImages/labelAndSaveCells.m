@@ -1,7 +1,7 @@
 function labelAndSaveCells( resultsStructArray ,plateStructArray ...
 	,saveLocation )
-%LABELANDSAVECELLS Summary of this function goes here
-%   Detailed explanation goes here
+%LABEL_AND_SAVE_CELLS save each cell image (red and yel) to file labelled with rho value
+
 
 conditionN = length(resultsStructArray);
 
@@ -17,12 +17,12 @@ for j=1:conditionN
 		imageIdx = resultsStruct.cellLocation(i,2);
 		bBoxIdx = resultsStruct.cellLocation(i,3);
 		
-		rhoVal = resultsStruct.yelMembrane(i) / resultsStruct.redEntire(i);
+		rhoVal = resultsStruct.normMemDens(i);
 		
-		redCellImage = cellWithBorder(plateStructArray(plateIdx).imageLocal(imageIdx),'redBorder',bBoxIdx);
-		yelCellImage = cellWithBorder(plateStructArray(plateIdx).imageLocal(imageIdx),'yelBorder',bBoxIdx);
+		[redCellImage, yelCellImage] = ...
+		cellWithBorder(plateStructArray(plateIdx).imageLocal(imageIdx),bBoxIdx);
 
-		textStr = sprintf('%d,%d,%d\nrho = %0.4f',plateIdx,imageIdx,bBoxIdx,rhoVal);
+		textStr = sprintf('rho = %0.3f',rhoVal);
 		
 		redTextImage = insertText(redCellImage,[1 1],textStr,'textcolor','white','boxcolor','black');
 		yelTextImage = insertText(yelCellImage,[1 1],textStr,'textcolor','white','boxcolor','black');
@@ -34,11 +34,7 @@ for j=1:conditionN
 		imwrite( yelTextImage, fullfile(saveLocation,resultsStruct.mutation,yelFilename) , 'jpg' )
 		
 	end
+	
 end
-
-
-
-
-
 
 end
