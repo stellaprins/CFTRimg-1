@@ -9,7 +9,7 @@ addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of yo
 inputDataCatoTest % the name of your input file
 saveWorkspaceHere = '~/Desktop/CFTR/workspaces/testLocal_2018_05_18';
 
-normConditionStr	= 'WT';
+normConditionStr	= 'WT 37';
 
 %%
 close all
@@ -17,7 +17,7 @@ imtool close all
 global SITEN BINNING EXTRA
 
 SITEN		= 3;	% number of images per well
-BINNING = 1;	% 1/2 for 2*2
+BINNING = 1/2;	% 1/2 for 2*2
 
 EXTRA		= ceil(BINNING*20); % number of pixels to add around segmented component
 

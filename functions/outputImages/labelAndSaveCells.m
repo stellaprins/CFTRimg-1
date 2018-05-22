@@ -2,7 +2,6 @@ function labelAndSaveCells( resultsStructArray ,plateStructArray ...
 	,saveLocation )
 %LABEL_AND_SAVE_CELLS save each cell image (red and yel) to file labelled with rho value
 
-
 conditionN = length(resultsStructArray);
 
 for j=1:conditionN
@@ -24,8 +23,8 @@ for j=1:conditionN
 
 		textStr = sprintf('rho = %0.3f',rhoVal);
 		
-		redTextImage = insertText(redCellImage,[1 1],textStr,'textcolor','white','boxcolor','black');
-		yelTextImage = insertText(yelCellImage,[1 1],textStr,'textcolor','white','boxcolor','black');
+		redTextImage = insertText(redCellImage,[1 1],textStr,'textcolor','white','boxcolor','black','FontSize',10);
+		yelTextImage = insertText(yelCellImage,[1 1],textStr,'textcolor','white','boxcolor','black','FontSize',10);
 		
 		redFilename = sprintf('red-%d_%d_%d.jpg',plateIdx,imageIdx,bBoxIdx);
 		yelFilename = sprintf('yel-%d-%d-%d.jpg',plateIdx,imageIdx,bBoxIdx);
