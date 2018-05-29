@@ -6,8 +6,8 @@ addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of yo
 
 %%
 
-input_local_EH % the name of your input file
-saveWorkspaceHere = 'C:\Users\StellaPrins\Desktop\EH_local 1108-05-18)';
+inputDataCatoTest % the name of your input file
+saveWorkspaceHere = '~/Desktop/CFTR/workspaces/testLocal_2018_05_18';
 
 normConditionStr	= 'WT 37';
 
@@ -16,10 +16,10 @@ close all
 imtool close all
 global SITEN BINNING EXTRA
 
-SITEN		= 1;
-BINNING = 1;	% 1/2 for 2*2
+SITEN		= 3;	% number of images per well
+BINNING = 1/2;	% 1/2 for 2*2
 
-EXTRA		= ceil(BINNING*20);
+EXTRA		= ceil(BINNING*20); % number of pixels to add around segmented component
 
 %% STRUCTURING DATA
 tic
@@ -97,6 +97,6 @@ end
 resultsLocal	= createResultsLocalStruct(tempResultsLocal);
 resultsLocal	= populateResultsLocal(resultsLocal,tempResultsLocal);
 		
-time(6)				= toc;
+time(5)				= toc;
 disp					('Full analysis completed')
 save					(saveWorkspaceHere)

@@ -47,7 +47,7 @@ dim = [0.2 0.5 0.3 0.3];
 str = {sprintf('R = %.2f\nslope = %.2f\nMSE = %.5f',stats(1),stats(2),stats(3))};
 annotation('textbox',dim,'String',str,'FitBoxToText','on');
 % xlim([0 0.12])
-ylim([0 0.012])
+% ylim([0 0.045])
 title(resultsStruct.mutation,'fontsize',10);
 
 mutation = {resultsStruct.mutation};

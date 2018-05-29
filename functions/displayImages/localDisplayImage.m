@@ -1,4 +1,4 @@
-function localDisplayImage( imageStruct , color )
+function plotAxes = localDisplayImage( imageStruct , color )
 %LOCAL_DISPLAY_IMAGE Displays the full local image in 'imageStruct' with
 %color specified by the second parameter value.
 %   Images are loaded using the path stored in 'imageStruct' as NxN
@@ -58,7 +58,8 @@ switch color
 		disp('Please enter "red", "yel", "blend" or "combine" as the second argument of imgDisplay.')
 end
 
-imshow(imageRGB,[],'InitialMagnification',50)
+imageHandle = imshow(imageRGB,[],'InitialMagnification',50);
+plotAxes = imageHandle.Parent;
 hold on
 
 end

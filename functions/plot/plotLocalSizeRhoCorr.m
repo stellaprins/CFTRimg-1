@@ -8,12 +8,12 @@ cellArea = zeros(length(cellLoc),1);
 uniquePlateImage = unique(resultsStruct.cellLocation(:,1:2),'rows');
 
 counter = 1;
-for j=1:length(uniquePlateImage)
+for j=1:size(uniquePlateImage,1)
 	plateNo = uniquePlateImage(j,1);
 	imageNo = uniquePlateImage(j,2);
 	image = im2double(imread(plateStruct(plateNo).imageLocal(imageNo).redPath));
 	boundingBoxes = plateStruct(plateNo).imageLocal(imageNo).boundingBox(:,:);
-	for i = 1:length(boundingBoxes)
+	for i = 1:size(boundingBoxes,1)
 		cellMask = boundingBoxToCellMask(image,boundingBoxes(i,:));
 		[labelled, ~] = bwlabel(cellMask,8);
 		properties = regionprops(labelled ...
