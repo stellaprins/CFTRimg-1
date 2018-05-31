@@ -27,9 +27,11 @@ yelMeanMembrane	= zeros(cellN,1);
 yelMeanInterior	= zeros(cellN,1);
 redMeanEntire		= zeros(cellN,1);
 redMeanOutside	= zeros(cellN,1);
-
-memDens					= zeros(cellN,1);
-logMemDens	  	= zeros(cellN,1);
+yelEntireAbsolute = zeros(cellN,1);
+yelMembraneAbsolute = zeros(cellN,1);
+redEntireAbsolute = zeros(cellN,1);
+% memDens					= zeros(cellN,1);
+% logMemDens	  	= zeros(cellN,1);
 
 for i=1:cellN
 	
@@ -44,18 +46,18 @@ for i=1:cellN
 	
 	%%%%%%%
 	membraneMask = distanceMap >= 0 & distanceMap < 10*BINNING;
-	
-	yelMeanEntire(i) = sum(cellMask .* yelCropAdj) / sum(cellMask);
-	yelMeanOutside(i) = sum(~cellMask .* yelCropAdj) / sum(~cellMask);
-	yelMeanMembrane(i) = sum(membraneMask .* yelCropAdj) / sum(membraneMask);
-	yelMeanInterior(i) = sum((cellMask & ~membraneMask) .* yelCropAdj) ...
-		/ sum(cellMask & ~membraneMask);
-	
-	redMeanEntire(i) = sum(cellMask .* redCropAdj) / sum(cellMask);
-	redMeanOutside(i) = sum(~cellMask .* redCropped) / sum(~cellMask);
-	
-	memDens(i)		= yelMeanMembrane(i)./redMeanEntire(i);
-	logMemDens(i) = real(log10(yelMeanMembrane(i)./redMeanEntire(i)));
+	yelEntireAbsolute(i)		= sum(sum(cellMask .* yelCropAdj)) ;
+	yelMembraneAbsolute(i)	= sum(sum(membraneMask .* yelCropAdj)); 
+	redEntireAbsolute(i)		= sum(sum(cellMask .* redCropAdj)) ;
+	yelMeanEntire(i)				= sum(cellMask .* yelCropAdj) / sum(cellMask);
+	yelMeanOutside(i)				= sum(~cellMask .* yelCropAdj) / sum(~cellMask);
+	yelMeanMembrane(i)			= sum(membraneMask .* yelCropAdj) / sum(membraneMask);
+	yelMeanInterior(i)			= sum((cellMask & ~membraneMask) .* yelCropAdj) ...
+														/ sum(cellMask & ~membraneMask);
+	redMeanEntire(i)				= sum(cellMask .* redCropAdj) / sum(cellMask);
+	redMeanOutside(i)				= sum(~cellMask .* redCropped) / sum(~cellMask);
+% 	memDens(i)							= yelMeanMembrane(i)./redMeanEntire(i);
+% 	logMemDens(i)						= real(log10(yelMeanMembrane(i)./redMeanEntire(i)));
 	%%%%%%%
 
 end
@@ -65,9 +67,11 @@ imageStruct.yelMembrane			= yelMeanMembrane;
 imageStruct.yelInterior			= yelMeanInterior;
 imageStruct.redEntire				= redMeanEntire;
 imageStruct.redOutside			= redMeanOutside;
-
-imageStruct.memDens					= memDens;
-imageStruct.logMemDens			= logMemDens;
+imageStruct.yelEntireAbsolute		= yelEntireAbsolute;
+imageStruct.yelMembraneAbsolute	= yelMembraneAbsolute;
+imageStruct.redEntireAbsolute		= redEntireAbsolute;
+% imageStruct.memDens					= memDens;
+% imageStruct.logMemDens			= logMemDens;
 
 end
 

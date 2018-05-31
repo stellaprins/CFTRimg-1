@@ -1,15 +1,15 @@
 
 saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\xx';
 conditionN						= length(resultsLocal);
-
+resultsLocal					= resultsLocal2;
 %% DESCRIPTIVES (each cell as sample)
 
 for i=1:length(resultsLocal)																								% for all conditions
-	meanMemDens			= mean(resultsLocal(i).logNormMemDens);										% mean log rho
+	meanMemDens			= mean(resultsLocal(i).logMemDens);												% mean log rho
 	C(:,i)					= 10.^meanMemDens;																				% back transformed mean per condition
 end
 for i=1:length(resultsLocal)			
-	x					= resultsLocal(i).logNormMemDens;							% log transformed rho CFTR membrane
+	x					= resultsLocal(i).logMemDens;							% log transformed rho CFTR membrane
 	SEM				= std(x)/sqrt(length(x));											% Standard Error (after log transform)
 	ts				= tinv([0.025  0.975],length(x)-1);						% T-Score (for 95% Confidence Interval)									
 	cond_MemDens_cellN(i,:)		= cellstr(resultsLocal(i).mutation);
@@ -24,11 +24,12 @@ results			=	horzcat(cond_MemDens_cellN,num2cell(N_MemDens_cellN),...
 							num2cell(mean_MemDens_cellN), num2cell(CI_MemDens_cellN), ...
 							num2cell(median_MemDens_cellN));
 vertcat			 (titles,results)
-% if ispc == true
-% 	xlswrite(saveLocalResultsHere,results)
-% elseif isunix==true
-% 	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
-% end
+
+if ispc == true
+	xlswrite(saveLocalResultsHere,results)
+elseif isunix==true
+	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
+end
 
 %% STATISTICS (each cell as sample)
 
@@ -39,7 +40,7 @@ group       = cell(cellN,1);
 cellCount   = 1;
 for i=1:length(resultsLocal) % for each condition
 	res = resultsLocal(i);
-	statsData_cell(cellCount:(cellCount+res.localCellN-1)) = res.logNormMemDens;
+	statsData_cell(cellCount:(cellCount+res.localCellN-1)) = res.logMemDens;
 	group(cellCount:(cellCount+res.localCellN-1))					 = {res.mutation};
 	cellCount																							 = cellCount + res.localCellN;
 end
@@ -57,7 +58,7 @@ vertcat			(c_titles,num2cell(c))
 B = NaN(length(plate),length(resultsLocal)); 
 for i=1:length(resultsLocal)																								% for the number of conditions
 	G								=	findgroups(resultsLocal(i).cellLocation(:,1));					% G = different plates
-	meanMemDens			= splitapply(@mean,resultsLocal(i).logNormMemDens,G);			% mean per plate (rows) per condition (colums)
+	meanMemDens			= splitapply(@mean,resultsLocal(i).logMemDens,G);			% mean per plate (rows) per condition (colums)
 	B(1:length(meanMemDens),i) = 10.^meanMemDens;																				% back transformed mean per plate
 end
 
@@ -90,7 +91,7 @@ statsData_exp				= [];
 group_exp						= [];
 for i=1:length(resultsLocal)																										% for each condition
 	G										=	findgroups(resultsLocal(i).cellLocation(:,1));					% define experiment groups 
-	meanMemDens					= splitapply(@mean,resultsLocal(i).logNormMemDens,G);			% mean log transformed normalised rho per plate (rows) per condition (colums)
+	meanMemDens					= splitapply(@mean,resultsLocal(i).logMemDens,G);			% mean log transformed normalised rho per plate (rows) per condition (colums)
 	meanMemDens_back   	= 10.^meanMemDens;																				% back transformation
 	statsData_exp       = vertcat(statsData_exp,meanMemDens_back);
  	group     					= repmat({resultsLocal(i).mutation},length(meanMemDens),1);
@@ -104,13 +105,13 @@ c_titles	= cellstr(char('g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 vertcat			(c_titles,num2cell(c))
 
 %% STATISTICS (each experiment as sample)
-[h,p,ci,stats]=ttest(B(:,4),B(:,2)) %
-[h,p,ci,stats]=ttest(B(:,3),B(:,1))
+[h,p,ci,stats]=ttest(B(:,4),B(:,2)) %paired t-test
+[h,p,ci,stats]=ttest(B(:,3),B(:,1))	%paired t-test
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
 figure;
-for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).logNormMemDens;
+for b  = 1:length(resultsLocal) % QQ plots log transformed distributions
+	MembraneDensity = resultsLocal(b).logMemDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		qqplot(MembraneDensity);
 		yLab = ylabel(sprintf('log Rho_{YFP,membrane}\nQuantiles'));
@@ -121,8 +122,8 @@ for b  = 1:length(resultsLocal)
 end
 
 figure;
-for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).normMemDens;
+for b  = 1:length(resultsLocal)% QQ plots untransformed distributions
+	MembraneDensity = resultsLocal(b).memDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		qqplot(MembraneDensity);
 		yLab = ylabel(sprintf('Rho_{CFTR membrane}\nQuantiles'));
@@ -134,8 +135,8 @@ end
 
 figure;
 
-for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).logNormMemDens;
+for b  = 1:length(resultsLocal) % histograms log transformed distributions
+	MembraneDensity = resultsLocal(b).logMemDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		histogram(MembraneDensity,30,'BinLimits',[-2,1],'Orientation', 'vertical');
 		xLab = xlabel('log10 Rho_{CFTR membrane}');
@@ -147,10 +148,10 @@ end
 
 figure;
 
-for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).normMemDens;
+for b  = 1:length(resultsLocal) % histograms untransformed distributions
+	MembraneDensity = resultsLocal(b).memDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
-		histogram(MembraneDensity,30,'BinLimits',[0,6],'Orientation', 'vertical');
+		histogram(MembraneDensity,30,'BinLimits',[0,3],'Orientation', 'vertical');
 		xLab = xlabel('Rho_{CFTR membrane}');
 		set(xLab,'fontsize',9)
 		yLab = ylabel('Frequency');

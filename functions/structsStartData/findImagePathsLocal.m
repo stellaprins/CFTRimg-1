@@ -1,5 +1,5 @@
-function [ mutationArray,redPathArray,yelPathArray ] = findImagePathsLocal...
-	(experimentStruct,mutationArray,redPathArray,yelPathArray)
+function [ mutationArray,tempArray, redPathArray,yelPathArray ] = findImagePathsLocal...
+	(experimentStruct,mutationArray,tempArray, redPathArray,yelPathArray)
 %FIND_IMAGE_PATHS_LOCAL construct path names for localization images
 %   Add to 'redPathArray' and 'yelPathArray' new path names constructed for
 %   each localization image. Done for all wells in an experiment.
@@ -16,22 +16,23 @@ wells(emptyCells) = [];
 wellN = length(wells);
 
 tmpMutationArray	= cell(wellN*SITEN,1);
+tmpTempArray			= cell(wellN*SITEN,1);
 tmpRedPathArray		= cell(wellN*SITEN,1);
 tmpYelPathArray		= cell(wellN*SITEN,1);
 
 for j=1:wellN
 
 	% red
-	filename = strcat(experimentStruct.filePrefix,wells{j},'_s*_w2.TIF');
-	redDirOutput = dir(fullfile(fileFolder,filename));
-	if isempty(redDirOutput)
-		fprintf('Check experiment "%s".\nFor well %s a file cannot be found.\n',...
-		experimentStruct.expStr,wells{j})
-	end
-	
+	filename			= strcat(experimentStruct.filePrefix,wells{j},'_s*_w2.TIF');
+	redDirOutput	= dir(fullfile(fileFolder,filename));
+		if isempty(redDirOutput)
+			fprintf('Check experiment "%s".\nFor well %s a file cannot be found.\n',...
+			experimentStruct.expStr,wells{j})
+		end
+
 	% yellow
-	filename = strcat(experimentStruct.filePrefix,wells{j},'_s*_w1.TIF');
-	yelDirOutput = dir(fullfile(fileFolder,filename));
+	filename			= strcat(experimentStruct.filePrefix,wells{j},'_s*_w1.TIF');
+	yelDirOutput	= dir(fullfile(fileFolder,filename));
 	
 	% find current mutation for this well
 	locationMatrix = strcmp(wells{j},experimentStruct.condWells);
@@ -41,6 +42,15 @@ for j=1:wellN
 		end
 	end
 	
+		% find current cond for this well
+	locationMatrix = strcmp(wells{j},experimentStruct.condWells);
+	for i=1:size(experimentStruct.condWells,1)
+		if sum(locationMatrix(i,:)) == 1
+			currentTemp = experimentStruct.temp{1};
+		end
+	end
+
+% 	
 	for p = 1:SITEN
 		tmpMutationArray{(j-1)*SITEN + p} = ...
 			currentMutation;
@@ -48,13 +58,14 @@ for j=1:wellN
 			fullfile(fileFolder,redDirOutput(p).name);
 		tmpYelPathArray{(j-1)*SITEN + p} = ...
 			fullfile(fileFolder,yelDirOutput(p).name);
-		
+ 		tmpTempArray{(j-1)*SITEN + p} = ...
+		  currentTemp;	
 	end
 
 end
 
 mutationArray = [mutationArray; tmpMutationArray];
-
+tempArray			= [tempArray; tmpTempArray];
 redPathArray = [redPathArray; tmpRedPathArray];
 yelPathArray = [yelPathArray; tmpYelPathArray];
 
