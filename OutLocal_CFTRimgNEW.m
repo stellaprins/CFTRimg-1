@@ -1,17 +1,15 @@
 
-
 saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\xx';
-
 conditionN						= length(resultsLocal);
-
+resultsLocal					= resultsLocal2;
 %% DESCRIPTIVES (each cell as sample)
 
 for i=1:length(resultsLocal)																								% for all conditions
-	meanMemDens			= mean(resultsLocal(i).logNormMemDens);										% mean log rho
+	meanMemDens			= mean(resultsLocal(i).logMemDens);												% mean log rho
 	C(:,i)					= 10.^meanMemDens;																				% back transformed mean per condition
 end
 for i=1:length(resultsLocal)			
-	x					= resultsLocal(i).logNormMemDens;							% log transformed rho CFTR membrane
+	x					= resultsLocal(i).logMemDens;							% log transformed rho CFTR membrane
 	SEM				= std(x)/sqrt(length(x));											% Standard Error (after log transform)
 	ts				= tinv([0.025  0.975],length(x)-1);						% T-Score (for 95% Confidence Interval)									
 	cond_MemDens_cellN(i,:)		= cellstr(resultsLocal(i).mutation);
@@ -26,11 +24,12 @@ results			=	horzcat(cond_MemDens_cellN,num2cell(N_MemDens_cellN),...
 							num2cell(mean_MemDens_cellN), num2cell(CI_MemDens_cellN), ...
 							num2cell(median_MemDens_cellN));
 vertcat			 (titles,results)
-% if ispc == true
-% 	xlswrite(saveLocalResultsHere,results)
-% elseif isunix==true
-% 	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
-% end
+
+if ispc == true
+	xlswrite(saveLocalResultsHere,results)
+elseif isunix==true
+	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
+end
 
 %% STATISTICS (each cell as sample)
 
@@ -41,7 +40,7 @@ group       = cell(cellN,1);
 cellCount   = 1;
 for i=1:length(resultsLocal) % for each condition
 	res = resultsLocal(i);
-	statsData_cell(cellCount:(cellCount+res.localCellN-1)) = res.logNormMemDens;
+	statsData_cell(cellCount:(cellCount+res.localCellN-1)) = res.logMemDens;
 	group(cellCount:(cellCount+res.localCellN-1))					 = {res.mutation};
 	cellCount																							 = cellCount + res.localCellN;
 end
@@ -59,7 +58,7 @@ vertcat			(c_titles,num2cell(c))
 B = NaN(length(plate),length(resultsLocal)); 
 for i=1:length(resultsLocal)																								% for the number of conditions
 	G								=	findgroups(resultsLocal(i).cellLocation(:,1));					% G = different plates
-	meanMemDens			= splitapply(@mean,resultsLocal(i).logNormMemDens,G);			% mean per plate (rows) per condition (colums)
+	meanMemDens			= splitapply(@mean,resultsLocal(i).logMemDens,G);			% mean per plate (rows) per condition (colums)
 	B(1:length(meanMemDens),i) = 10.^meanMemDens;																				% back transformed mean per plate
 end
 
@@ -92,7 +91,7 @@ statsData_exp				= [];
 group_exp						= [];
 for i=1:length(resultsLocal)																										% for each condition
 	G										=	findgroups(resultsLocal(i).cellLocation(:,1));					% define experiment groups 
-	meanMemDens					= splitapply(@mean,resultsLocal(i).logNormMemDens,G);			% mean log transformed normalised rho per plate (rows) per condition (colums)
+	meanMemDens					= splitapply(@mean,resultsLocal(i).logMemDens,G);			% mean log transformed normalised rho per plate (rows) per condition (colums)
 	meanMemDens_back   	= 10.^meanMemDens;																				% back transformation
 	statsData_exp       = vertcat(statsData_exp,meanMemDens_back);
  	group     					= repmat({resultsLocal(i).mutation},length(meanMemDens),1);
@@ -100,19 +99,19 @@ for i=1:length(resultsLocal)																										% for each condition
 end
 
 [p,tbl,stats]		= anova1(statsData_exp, group_exp);
-[c,m,~,gnames]  = multcompare(stats,'CType','dunn-sidak');
+[c,m,~,gnames]  = multcompare(stats,'CType','');
 c_titles	= cellstr(char('g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'))';
 vertcat			(c_titles,num2cell(c))
 
 %% STATISTICS (each experiment as sample)
-[h,p,ci,stats]=ttest(B(:,4),B(:,2)) %
-[h,p,ci,stats]=ttest(B(:,3),B(:,1))
+[h,p,ci,stats]=ttest(B(:,4),B(:,2)) %paired t-test
+[h,p,ci,stats]=ttest(B(:,3),B(:,1))	%paired t-test
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
 figure;
-for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).logNormMemDens;
+for b  = 1:length(resultsLocal) % QQ plots log transformed distributions
+	MembraneDensity = resultsLocal(b).logMemDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		qqplot(MembraneDensity);
 		yLab = ylabel(sprintf('log Rho_{YFP,membrane}\nQuantiles'));
@@ -123,8 +122,8 @@ for b  = 1:length(resultsLocal)
 end
 
 figure;
-for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).normMemDens;
+for b  = 1:length(resultsLocal)% QQ plots untransformed distributions
+	MembraneDensity = resultsLocal(b).memDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		qqplot(MembraneDensity);
 		yLab = ylabel(sprintf('Rho_{CFTR membrane}\nQuantiles'));
@@ -136,8 +135,8 @@ end
 
 figure;
 
-for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).logNormMemDens;
+for b  = 1:length(resultsLocal) % histograms log transformed distributions
+	MembraneDensity = resultsLocal(b).logMemDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		histogram(MembraneDensity,30,'BinLimits',[-2,1],'Orientation', 'vertical');
 		xLab = xlabel('log10 Rho_{CFTR membrane}');
@@ -149,10 +148,10 @@ end
 
 figure;
 
-for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).normMemDens;
+for b  = 1:length(resultsLocal) % histograms untransformed distributions
+	MembraneDensity = resultsLocal(b).memDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
-		histogram(MembraneDensity,30,'BinLimits',[0,6],'Orientation', 'vertical');
+		histogram(MembraneDensity,30,'BinLimits',[0,3],'Orientation', 'vertical');
 		xLab = xlabel('Rho_{CFTR membrane}');
 		set(xLab,'fontsize',9)
 		yLab = ylabel('Frequency');
@@ -163,54 +162,66 @@ end
 %% CORRELATION PLOTS
 
 close all
-% figure
+figure
 for i=1:length(resultsLocal)
-
     subplot(1,length(resultsLocal),i)
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
 	hold on
-
 end
 
-for i=1:length(resultsLocal)
-	figure
-	plotLocalSizeRhoCorr(resultsLocal(i),plate);
-end
-
-
-%% IMAGE DISPLAY with all selected cells boxed
+%% IMAGE DISPLAY
 close all
 
-x=1; % plate number
-y=1; % image number
+x=5; % plate
+y=29; % image number
+
+fprintf('\nImage %d on plate %d has %d cells.\n'	,y,x,plate(x).imageLocal(y).cellN(end))
+
+% display the image
+% enter "red", "yel", "blend" as the second argument of imgDisplay.'
+figure
+imgDisplay(plate(x).imageLocal(y),'blend')
+
+% display image with 2 cells boxed
+cell1 = 1;
+cell2 = 2;
+boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
+boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
+
+figure
+imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
+figure
+imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
+
+%% display image with all selected cells boxed
+close all
+
+x=5; % plate
+y=24; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
 
-BB = zeros(plate(x).imageLocal(y).cellN(end),4);
 for ii= 1:plate(x).imageLocal(y).cellN(end)
-	BB(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);
+D(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);	
 end
 
-figure
-redAxes		= localDisplayImage(plate(x).imageLocal(y),'red');
-redAxes		= localAddRectangleToImage(redAxes,BB);
-redFrame	= getframe(redAxes);
-imwrite(redFrame.cdata,'image.jpg')
-
-% localDisplayImage(plate(x).imageLocal(y),'yel')
-% figure
-% localDisplayImage(plate(x).imageLocal(y),'blend')
-
+figure;
+imgDisplayRectangle_SP(plate(x).imageLocal(y),'red',D)
+figure;
+imgDisplayRectangle_SP(plate(x).imageLocal(y),'yel',D)
+figure;
+imgDisplay(plate(x).imageLocal(y),'blend')
+	
 
 %% CELL DISPLAY
 % close all
-x=1; % plate
-y=1; % image number
+x=5; % plate
+y=29; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n',y,x,plate(x).imageLocal(y).cellN(end))
 
-for i=1:min([2,plate(x).imageLocal(y).cellN(end)])
+for i=4
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)
@@ -222,11 +233,10 @@ for i=1:min([2,plate(x).imageLocal(y).cellN(end)])
 	plotFOverDistance(plate(x).imageLocal(y),i)
 end
 
-
 %% OUTPUT CELLS TO FILE
 
 tic;
-saveLocation			= '~/Desktop/CFTR/cells/test';
+saveLocation			= 'C:\Users\StellaPrins\Desktop\CFTR\cells\test';
 fprintf						('Saving cell images...\n')
 labelAndSaveCells (resultsLocal,plate,saveLocation)
 fprintf						('Done\n')

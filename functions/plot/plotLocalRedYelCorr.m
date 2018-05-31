@@ -30,7 +30,7 @@ MSE = sum(stats.resid .^2) / length(stats);
 
 stats = [r slope MSE];
 
-plot(redEntire,yelData,'o')
+plot(redEntire,yelData,'.','r')
 hold on
 set(gca,'fontsize',10)
 plot([0 maxX],[0 maxX*slope],'-')

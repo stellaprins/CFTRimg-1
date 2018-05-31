@@ -7,28 +7,22 @@ function [ plateStructArray ] = findImagePaths( ...
 %   path names, a struct is created for each image (or well for quenching
 %   experiments).
 
-plateN = length(plateStructArray);
+plateN			= length(plateStructArray);
 experimentN = length(experimentStructArray);
-
-plateStr = unique(horzcat(experimentStructArray.plateStr));
+plateStr		= unique(horzcat(experimentStructArray.plateStr));
 
 for j=1:plateN
-	
 	currentPlate			= plateStr{j};
-	
 	mutationArray			= cell(0);
+	tempArray					= cell(0);
 	test_controlArray = cell(0);
-	
 	redPathArrayLocal = cell(0);
 	yelPathArrayLocal = cell(0);
-	
 	redPathArrayQuench = cell(0,2);
 	yelPathArrayQuench = cell(0,70);
 	
 	for i=1:experimentN
-		
 		expStruct = experimentStructArray(i);
-		
 		cmpPlate = strcmp(expStruct.plateStr,currentPlate);
 		
 		if sum(cmpPlate == 1)
@@ -37,8 +31,8 @@ for j=1:plateN
 
 				case 'local'
 
-					[mutationArray,redPathArrayLocal,yelPathArrayLocal] = ...
-					findImagePathsLocal(expStruct,mutationArray...
+					[mutationArray,tempArray, redPathArrayLocal,yelPathArrayLocal] = ...
+					findImagePathsLocal(expStruct,mutationArray, tempArray...
 					,redPathArrayLocal,yelPathArrayLocal);
 
 				case 'quench'
@@ -57,7 +51,7 @@ for j=1:plateN
 		
 	end
 	
-	plateStructArray(j).imageLocal = createImageLocalStruct(mutationArray...
+	plateStructArray(j).imageLocal = createImageLocalStruct(mutationArray, tempArray...
 		,redPathArrayLocal,yelPathArrayLocal);
 	
 	plateStructArray(j).imageQuench = ...
@@ -65,5 +59,6 @@ for j=1:plateN
 		,redPathArrayQuench,yelPathArrayQuench);
 	
 end
+
 
 end
