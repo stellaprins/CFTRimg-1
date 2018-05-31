@@ -1,41 +1,27 @@
-function cellImage = cellWithBorder(imageStruct, colorStr , boundingBox_idx )
-%CELLDISPLAYBORDER Summary of this function goes here
-%   Detailed explanation goes here
+function [redCellImage, yelCellImage] = cellWithBorder(imageStruct, boundingBox_idx )
+%CELL_WITH_BORDER create colour cell image with white line denoting the cell segmentation boundary
 
 redBW = im2double(imread(imageStruct.redPath));
-
 boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
- 
 cellMask    = boundingBoxToCellMask(redBW,boundingBox);
 
-switch colorStr
-	case 'yelBorder'
-		yelImage = imadjust(im2double(imread(imageStruct.yelPath)));
-		
-		[imX,map] = gray2ind(yelImage,256);
-		yelMap = [map(:,1),map(:,1),zeros(256,1)];
-		yelImage = ind2rgb(imX,yelMap);
-		
-		cropped = boundingBoxToCroppedColor(yelImage,boundingBox);
-		
-		edgeCellMask = edge(cellMask);
-		cellImage = imoverlay(cropped,edgeCellMask,'w');
-		
-case 'redBorder'
-	
-	redImage = imadjust(redBW);
-	[imX,map]   = gray2ind(redImage,256);
-	redMap      = [map(:,1),zeros(256,1),zeros(256,1)];
-	redImage       = ind2rgb(imX,redMap);
-	cropped     = boundingBoxToCroppedColor(redImage,boundingBox);
-	
-	edgeCellMask = edge(cellMask);
-	cellImage = imoverlay(cropped,edgeCellMask,'w');
+redImage = imadjust(redBW);
+yelImage = imadjust(im2double(imread(imageStruct.yelPath)));
 
-	otherwise
-		disp('Please enter "redBorder" or "yelBorder".')
-		return
-end
+[redImX,tmpRedMap] 	= gray2ind(redImage,256);
+redMap      				= [tmpRedMap(:,1),zeros(256,1),zeros(256,1)];
+redImage 						= ind2rgb(redImX,redMap);
+redCropped     			= boundingBoxToCroppedColor(redImage,boundingBox);
+
+[yelImX,tmpYelMap] 	= gray2ind(yelImage,256);
+yelMap 							= [tmpYelMap(:,1),tmpYelMap(:,1),zeros(256,1)];
+yelImage 						= ind2rgb(yelImX,yelMap);
+yelCropped 					= boundingBoxToCroppedColor(yelImage,boundingBox);
+
+edgeCellMask = edge(cellMask);
+
+redCellImage = imoverlay(redCropped,edgeCellMask,'w');
+yelCellImage = imoverlay(yelCropped,edgeCellMask,'w');		
 
 end
 

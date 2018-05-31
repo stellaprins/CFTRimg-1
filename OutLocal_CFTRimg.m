@@ -1,5 +1,7 @@
 
+
 saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\xx';
+
 conditionN						= length(resultsLocal);
 
 %% DESCRIPTIVES (each cell as sample)
@@ -98,7 +100,7 @@ for i=1:length(resultsLocal)																										% for each condition
 end
 
 [p,tbl,stats]		= anova1(statsData_exp, group_exp);
-[c,m,~,gnames]  = multcompare(stats,'CType','');
+[c,m,~,gnames]  = multcompare(stats,'CType','dunn-sidak');
 c_titles	= cellstr(char('g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'))';
 vertcat			(c_titles,num2cell(c))
@@ -161,66 +163,54 @@ end
 %% CORRELATION PLOTS
 
 close all
-figure
+% figure
 for i=1:length(resultsLocal)
+
     subplot(1,length(resultsLocal),i)
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
 	hold on
+
 end
 
-%% IMAGE DISPLAY
+for i=1:length(resultsLocal)
+	figure
+	plotLocalSizeRhoCorr(resultsLocal(i),plate);
+end
+
+
+%% IMAGE DISPLAY with all selected cells boxed
 close all
 
-x=5; % plate
-y=29; % image number
-
-fprintf('\nImage %d on plate %d has %d cells.\n'	,y,x,plate(x).imageLocal(y).cellN(end))
-
-% display the image
-% enter "red", "yel", "blend" as the second argument of imgDisplay.'
-figure
-imgDisplay(plate(x).imageLocal(y),'blend')
-
-% display image with 2 cells boxed
-cell1 = 1;
-cell2 = 2;
-boundingBox1 = plate(x).imageLocal(y).boundingBox(cell1,:);
-boundingBox2 = plate(x).imageLocal(y).boundingBox(cell2,:);
-
-figure
-imgDisplayRectangle(plate(x).imageLocal(y),'red',boundingBox1,boundingBox2)
-figure
-imgDisplayRectangle(plate(x).imageLocal(y),'yel',boundingBox1,boundingBox2)
-
-%% display image with all selected cells boxed
-close all
-
-x=5; % plate
-y=24; % image number
+x=1; % plate number
+y=1; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n'...
 	,y,x,plate(x).imageLocal(y).cellN(end))
 
+BB = zeros(plate(x).imageLocal(y).cellN(end),4);
 for ii= 1:plate(x).imageLocal(y).cellN(end)
-D(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);	
+	BB(ii,:)=plate(x).imageLocal(y).boundingBox(ii,:);
 end
 
-figure;
-imgDisplayRectangle_SP(plate(x).imageLocal(y),'red',D)
-figure;
-imgDisplayRectangle_SP(plate(x).imageLocal(y),'yel',D)
-figure;
-imgDisplay(plate(x).imageLocal(y),'blend')
-	
+figure
+redAxes		= localDisplayImage(plate(x).imageLocal(y),'red');
+redAxes		= localAddRectangleToImage(redAxes,BB);
+redFrame	= getframe(redAxes);
+imwrite(redFrame.cdata,'image.jpg')
+
+% localDisplayImage(plate(x).imageLocal(y),'yel')
+% figure
+% localDisplayImage(plate(x).imageLocal(y),'blend')
+
 
 %% CELL DISPLAY
 % close all
-x=5; % plate
-y=29; % image number
+x=1; % plate
+y=1; % image number
 
 fprintf('\nImage %d on plate %d has %d cells.\n',y,x,plate(x).imageLocal(y).cellN(end))
 
-for i=4
+for i=1:min([2,plate(x).imageLocal(y).cellN(end)])
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(plate(x).imageLocal(y),'red',i)
@@ -232,10 +222,11 @@ for i=4
 	plotFOverDistance(plate(x).imageLocal(y),i)
 end
 
+
 %% OUTPUT CELLS TO FILE
 
 tic;
-saveLocation			= 'C:\Users\StellaPrins\Desktop\CFTR\cells\test';
+saveLocation			= '~/Desktop/CFTR/cells/test';
 fprintf						('Saving cell images...\n')
 labelAndSaveCells (resultsLocal,plate,saveLocation)
 fprintf						('Done\n')

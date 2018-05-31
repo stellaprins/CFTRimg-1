@@ -1,21 +1,25 @@
 clc
 clear
 addpath(genpath('functions'))
-addpath(genpath(fullfile('input'))) %% include the location of your input folder
+addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of your input folder
 
 %%
+
 VX809_28_37_LOCAL_test % the name of your input file
 saveWorkspaceHere = 'C:\Users\StellaPrins\Desktop\VX809_28_37_LOCAL_test 31-05-18';
 normConditionStr1	= 'WT 37'; % (resultsLocal1)
 normConditionStr2	= 'WT 28'; % (resultsLocal2)
 
+
 %%
 close all
 imtool close all
 global SITEN BINNING EXTRA
+
 SITEN		= 4;
 BINNING = 1/2;	% 1/2 for 2*2
 EXTRA		= ceil(BINNING*20);
+
 
 %% STRUCTURING DATA
 tic
@@ -102,6 +106,8 @@ if ~isempty(normConditionStr2) %only if a condition is filled in in normConditio
 		resultsLocal	= createResultsLocalStruct(tempResultsLocal);
 		resultsLocal2	= populateResultsLocal(resultsLocal,tempResultsLocal);
 end
-time(6)				= toc;
+		
+time(5)				= toc;
+
 disp					('Full analysis completed')
 save					(saveWorkspaceHere)

@@ -16,6 +16,7 @@ for k=1:conditionN
 		normStruct = normStructArray(j);
 		locationVec = strcmp(currentCondition,normStruct.mutation);
 		
+
 		for i=1:length(locationVec)
 			
 			if locationVec(i) == 1
@@ -25,13 +26,14 @@ for k=1:conditionN
 				resultsStructArray(k).redEntire(count)						= normStruct.redEntire(i);	
 				resultsStructArray(k).logMemDens(count)						= normStruct.logMemDens(i);
 				resultsStructArray(k).memDens(count)							= normStruct.memDens(i);
-% % 				resultsStructArray(k).normMemDens(count)					= normStruct.normMemDens(i);
+% % 			resultsStructArray(k).normMemDens(count)					= normStruct.normMemDens(i);
 % 				resultsStructArray(k).logNormMemDens(count)				= normStruct.logNormMemDens(i);
 				resultsStructArray(k).yelMembraneAbsolute(count)	= normStruct.yelMembraneAbsolute(i);
 				resultsStructArray(k).yelEntireAbsolute(count)		= normStruct.yelEntireAbsolute(i);
 				count = count+1;
+
 			end
-			
+				
 		end
 		
 	end
