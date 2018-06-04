@@ -5,8 +5,8 @@ addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of yo
 
 %%
 
-VX809_28_37_LOCAL_test % the name of your input file
-saveWorkspaceHere = 'C:\Users\StellaPrins\Desktop\VX809_28_37_LOCAL_test 31-05-18';
+VX809_28_37_LOCAL % the name of your input file
+saveWorkspaceHere = 'C:\Users\StellaPrins\Desktop\VX809_28_37_LOCAL_test 04-06-18';
 normConditionStr1	= 'WT 37'; % (resultsLocal1)
 normConditionStr2	= 'WT 28'; % (resultsLocal2)
 
@@ -16,7 +16,7 @@ close all
 imtool close all
 global SITEN BINNING EXTRA
 
-SITEN		= 4;
+SITEN		= 9;
 BINNING = 1/2;	% 1/2 for 2*2
 EXTRA		= ceil(BINNING*20);
 
@@ -74,6 +74,7 @@ disp		('Completed localisation distance maps')
 time(4) = toc;
 
 %% CREATE RESULTS STRUCTS
+
 % filter any cells giving a negative metric (yelMembrane/redEntire)
 for j=1:plateN
 	localImageN = length(plate(j).imageLocal);
@@ -81,30 +82,38 @@ for j=1:plateN
 		plate(j).imageLocal(i) = filterNegativeMetric(plate(j).imageLocal(i));
 	end
 end
-% log the location of each cell (plate index, temperature, image index and bounding box index)so that the cells can be found later for image display
+
+% log the location of each cell (plate index, temperature, image index and
+% bounding box index) so that the cells can be found later for image
+% display
 for j=1:plateN
 	localImageN = length(plate(j).imageLocal);
 	for i=1:localImageN
 		plate(j).imageLocal(i) = logCellLocation(plate(j).imageLocal(i),j,i);
 	end
 end
-% move key values into temporary a structure for normalizing
-normConditionStr = normConditionStr1;
-tempResultsLocal = createNormalizeStruct(plate);
-		for i = 1:plateN		
-			tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr); % normalise results to normConditionStr1
-		end
-		resultsLocal	= createResultsLocalStruct(tempResultsLocal);
-		resultsLocal1	= populateResultsLocal(resultsLocal,tempResultsLocal);
 
-if ~isempty(normConditionStr2) %only if a condition is filled in in normConditionStr2 a second resultsLocal will be made normalised to normCondtionStr2
-		normConditionStr = normConditionStr2;
+% move key values into temporary a structure for normalizing
+tempResultsLocal = createNormalizeStruct(plate);
+for i = 1:plateN		
+	tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr1);
+end
+
+% move normalized results into a structure ready to output results
+resultsLocal1	= createResultsLocalStruct(tempResultsLocal);
+resultsLocal1	= populateResultsLocal(resultsLocal1,tempResultsLocal);
+
+% REPEAT normalization process normalizing to second condition
+		% occurs only if "normConditionStr2" is filled
+		% a second results structure is created
+if ~isempty(normConditionStr2) 
+		clear tempResultsLocal
 		tempResultsLocal = createNormalizeStruct(plate);
 		for i = 1:plateN		
-			tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr); % normalise results to normConditionStr2
+			tempResultsLocal(i) = normalizeResultsWT(tempResultsLocal(i),normConditionStr2);
 		end
-		resultsLocal	= createResultsLocalStruct(tempResultsLocal);
-		resultsLocal2	= populateResultsLocal(resultsLocal,tempResultsLocal);
+		resultsLocal2	= createResultsLocalStruct(tempResultsLocal);
+		resultsLocal2	= populateResultsLocal(resultsLocal2,tempResultsLocal);
 end
 		
 time(5)				= toc;

@@ -1,17 +1,17 @@
 
 
 saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\xx';
-
+resultsLocal					= resultsLocal2;
 conditionN						= length(resultsLocal);
 
 %% DESCRIPTIVES (each cell as sample)
 
 for i=1:length(resultsLocal)																								% for all conditions
-	meanMemDens			= mean(resultsLocal(i).logNormMemDens);										% mean log rho
+	meanMemDens			= mean(resultsLocal(i).logMemDens);										% mean log rho
 	C(:,i)					= 10.^meanMemDens;																				% back transformed mean per condition
 end
 for i=1:length(resultsLocal)			
-	x					= resultsLocal(i).logNormMemDens;							% log transformed rho CFTR membrane
+	x					= resultsLocal(i).logMemDens;							% log transformed rho CFTR membrane
 	SEM				= std(x)/sqrt(length(x));											% Standard Error (after log transform)
 	ts				= tinv([0.025  0.975],length(x)-1);						% T-Score (for 95% Confidence Interval)									
 	cond_MemDens_cellN(i,:)		= cellstr(resultsLocal(i).mutation);
@@ -112,7 +112,7 @@ vertcat			(c_titles,num2cell(c))
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
 figure;
 for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).logNormMemDens;
+	MembraneDensity = resultsLocal(b).logMemDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		qqplot(MembraneDensity);
 		yLab = ylabel(sprintf('log Rho_{YFP,membrane}\nQuantiles'));
@@ -124,7 +124,7 @@ end
 
 figure;
 for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).normMemDens;
+	MembraneDensity = resultsLocal(b).memDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		qqplot(MembraneDensity);
 		yLab = ylabel(sprintf('Rho_{CFTR membrane}\nQuantiles'));
@@ -137,7 +137,7 @@ end
 figure;
 
 for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).logNormMemDens;
+	MembraneDensity = resultsLocal(b).logMemDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		histogram(MembraneDensity,30,'BinLimits',[-2,1],'Orientation', 'vertical');
 		xLab = xlabel('log10 Rho_{CFTR membrane}');
@@ -150,7 +150,7 @@ end
 figure;
 
 for b  = 1:length(resultsLocal)
-	MembraneDensity = resultsLocal(b).normMemDens;
+	MembraneDensity = resultsLocal(b).memDens;
 	subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),b);
 		histogram(MembraneDensity,30,'BinLimits',[0,6],'Orientation', 'vertical');
 		xLab = xlabel('Rho_{CFTR membrane}');
