@@ -3,40 +3,50 @@ function resultsStructArray = populateResultsLocal( resultsStructArray ...
 %POPULATE_RESULTS_STURCT Move data from normalized temporary struct into
 %final struct ready for plotting
 
-conditionN	= length(resultsStructArray);
-plateN			= length(normStructArray);
+resultsStructN	= length(resultsStructArray);
+normStructN			= length(normStructArray);
 
-for k=1:conditionN
+for k=1:resultsStructN
 	
-	currentCondition = resultsStructArray(k).mutation;
+	resultsStruct = resultsStructArray(k);
+	
+	currentCondition	= resultsStruct.condition;
+	currentNormCond		= resultsStruct.normCondition;
 	count = 1;
 	
-	for j=1:plateN
+	for j=1:normStructN
 		
 		normStruct = normStructArray(j);
-		locationVec = strcmp(currentCondition,normStruct.mutation);
 		
-
-		for i=1:length(locationVec)
+		if strcmp(currentNormCond,normStruct.normCondition)
 			
-			if locationVec(i) == 1
-				resultsStructArray(k).cellLocation(count,:)				= normStruct.cellLocation(i,:);
-				resultsStructArray(k).yelEntire(count)						= normStruct.yelEntire(i);
-				resultsStructArray(k).yelMembrane(count)					= normStruct.yelMembrane(i);
-				resultsStructArray(k).redEntire(count)						= normStruct.redEntire(i);	
-				resultsStructArray(k).logMemDens(count)						= normStruct.logMemDens(i);
-				resultsStructArray(k).memDens(count)							= normStruct.memDens(i);
-% % 			resultsStructArray(k).normMemDens(count)					= normStruct.normMemDens(i);
-% 				resultsStructArray(k).logNormMemDens(count)				= normStruct.logNormMemDens(i);
-				resultsStructArray(k).yelMembraneAbsolute(count)	= normStruct.yelMembraneAbsolute(i);
-				resultsStructArray(k).yelEntireAbsolute(count)		= normStruct.yelEntireAbsolute(i);
-				count = count+1;
+			locationVec = strcmp(currentCondition,normStruct.condition);
+
+			for i=1:length(locationVec)
+
+				if locationVec(i) == 1
+
+					resultsStruct.cellLocation(count,:)				= normStruct.cellLocation(i,:);
+					resultsStruct.yelMembrane(count)					= normStruct.yelMembrane(i);
+					resultsStruct.yelEntire(count)						= normStruct.yelEntire(i);
+					resultsStruct.redEntire(count)						= normStruct.redEntire(i);
+					resultsStruct.yelMembraneAbsolute(count)	= normStruct.yelMembraneAbsolute(i);
+					resultsStruct.yelEntireAbsolute(count)		= normStruct.yelEntireAbsolute(i);
+					resultsStruct.redEntireAbsolute(count)		= normStruct.redEntireAbsolute(i);
+					resultsStruct.logMemDens(count)						= normStruct.logMemDens(i);
+					resultsStruct.memDens(count)							= normStruct.memDens(i);
+
+					count = count+1;
+
+				end
 
 			end
-				
+			
 		end
 		
 	end
+	
+	resultsStructArray(k) = resultsStruct;
 	
 end
 

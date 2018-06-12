@@ -1,62 +1,78 @@
 function resultsStructArray = createResultsLocalStruct( normStructArray )
 %CREATE_RESULTS_LOCAL_STRUCT Initialize empty results struct
 %		Create struct to store all data after it has been normalized. The data
-%		is now sorted by condition rather than by plate.
+%		is now sorted by condition rather than by experiment.
 
-plateN = length(normStructArray);
+normStructN = length(normStructArray);
 
-% create cell array of mutations across all plates
-conditions = cell(0,1);
-for i=1:plateN
-	conditions = unique(vertcat(conditions,normStructArray(i).mutation));
+% create cell array of normalize conditions
+normConditions = cell(0,1);
+for i=1:normStructN
+	normConditions = unique(vertcat(normConditions,...
+		normStructArray(i).normCondition));
 end
+normCondN = length(normConditions);
 
+% create cell array of conditions across all experiments
+conditions = cell(0,1);
+for i=1:normStructN
+	conditions = unique(vertcat(conditions,normStructArray(i).condition));
+end
 conditions = conditions';
 conditionN = length(conditions);
 
 resultsTemplate = struct(...
-			'mutation',''...
-			,'cellLocation',[]...
-			,'yelEntire',[]...
+			'condition',''...
+			,'normCondition',''...
+			,'cellLocation',{{}}...
 			,'yelMembrane',[]...
+			,'yelEntire',[]...
 			,'redEntire',[]...
-			,'memDens',[]...
-			,'logMemDens',[]...	
-			,'normMemDens',[]...
-			,'logNormMemDens',[]...
-			,'localCellN',[]...
 			,'yelMembraneAbsolute',[]...
+			,'yelEntireAbsolute',[]...
 			,'redEntireAbsolute',[]...
-			,'yelEntireAbsolute',[]);
-% 
-
+			,'memDens',[]...
+			,'logMemDens',[]...
+			,'localCellN',[]);
 		
-% find out how many cells per condition across all plates
-cellsPerConditionPlate = zeros(plateN,conditionN);
-for j=1:conditionN
-	currentCondition = conditions{j};
-	for i=1:plateN
-		compareCondition = strcmp(currentCondition,normStructArray(i).mutation);
-		cellsPerConditionPlate(i,j) = sum(compareCondition);
+% find out how many cells per condition/normCondition across all
+% experiments
+cellsPerConditionExp = zeros(normCondN,conditionN);
+for k=1:conditionN
+	currentCond = conditions{k};
+	for j=1:normCondN
+		currentNormCond = normConditions{j};
+		for i=1:normStructN
+			compareCond = strcmp(currentCond,normStructArray(i).condition) & ...
+				strcmp(currentNormCond,normStructArray(i).normCondition);
+			cellsPerConditionExp(j,k) = cellsPerConditionExp(j,k) + sum(compareCond);
+		end
 	end
 end
 
 % fill results structs with empty arrays
-for i=1:conditionN
-	resultsStructArray(i)								= resultsTemplate;
-	resultsStructArray(i).mutation			= conditions{i};
-	cellN																= sum(cellsPerConditionPlate(:,i));
-	resultsStructArray(i).localCellN		= cellN;
-	resultsStructArray(i).cellLocation	= zeros(cellN,4);
-	resultsStructArray(i).yelEntire			= zeros(cellN,1);
-	resultsStructArray(i).yelMembrane		= zeros(cellN,1);
-	resultsStructArray(i).redEntire			= zeros(cellN,1);
-	resultsStructArray(i).memDens    		= zeros(cellN,1);
-	resultsStructArray(i).logMemDens		= zeros(cellN,1);
-	resultsStructArray(i).normMemDens		= zeros(cellN,1);
-	resultsStructArray(i).logNormMemDens= zeros(cellN,1);
-	resultsStructArray(i).yelMembraneAbsolute = zeros(cellN,1);
-	resultsStructArray(i).yelEntireAbsolute = zeros(cellN,1);
+for j=1:normCondN
+	currentNormCond = normConditions{j};
+	for i=1:conditionN
+		resultsStruct = resultsTemplate;
+									
+		resultsStruct.condition			= conditions{i};
+		resultsStruct.normCondition	= currentNormCond;
+		cellN												= cellsPerConditionExp(j,i);
+		resultsStruct.localCellN		= cellN;
+
+		resultsStruct.cellLocation				= cell(cellN,4);
+		resultsStruct.yelMembrane					= zeros(cellN,1);
+		resultsStruct.yelEntire						= zeros(cellN,1);
+		resultsStruct.redEntire						= zeros(cellN,1);
+		resultsStruct.yelMembraneAbsolute = zeros(cellN,1);
+		resultsStruct.yelEntireAbsolute		= zeros(cellN,1);
+		resultsStruct.redEntireAbsolute		= zeros(cellN,1);
+		resultsStruct.memDens							= zeros(cellN,1);
+		resultsStruct.logMemDens					= zeros(cellN,1);
+		
+		resultsStructArray((j-1)*conditionN + i) = resultsStruct;
+	end
 end
 	
 end
