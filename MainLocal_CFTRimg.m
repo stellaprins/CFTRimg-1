@@ -1,18 +1,14 @@
 clc
 clear
-
 close all
-imtool close all
 
 addpath(genpath('functions'))
+
 addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of your input folder
+inputDataEHTest % the name of your input file
 
 %%
 global SITEN BINNING EXTRA
-
-%%
-inputDataEHTest % the name of your input file
-saveWorkspaceHere = '~/Desktop/CFTR/workspaces/2018_06_06';
 
 %% STRUCTURING DATA
 tic

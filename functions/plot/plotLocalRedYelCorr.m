@@ -30,7 +30,7 @@ MSE = sum(stats.resid .^2) / length(stats);
 
 stats = [r slope MSE];
 
-plot(redEntire,yelData,'.','r')
+plot(redEntire,yelData,'.r')
 hold on
 set(gca,'fontsize',10)
 plot([0 maxX],[0 maxX*slope],'-')
@@ -43,15 +43,17 @@ switch yelRegion
 end
 xlhand = get(gca,'xlabel');
 set(xlhand,'string','F_{mCh,cell}','fontsize',10)
-dim = [0.2 0.5 0.3 0.3];
-str = {sprintf('R = %.2f\nslope = %.2f\nMSE = %.5f',stats(1),stats(2),stats(3))};
-annotation('textbox',dim,'String',str,'FitBoxToText','on');
-% xlim([0 0.12])
-% ylim([0 0.045])
-title(resultsStruct.mutation,'fontsize',10);
+% dim = [0.2 0.5 0.3 0.3];
+% str = {sprintf('R = %.2f\nslope = %.2f\nMSE = %.5f',stats(1),stats(2),stats(3))};
+% annotation('textbox',dim,'String',str,'FitBoxToText','on');
+xlim([0 8])
+ylim([0 20])
+titleStr = strcat({resultsStruct.condition},...
+	{'\nnorm '},{resultsStruct.normCondition});
+title(sprintf(titleStr{1}),'fontsize',10)
 
-mutation = {resultsStruct.mutation};
+condition = {resultsStruct.condition};
 
-out = vertcat(mutation,num2cell(stats'));
+out = vertcat(condition,num2cell(stats'));
 
 end
