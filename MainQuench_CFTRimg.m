@@ -25,13 +25,13 @@ for j=1:expN
 	end
 end
 disp		('Completed quenching analysis')
-time(5) = toc;
+time(2) = toc;
 
 %% CREATE RESULTS STRUCTS
 
 		resultsQuench = createResultsQuenchStruct(exp);
 		resultsQuench = populateResultsQuench(resultsQuench,exp);
 
-time(6)				= toc;
-disp					('Full analysis completed')
-save					(saveWorkspaceHere)
+time(3) = toc;
+disp('Full analysis completed')
+save(saveWorkspaceHere)

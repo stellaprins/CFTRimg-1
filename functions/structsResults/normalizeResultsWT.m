@@ -27,7 +27,7 @@ for k=1:normCondN
 
 		if sum(locationWT) == 0
 			fprintf('This plate does not contain "%s" condition and will not be normalized\n'...
-				,normConditionStr)
+				,normConditionStr{k})
 
 			% calculate metrics using the NON-normalized data
 			normStruct.memDens			= normStruct.yelMembrane	./ normStruct.redEntire;
