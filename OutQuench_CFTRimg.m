@@ -1,6 +1,6 @@
 
-saveQuenchResultsHere       = 'VX809_quench_260218.xls';
-saveQuenchingTimelineHere   ='VX809_quench_260218_timeline.xls';
+saveQuenchResultsHere       = fullfile('~','Desktop','resultsQuench');
+saveQuenchingTimelineHere   = fullfile('~','Desktop','timelineQuench');
 %%
 conditionN = length(resultsQuench);
 

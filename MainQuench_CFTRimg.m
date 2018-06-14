@@ -4,7 +4,7 @@ close all
 
 addpath(genpath('functions'))
 
-addpath(genpath(fullfile('~/Desktop/CFTR/example/input'))) %% include the location of your input folder
+addpath(genpath(fullfile('example','input'))) %% include the location of your input folder
 example_quench % the name of your input file
 
 %% STRUCTURING DATA
