@@ -5,7 +5,7 @@ close all
 addpath(genpath('functions'))
 
 addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of your input folder
-inputDataEHTest % the name of your input file
+VX809_28_37_LOCAL % the name of your input file
 
 %%
 global SITEN BINNING EXTRA
