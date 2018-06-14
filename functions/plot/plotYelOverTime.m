@@ -35,7 +35,7 @@ end
 	set(xlhand,'string','Time (s)','fontsize',10)
 	ylhand = get(gca,'ylabel');
 	set(ylhand,'string','F/F_{max}','fontsize',10)
-  title([resQ.mutation]);
+  title([resQ.condition]);
 
 p1 = plot(nan,nan,'-','color',colors(5,:),'linewidth',1);
 p2 = plot(nan,nan,'-', 'linewidth',1);

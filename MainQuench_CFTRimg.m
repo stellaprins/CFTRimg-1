@@ -1,30 +1,27 @@
 clc
 clear
-addpath(genpath('functions'))
-addpath(genpath('input'))
-%%
-MAX_CFTR_ENH% the name of your input file
-saveWorkspaceHere = './MAX_CFTR_ENH';
-
-%%
 close all
-imtool close all
+
+addpath(genpath('functions'))
+
+addpath(genpath(fullfile('~/Desktop/CFTR/example/input'))) %% include the location of your input folder
+example_quench % the name of your input file
 
 %% STRUCTURING DATA
 tic
-plate		= createPlateStruct(exp);			% creates an empty struct for each plate
-plate		= findImagePaths(exp,plate);	% collects the path names for each image
-plateN	= length(plate);							% and creates a struct for each image
+exp		= createExpStruct(plate);			% creates an empty struct for each plate
+exp		= findImagePaths(plate,exp);	% collects the path names for each image
+expN	= length(exp);							% and creates a struct for each image
 disp('Completed setting up data structures')
 time(1) = toc;
 
 %% QUENCHING ANALYSIS
-for j=1:plateN
-	quenchImageN = size(plate(j).imageQuench,1);
+for j=1:expN
+	quenchImageN = size(exp(j).imageQuench,1);
 	for i=1:quenchImageN
- 		plate(j).imageQuench(i) = findRedMaskChange(plate(j).imageQuench(i));
-		plate(j).imageQuench(i) = findYelInsideOverTime(plate(j).imageQuench(i));
-		plate(j).imageQuench(i) = calculateConcIodine(plate(j).imageQuench(i));
+ 		exp(j).imageQuench(i) = findRedMaskChange(exp(j).imageQuench(i));
+		exp(j).imageQuench(i) = findYelInsideOverTime(exp(j).imageQuench(i));
+		exp(j).imageQuench(i) = calculateConcIodine(exp(j).imageQuench(i));
 	end
 end
 disp		('Completed quenching analysis')
@@ -32,8 +29,8 @@ time(5) = toc;
 
 %% CREATE RESULTS STRUCTS
 
-		resultsQuench = createResultsQuenchStruct(plate);
-		resultsQuench = populateResultsQuench(resultsQuench,plate);
+		resultsQuench = createResultsQuenchStruct(exp);
+		resultsQuench = populateResultsQuench(resultsQuench,exp);
 
 time(6)				= toc;
 disp					('Full analysis completed')

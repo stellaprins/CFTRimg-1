@@ -32,7 +32,7 @@ plot([40 40],[0 1.3],':k','markersize',1)
 ylim([0 1.3])
 xlim([-5 140])
 
-title(resultsStruct.mutation)
+title(resultsStruct.condition)
 ax = gca;
 ax.FontSize = 14;
 xlhand = get(gca,'xlabel');

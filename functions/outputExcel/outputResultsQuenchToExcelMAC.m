@@ -31,7 +31,7 @@ for i = 1:conditionN
     influx_rate_DMSO_t_std(i)= std(res.maxGradControlLoc);
 end
 
-condition_quench  = vertcat(cellstr({resultsStructArray.mutation}'));
+condition_quench  = vertcat(cellstr({resultsStructArray.condition}'));
 N_quench_F        = vertcat(num2cell([Quench_N]'));
 max_rate_F        = vertcat(num2cell([influx_rate; influx_rate_std]'));
 max_rate_F_tp     = vertcat(num2cell([influx_rate_t; influx_rate_t_std]'));

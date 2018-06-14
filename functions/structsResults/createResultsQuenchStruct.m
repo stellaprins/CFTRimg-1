@@ -1,20 +1,20 @@
-function resultsStructArray = createResultsQuenchStruct( plateStructArray )
+function resultsStructArray = createResultsQuenchStruct( expStructArray )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
 
-plateN = length(plateStructArray);
+expN = length(expStructArray);
 
 % create cell array of mutations across all plates
 conditions = cell(0,1);
-for i=1:plateN
-	conditions = unique(horzcat(conditions,{plateStructArray(i).imageQuench.mutation}));
+for i=1:expN
+	conditions = unique(horzcat(conditions,{expStructArray(i).imageQuench.condition}));
 end
 
 conditionN = length(conditions);
 
 resultsTemplate = struct(...
-			'mutation',''...
+			'condition',''...
 			,'maxGradTest',[]...
 			,'maxGradControl',[]...
 			,'maxGradTestLoc',[]...
@@ -23,22 +23,22 @@ resultsTemplate = struct(...
 			,'yelInsideOverTControl',[]);
 		
 % find out how many wells per condition across all plates
-wellsPerConditionPlateTest = zeros(plateN,conditionN);
-wellsPerConditionPlateControl = zeros(plateN,conditionN);
+wellsPerConditionExpTest = zeros(expN,conditionN);
+wellsPerConditionExpControl = zeros(expN,conditionN);
 
 for k=1:conditionN
 	currentCondition = conditions{k};
-	for j=1:plateN
-		wellN = length(plateStructArray(j).imageQuench);
+	for j=1:expN
+		wellN = length(expStructArray(j).imageQuench);
 		for i=1:wellN
-			if strcmp(plateStructArray(j).imageQuench(i).mutation,currentCondition)
-				switch plateStructArray(j).imageQuench(i).test_control
+			if strcmp(expStructArray(j).imageQuench(i).condition,currentCondition)
+				switch expStructArray(j).imageQuench(i).test_control
 					case 'test'
-						wellsPerConditionPlateTest(j,k) = ...
-							wellsPerConditionPlateTest(j,k) + 1;
+						wellsPerConditionExpTest(j,k) = ...
+							wellsPerConditionExpTest(j,k) + 1;
 					case 'control'
-						wellsPerConditionPlateControl(j,k) = ...
-							wellsPerConditionPlateControl(j,k) + 1;
+						wellsPerConditionExpControl(j,k) = ...
+							wellsPerConditionExpControl(j,k) + 1;
 				end
 			end
 		end
@@ -48,10 +48,10 @@ end
 for i=1:conditionN
 	
 	resultsStructArray(i) = resultsTemplate;
-	resultsStructArray(i).mutation  = conditions{i};
+	resultsStructArray(i).condition  = conditions{i};
 	
-	wellTestN			= sum(wellsPerConditionPlateTest(:,i));
-	wellControlN	= sum(wellsPerConditionPlateControl(:,i));
+	wellTestN			= sum(wellsPerConditionExpTest(:,i));
+	wellControlN	= sum(wellsPerConditionExpControl(:,i));
 	
 	resultsStructArray(i).maxGradTest						= zeros(wellTestN,1);
 	resultsStructArray(i).maxGradTestLoc				= zeros(wellTestN,1);
