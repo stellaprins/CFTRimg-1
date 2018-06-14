@@ -97,7 +97,7 @@ count_F             = testN;
 count_DMSO          = controlN;
 count_col           = count_F*2+count_DMSO*2+8;
 header_condition    = cell(1,count_col);
-header_condition(1) = cellstr(resultsStruct.mutation);
+header_condition(1) = cellstr(resultsStruct.condition);
 
 results_F           =   horzcat(per_well_F, per_cond_F,std_per_cond_F,...
 												rate_well_F, rate_cond_F, rate_cond_F_std);

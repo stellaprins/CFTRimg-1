@@ -1,6 +1,6 @@
 
-saveQuenchResultsHere       = 'VX809_quench_260218.xls';
-saveQuenchingTimelineHere   ='VX809_quench_260218_timeline.xls';
+saveQuenchResultsHere       = fullfile('~','Desktop','resultsQuench');
+saveQuenchingTimelineHere   = fullfile('~','Desktop','timelineQuench');
 %%
 conditionN = length(resultsQuench);
 
@@ -108,9 +108,9 @@ end
 % plotMaxGradBarChart(resultsQuench) %% not working
 
 %% TESTS FOR NORMALITY
-for i=1:conditionN
-	plotTestForNormalityQuench(resultsQuench(i));
-end
+% for i=1:conditionN
+% 	plotTestForNormalityQuench(resultsQuench(i));
+% end
 
 %% STATISTICS
 close all
@@ -118,7 +118,7 @@ close all
 count1	 = 1;
 for i=1:conditionN
 	for k					= count1: (count1+length(resultsQuench(i).maxGradTest)-1);
-	groupQ_FORS(k)	= {resultsQuench(i).mutation};
+	groupQ_FORS(k)	= {resultsQuench(i).condition};
 	end
 	count1					= count1 + length(resultsQuench(i).maxGradTest);
 end
@@ -127,14 +127,14 @@ statsDataQuench = vertcat(resultsQuench.maxGradTest);
 
 [pKWQuench,tblKWQuench,statsKWQuench] = kruskalwallis(statsDataQuench,groupQ_FORS);
 
-plotKruskalWallisQuench(statsDataQuench,groupQ_FORS);
+% plotKruskalWallisQuench(statsDataQuench,groupQ_FORS);
 
 figure
 [cQuench,mQuench] = multcompare(statsKWQuench,'CType','bonferroni');
 
 for i = 1: conditionN
 [h,p,ci,stats] = ttest2(resultsQuench(i).maxGradTest,resultsQuench(i).maxGradControl);
-cond(i)     = {resultsQuench(i).mutation};
+cond(i)     = {resultsQuench(i).condition};
 p_Quench(i) = p;
 % rank_Quench(i)= stats.ranksum;
 end

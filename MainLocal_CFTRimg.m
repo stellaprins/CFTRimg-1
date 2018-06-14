@@ -4,8 +4,8 @@ close all
 
 addpath(genpath('functions'))
 
-addpath(genpath(fullfile('~/Desktop/CFTR/input'))) %% include the location of your input folder
-inputDataEHTest % the name of your input file
+addpath(genpath(fullfile('example','input'))) %% include the location of your input folder
+example_local % the name of your input file
 
 %%
 global SITEN BINNING EXTRA

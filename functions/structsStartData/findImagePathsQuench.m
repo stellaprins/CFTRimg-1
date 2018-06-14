@@ -27,7 +27,7 @@ tmpYelPathArrayTest			= cell(wellsTestN,70);
 tmpRedPathArrayControl	= cell(wellsControlN,2);
 tmpYelPathArrayControl	= cell(wellsControlN,70);
 
-tmpMutationArray				= cell(wellsTestN,1);
+tmpConditionArray				= cell(wellsTestN,1);
 
 for j=1:wellsTestN
 
@@ -43,15 +43,15 @@ for j=1:wellsTestN
 	locationMatrix = strcmp(wellsTest{j},plateStruct.condWells);
 	for i=1:size(plateStruct.condWells,1)
 		if sum(locationMatrix(i,:)) == 1
-			tmpMutationArray{j} = plateStruct.conditionStr{i};
+			tmpConditionArray{j} = plateStruct.conditionStr{i};
 		end
 	end
 
 end
 
-conditionArray = [conditionArray; tmpMutationArray];
+conditionArray = [conditionArray; tmpConditionArray];
 
-tmpMutationArray				= cell(wellsControlN,1);
+tmpConditionArray				= cell(wellsControlN,1);
 
 for j=1:wellsControlN
  
@@ -67,13 +67,13 @@ for j=1:wellsControlN
 	locationMatrix = strcmp(wellsControl{j},plateStruct.condWellsControl);
 	for i=1:size(plateStruct.condWellsControl,1)
 		if sum(locationMatrix(i,:)) == 1
-			tmpMutationArray{j} = plateStruct.conditionStr{i};
+			tmpConditionArray{j} = plateStruct.conditionStr{i};
 		end
 	end
 
 end
 
-conditionArray = [conditionArray; tmpMutationArray];
+conditionArray = [conditionArray; tmpConditionArray];
 test_controlArray = [test_controlArray; tmpTestArray; tmpControlArray];
 
 redPathArray = [redPathArray; tmpRedPathArrayTest; tmpRedPathArrayControl];

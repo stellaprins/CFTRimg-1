@@ -1,0 +1,56 @@
+
+saveWorkspaceHere = fullfile('~','Desktop','example_local');
+
+SITEN		= 1;
+BINNING = 1/2;
+EXTRA		= ceil(BINNING*20);
+
+normConditionStr	= {'WT 37'};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+plateN	= 3; % number of plates
+plate		= createPlateStruct(plateN);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+plate(1).experimentStr	= {'1'};
+plate(1).plateStr				= {'exp1 37'};
+
+	plate(1).folderName   = 'plate1_local'; % name of the folder in which the data is	
+	plate(1).baseFolder	  = fullfile('example','data'); % filepath need to check
+	plate(1).local_quench = 'local'; % either 'local' or 'quench' depending on the experiment type
+	plate(1).filePrefix   = 'plate1_local_'; % filename before B02_etc
+
+	plate(1).conditionStr = {'WT 37','F508del 37'};
+		plate(1).condWells(1,1:2) = {'B02','E02'}; % delete the wells that we didn't record
+		plate(1).condWells(2,1:2) = {'B03','E03'};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+
+plate(2).experimentStr	= {'2'};
+plate(2).plateStr				= {'exp2 37'};
+
+	plate(2).folderName		= 'plate2a_local';
+	plate(2).baseFolder	  = fullfile('example','data');
+	plate(2).local_quench = 'local';
+	plate(2).filePrefix   = 'plate2_local_';
+
+	plate(2).conditionStr = {'WT 37','F508del 37'};
+		plate(2).condWells(1,1) = {'B02'};
+		plate(2).condWells(2,1) = {'B03'};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+plate(3).experimentStr	= {'2'};
+plate(3).plateStr				= {'exp1 37'};
+
+	plate(3).folderName   = 'plate2b_local';
+	plate(3).baseFolder	  = fullfile('example','data');
+	plate(3).local_quench = 'local';
+	plate(3).filePrefix   = 'plate2_local_';
+
+	plate(3).conditionStr = {'WT 37'};
+		plate(3).condWells(1,1) = {'E02'};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

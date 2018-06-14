@@ -1,6 +1,6 @@
 
 
-saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\xx';
+saveLocalResultsHere  = fullfile('~','Desktop','resultsLocal');
 
 conditionN = length(resultsLocal);
 conditionsSummary = cell(conditionN + 1,3);
@@ -242,7 +242,7 @@ y=1; % image number
 
 fprintf('\nImage %d in exp %d has %d cells.\n',y,x,exp(x).imageLocal(y).cellN(end))
 
-for i=1:min([2,exp(x).imageLocal(y).cellN(end)])
+for i=1:min([10,exp(x).imageLocal(y).cellN(end)])
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(exp(x).imageLocal(y),'red',i)
@@ -258,7 +258,7 @@ end
 %% OUTPUT CELLS TO FILE
 
 tic;
-saveLocation			= '~/Desktop/CFTR/cells/test';
+saveLocation			= fullfile('~','Desktop','example_cells');
 fprintf						('Saving cell images...\n')
 labelAndSaveCells (resultsLocal,exp,saveLocation)
 fprintf						('Done\n')
