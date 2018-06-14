@@ -2,13 +2,15 @@ clc
 clear
 close all
 
-addpath(genpath('functions'))
-
-addpath(genpath(fullfile('example','input'))) %% include the location of your input folder
-example_local % the name of your input file
-
 %%
 global SITEN BINNING EXTRA
+
+%%
+
+addpath(genpath('functions'))
+
+addpath(genpath(fullfile('~','Desktop','CFTR','input')))
+inputDataCatoTest % the name of your input file
 
 %% STRUCTURING DATA
 tic
