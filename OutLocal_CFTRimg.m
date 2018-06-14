@@ -237,12 +237,13 @@ imwrite(redFrame.cdata,'image.jpg')
 
 %% CELL DISPLAY
 % close all
-x=1; % exp
-y=1; % image number
+x=1; % exp index
+y=1; % image index
+z=1:3; % cell index
 
 fprintf('\nImage %d in exp %d has %d cells.\n',y,x,exp(x).imageLocal(y).cellN(end))
 
-for i=1:min([10,exp(x).imageLocal(y).cellN(end)])
+for i=z
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(exp(x).imageLocal(y),'red',i)
