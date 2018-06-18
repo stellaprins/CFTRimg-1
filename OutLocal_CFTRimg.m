@@ -135,14 +135,16 @@ vertcat(titles,results)
 close all
 statsData_exp				= [];
 group_exp						= [];
-for i=1:length(resultsLocal)																										% for each condition
+for i=1:length(resultsLocal)		
 	G										=	findgroups(vertcat(resultsLocal(i).cellLocation{:,2}));	% define experiment groups 
 	meanMemDens					= splitapply(@mean,resultsLocal(i).logMemDens,G);					% mean log transformed normalised rho per plate (rows) per condition (colums)
 	meanMemDens_back   	= 10.^meanMemDens;																				% back transformation
 	statsData_exp       = vertcat(statsData_exp,meanMemDens_back);
- 	group     					= repmat({resultsLocal(i).condition},length(meanMemDens),1);
+ 	group     					= repmat(strcat({resultsLocal(i).condition},{' norm '},...
+												{resultsLocal(i).normCondition}),length(meanMemDens),1);
 	group_exp						= vertcat(group_exp,group);
 end
+% strcat({res.condition},{' norm '},{res.normCondition});
 
 [~,tbl,stats]		= anova1(statsData_exp, group_exp);
 [c,m,~,gnames]  = multcompare(stats,'CType','dunn-sidak');
