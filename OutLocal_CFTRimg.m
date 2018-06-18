@@ -214,17 +214,11 @@ end
 %% CORRELATION PLOTS
 
 close all
-% figure
 for i=1:length(resultsLocal)
   subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),i);
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
 	hold on
 end
-
-% for i=1:length(resultsLocal)
-% 	figure
-% 	plotLocalSizeRhoCorr(resultsLocal(i),exp);
-% end
 
 
 %% IMAGE DISPLAY with all selected cells boxed
