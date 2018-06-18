@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  = fullfile('~','Desktop','resultsLocal');
+saveLocalResultsFolder = fullfile('~','Desktop','resultsLocal');
 
 conditionN = length(resultsLocal);
 conditionsSummary = cell(conditionN + 1,3);
@@ -17,10 +17,10 @@ disp(conditionsSummary)
 
 structsToKeep = ones(1,length(resultsLocal));
 
-structsToKeep(2) = 0;
-structsToKeep(4) = 0;
-structsToKeep(6) = 0;
-structsToKeep(5) = 0;
+% structsToKeep(2) = 0;
+% structsToKeep(4) = 0;
+% structsToKeep(6) = 0;
+% structsToKeep(5) = 0;
 
 structsToKeep = logical(structsToKeep);
 
@@ -28,6 +28,10 @@ disp(structsToKeep)
 
 resultsLocal = resultsLocal(structsToKeep);
 conditionN = length(resultsLocal);
+
+%% OUTPUT TO EXCEL
+
+outputResultsLocalToExcel(resultsLocal,saveLocalResultsFolder)
 
 
 %% DESCRIPTIVES (each cell as sample)
@@ -62,11 +66,7 @@ results			=	horzcat(cond_MemDens_cellN,normCond_MemDens_cellN,...
 							N_MemDens_cellN,mean_MemDens_cellN,...
 						  CI_LL_MemDens_cellN,CI_UL_MemDens_cellN, median_MemDens_cellN);
 vertcat			 (titles,results)
-% if ispc == true
-% 	xlswrite(saveLocalResultsHere,results)
-% elseif isunix==true
-% 	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
-% end
+
 
 %% STATISTICS (each cell as sample)
 
