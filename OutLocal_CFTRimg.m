@@ -144,7 +144,6 @@ for i=1:length(resultsLocal)
 												{resultsLocal(i).normCondition}),length(meanMemDens),1);
 	group_exp						= vertcat(group_exp,group);
 end
-% strcat({res.condition},{' norm '},{res.normCondition});
 
 [~,tbl,stats]		= anova1(statsData_exp, group_exp);
 [c,m,~,gnames]  = multcompare(stats,'CType','dunn-sidak');
@@ -152,9 +151,10 @@ c_titles	= {'g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'};
 vertcat			(c_titles,num2cell(c))
 
-%% STATISTICS (each experiment as sample)
-[h,p,ci,stats]=ttest(B(:,4),B(:,2)) %
-[h,p,ci,stats]=ttest(B(:,3),B(:,1))
+%% STATISTICS T-test (each experiment as sample)
+[indx,tf]				= listdlg('ListString',gnames,'Name',...
+								'select two groups for T-test','ListSize',[300 300]);
+[h,p,ci,stats]	= ttest(B(:,indx(1)),B(:,indx(2))) %
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
 figure;
