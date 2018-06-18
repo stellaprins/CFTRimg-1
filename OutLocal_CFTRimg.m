@@ -1,5 +1,4 @@
 
-
 saveLocalResultsHere  = fullfile('~','Desktop','resultsLocal');
 
 conditionN = length(resultsLocal);
@@ -18,9 +17,10 @@ disp(conditionsSummary)
 
 structsToKeep = ones(1,length(resultsLocal));
 
-% structsToKeep(2) = 0;
-% structsToKeep(4) = 0;
-% structsToKeep(6) = 0;
+structsToKeep(2) = 0;
+structsToKeep(4) = 0;
+structsToKeep(6) = 0;
+structsToKeep(5) = 0;
 
 structsToKeep = logical(structsToKeep);
 
@@ -36,23 +36,31 @@ for i=1:length(resultsLocal)																								% for all conditions
 	meanMemDens			= mean(resultsLocal(i).logMemDens);										% mean log rho
 	C(:,i)					= 10.^meanMemDens;																				% back transformed mean per condition
 end
+
+ cond_MemDens_cellN			= cell(length(resultsLocal),1);
+ normCond_MemDens_cellN	= cell(length(resultsLocal),1);
+ mean_MemDens_cellN			= cell(length(resultsLocal),1);
+ median_MemDens_cellN		= cell(length(resultsLocal),1);
+ CI_LL_MemDens_cellN		= cell(length(resultsLocal),1);
+ N_MemDens_cellN				= cell(length(resultsLocal),1);
 for i=1:length(resultsLocal)			
 	x					= resultsLocal(i).logMemDens;							% log transformed rho CFTR membrane
 	SEM				= std(x)/sqrt(length(x));											% Standard Error (after log transform)
 	ts				= tinv([0.025  0.975],length(x)-1);						% T-Score (for 95% Confidence Interval)									
 	cond_MemDens_cellN{i,:}			= resultsLocal(i).condition;
 	normCond_MemDens_cellN{i,:} = resultsLocal(i).normCondition;
-	mean_MemDens_cellN(i,:)			= 10^mean(x);
-	median_MemDens_cellN(i,:)		= 10^median(x);
-	CI_MemDens_cellN(i,:)				= 10.^(mean(x) + ts*SEM);			% 95% Confidence Interval 
-	N_MemDens_cellN(i,:)				= length(x);
+	mean_MemDens_cellN{i,:}			= 10^mean(x);
+	median_MemDens_cellN{i,:}		= 10^median(x);
+	CI_LL_MemDens_cellN{i,:}		= 10.^(mean(x) + ts(1)*SEM);			% 95% Confidence Interval 
+	CI_UL_MemDens_cellN{i,:}		= 10.^(mean(x) + ts(2)*SEM);	
+	N_MemDens_cellN{i,:}				= length(x);
 end
 
 titles      = {'condition', 'normalized to', 'N', 'mean rho',...
 								'lower CI', 'upper CI', 'median rho'};
 results			=	horzcat(cond_MemDens_cellN,normCond_MemDens_cellN,...
-							num2cell(N_MemDens_cellN),num2cell(mean_MemDens_cellN),...
-							num2cell(CI_MemDens_cellN),num2cell(median_MemDens_cellN));
+							N_MemDens_cellN,mean_MemDens_cellN,...
+						  CI_LL_MemDens_cellN,CI_UL_MemDens_cellN, median_MemDens_cellN);
 vertcat			 (titles,results)
 % if ispc == true
 % 	xlswrite(saveLocalResultsHere,results)
@@ -76,9 +84,9 @@ end
 
 [p,tbl,stats]		= anova1(statsData_cell, group); % on the log transformed normalised data
 [c,m,~,gnames]	= multcompare(stats,'CType','dunn-sidak'); % multiple comparisons between all groups with bonferroni correction
-c_titles	= cellstr(char('g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
-						'UL mean dif CI','P-value'))';
-vertcat			(c_titles,num2cell(c))
+c_titles				= cellstr(char('g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
+									'UL mean dif CI','P-value'))';
+vertcat					(c_titles,num2cell(c))
 
 % [p,stats] = vartestn(statsData_cell',group) 
 % [p,stats] = vartestn(10.^statsData_cell',group) 
@@ -86,30 +94,39 @@ vertcat			(c_titles,num2cell(c))
 %% DESCRIPTIVES (each experiment as sample)
 B = NaN(length(exp),length(resultsLocal)); 
 for i=1:length(resultsLocal)																								% for the number of conditions
-	G								=	findgroups(vertcat(resultsLocal(i).cellLocation{:,2}));					% G = different plates
+	G								=	findgroups(vertcat(resultsLocal(i).cellLocation{:,2}));	% G = different plates
 	meanMemDens			= splitapply(@mean,resultsLocal(i).logMemDens,G);					% mean per plate (rows) per condition (colums)
-	B(1:length(meanMemDens),i) = 10.^meanMemDens;																				% back transformed mean per plate
+	B(1:length(meanMemDens),i) = 10.^meanMemDens;															% back transformed mean per plate
 end
-
+ cond_MemDens_expN			= cell(length(resultsLocal),1);
+ mean_MemDens_expN			= cell(length(resultsLocal),1);
+ median_MemDens_expN		= cell(length(resultsLocal),1);
+ CI_LL_MemDens_expN			= cell(length(resultsLocal),1);
+ CI_UL_MemDens_expN			= cell(length(resultsLocal),1);
+ N_MemDens_expN					= cell(length(resultsLocal),1);
+ sem_MemDens_expN				= cell(length(resultsLocal),1);
+ STDEV_MemDens_expN			= cell(length(resultsLocal),1);
 for i=1:length(resultsLocal)															% for the number of conditions
 	x					= B(:,i);																			% Data points
 	SEM				= nanstd(x)/sqrt(length(x(~isnan(x))));				% Standard Error
 	ts				= tinv([0.025  0.975],length(B(:,i))-1);			% T-Score (for 95% Confidence Interval)				 
 	cond_MemDens_expN{i,:}		= resultsLocal(i).condition;
-	mean_MemDens_expN(i,:)		= nanmean(x);
-	median_MemDens_expN(i,:)	= nanmedian(x);
-	sem_MemDens_expN(i,:)			=	SEM;
-	CI_MemDens_expN(i,:)			= nanmean(x) + ts*SEM; 				% 95% Confidence Interval
-	N_MemDens_expN(i,:)				= length(x(~isnan(x)));
-	STDEV_MemDens_expN(i,:)		=	nanstd(x);
+	mean_MemDens_expN{i,:}		= nanmean(x);
+	median_MemDens_expN{i,:}	= nanmedian(x);
+	sem_MemDens_expN{i,:}			=	SEM;
+	CI_LL_MemDens_expN{i,:}		= nanmean(x) + ts(1)*SEM; 				% 95% Confidence Interval
+	CI_UL_MemDens_expN{i,:}		= nanmean(x) + ts(2)*SEM; 
+	N_MemDens_expN{i,:}				= length(x(~isnan(x)));
+	STDEV_MemDens_expN{i,:}		=	nanstd(x);
+	normCond_MemDens_expN{i,:} = resultsLocal(i).normCondition;
 end
 
-titles      = {'conditions', 'N', 'mean rho','STDEV rho', 'SEM rho',...
+titles      = {'conditions','normalised to', 'N', 'mean rho','STDEV rho', 'SEM rho',...
 							'lower CI','upper CI', 'median rho'};
-results			=	horzcat(cond_MemDens_expN,num2cell(N_MemDens_expN),...
-							num2cell(mean_MemDens_expN),num2cell(STDEV_MemDens_expN),...
-							num2cell(sem_MemDens_expN),...
-							num2cell(CI_MemDens_expN), num2cell(median_MemDens_expN));
+results			=	horzcat(cond_MemDens_expN, 	normCond_MemDens_expN,N_MemDens_expN,...
+							mean_MemDens_expN,STDEV_MemDens_expN,...
+							sem_MemDens_expN,CI_LL_MemDens_expN,...
+							CI_UL_MemDens_expN,median_MemDens_expN);
 vertcat(titles,results)
 
 
@@ -118,12 +135,13 @@ vertcat(titles,results)
 close all
 statsData_exp				= [];
 group_exp						= [];
-for i=1:length(resultsLocal)																										% for each condition
-	G										=	findgroups(vertcat(resultsLocal(i).cellLocation{:,2}));					% define experiment groups 
+for i=1:length(resultsLocal)		
+	G										=	findgroups(vertcat(resultsLocal(i).cellLocation{:,2}));	% define experiment groups 
 	meanMemDens					= splitapply(@mean,resultsLocal(i).logMemDens,G);					% mean log transformed normalised rho per plate (rows) per condition (colums)
 	meanMemDens_back   	= 10.^meanMemDens;																				% back transformation
 	statsData_exp       = vertcat(statsData_exp,meanMemDens_back);
- 	group     					= repmat({resultsLocal(i).condition},length(meanMemDens),1);
+ 	group     					= repmat(strcat({resultsLocal(i).condition},{' norm '},...
+												{resultsLocal(i).normCondition}),length(meanMemDens),1);
 	group_exp						= vertcat(group_exp,group);
 end
 
@@ -133,9 +151,10 @@ c_titles	= {'g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'};
 vertcat			(c_titles,num2cell(c))
 
-%% STATISTICS (each experiment as sample)
-[h,p,ci,stats]=ttest(B(:,4),B(:,2)) %
-[h,p,ci,stats]=ttest(B(:,3),B(:,1))
+%% STATISTICS T-test (each experiment as sample)
+[indx,tf]				= listdlg('ListString',gnames,'Name',...
+								'select two groups for T-test','ListSize',[300 300]);
+[h,p,ci,stats]	= ttest(B(:,indx(1)),B(:,indx(2))) %
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
 figure;
@@ -197,11 +216,9 @@ end
 close all
 % figure
 for i=1:length(resultsLocal)
-
   subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),i);
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
 	hold on
-
 end
 
 % for i=1:length(resultsLocal)
