@@ -20,6 +20,7 @@ structsToKeep = ones(1,length(resultsLocal));
 structsToKeep(2) = 0;
 structsToKeep(4) = 0;
 structsToKeep(6) = 0;
+structsToKeep(5) = 0;
 
 structsToKeep = logical(structsToKeep);
 
@@ -117,11 +118,12 @@ for i=1:length(resultsLocal)															% for the number of conditions
 	CI_UL_MemDens_expN{i,:}		= nanmean(x) + ts(2)*SEM; 
 	N_MemDens_expN{i,:}				= length(x(~isnan(x)));
 	STDEV_MemDens_expN{i,:}		=	nanstd(x);
+	normCond_MemDens_expN{i,:} = resultsLocal(i).normCondition;
 end
 
-titles      = {'conditions', 'N', 'mean rho','STDEV rho', 'SEM rho',...
+titles      = {'conditions','normalised to', 'N', 'mean rho','STDEV rho', 'SEM rho',...
 							'lower CI','upper CI', 'median rho'};
-results			=	horzcat(cond_MemDens_expN,N_MemDens_expN,...
+results			=	horzcat(cond_MemDens_expN, 	normCond_MemDens_expN,N_MemDens_expN,...
 							mean_MemDens_expN,STDEV_MemDens_expN,...
 							sem_MemDens_expN,CI_LL_MemDens_expN,...
 							CI_UL_MemDens_expN,median_MemDens_expN);
@@ -212,11 +214,9 @@ end
 close all
 % figure
 for i=1:length(resultsLocal)
-
   subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),i);
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
 	hold on
-
 end
 
 % for i=1:length(resultsLocal)
@@ -257,7 +257,7 @@ y=1; % image number
 
 fprintf('\nImage %d in exp %d has %d cells.\n',y,x,exp(x).imageLocal(y).cellN(end))
 
-for i=1:min([2,exp(x).imageLocal(y).cellN(end)])
+for i=3% % cell numbers    %%%%1:min([2,exp(x).imageLocal(y).cellN(end)])
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
 	cellDisplay(exp(x).imageLocal(y),'red',i)
