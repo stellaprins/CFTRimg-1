@@ -1,9 +1,9 @@
 
 saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\xx';
 
-conditionN = length(resultsLocal);
-conditionsSummary = cell(conditionN + 1,3);
-conditionsSummary(1,:) = {'index','condition','normalized to'};
+conditionN							= length(resultsLocal);
+conditionsSummary				= cell(conditionN + 1,3);
+conditionsSummary(1,:)	= {'index','condition','normalized to'};
 
 for i=1:conditionN
 	conditionsSummary{i+1,1} = i;
@@ -44,14 +44,14 @@ end
  CI_LL_MemDens_cellN		= cell(length(resultsLocal),1);
  N_MemDens_cellN				= cell(length(resultsLocal),1);
 for i=1:length(resultsLocal)			
-	x					= resultsLocal(i).logMemDens;							% log transformed rho CFTR membrane
+	x					= resultsLocal(i).logMemDens;									% log transformed rho CFTR membrane
 	SEM				= std(x)/sqrt(length(x));											% Standard Error (after log transform)
 	ts				= tinv([0.025  0.975],length(x)-1);						% T-Score (for 95% Confidence Interval)									
 	cond_MemDens_cellN{i,:}			= resultsLocal(i).condition;
 	normCond_MemDens_cellN{i,:} = resultsLocal(i).normCondition;
 	mean_MemDens_cellN{i,:}			= 10^mean(x);
 	median_MemDens_cellN{i,:}		= 10^median(x);
-	CI_LL_MemDens_cellN{i,:}		= 10.^(mean(x) + ts(1)*SEM);			% 95% Confidence Interval 
+	CI_LL_MemDens_cellN{i,:}		= 10.^(mean(x) + ts(1)*SEM); % 95% Confidence Interval 
 	CI_UL_MemDens_cellN{i,:}		= 10.^(mean(x) + ts(2)*SEM);	
 	N_MemDens_cellN{i,:}				= length(x);
 end
@@ -127,8 +127,15 @@ results			=	horzcat(cond_MemDens_expN, 	normCond_MemDens_expN,N_MemDens_expN,...
 							mean_MemDens_expN,STDEV_MemDens_expN,...
 							sem_MemDens_expN,CI_LL_MemDens_expN,...
 							CI_UL_MemDens_expN,median_MemDens_expN);
-vertcat(titles,results)
+vertcat			 (titles,results)
 
+% mean rho per experiment
+expNames = cell(length(exp)+1,1);
+for i = 1:length(exp)
+ expNames(i+1) = {exp(i).expStr};
+end
+B_group		= vertcat(gnames',num2cell(B));
+horzcat		(expNames,B_group)
 
 %% STATISTICS (each experiment as sample)
 
@@ -244,7 +251,6 @@ imwrite(redFrame.cdata,'image.jpg')
 % localDisplayImage(exp(x).imageLocal(y),'yel')
 % figure
 % localDisplayImage(exp(x).imageLocal(y),'blend')
-
 
 %% CELL DISPLAY
 % close all
