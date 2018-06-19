@@ -1,6 +1,5 @@
 
-saveLocalResultsHere  ='C:\Users\StellaPrins\Desktop\xx';
-
+saveLocalResultsHere		='C:\Users\StellaPrins\Desktop\xx';
 conditionN							= length(resultsLocal);
 conditionsSummary				= cell(conditionN + 1,3);
 conditionsSummary(1,:)	= {'index','condition','normalized to'};
@@ -14,21 +13,14 @@ end
 disp(conditionsSummary)
 
 %% DELETE UNNECESSARY CONDITIONS
-
-structsToKeep = ones(1,length(resultsLocal));
-
-structsToKeep(2) = 0;
-structsToKeep(4) = 0;
-structsToKeep(6) = 0;
-structsToKeep(5) = 0;
-
-structsToKeep = logical(structsToKeep);
-
-disp(structsToKeep)
-
-resultsLocal = resultsLocal(structsToKeep);
-conditionN = length(resultsLocal);
-
+structsToKeep			= ones(1,length(resultsLocal));
+structsToKeep(2)	= 0; 
+structsToKeep(4)	= 0;
+structsToKeep(6)	= 0;
+structsToKeep			= logical(structsToKeep);
+disp							(structsToKeep)
+resultsLocal			= resultsLocal(structsToKeep);
+conditionN				= length(resultsLocal);
 
 %% DESCRIPTIVES (each cell as sample)
 
@@ -129,16 +121,8 @@ results			=	horzcat(cond_MemDens_expN, 	normCond_MemDens_expN,N_MemDens_expN,...
 							CI_UL_MemDens_expN,median_MemDens_expN);
 vertcat			 (titles,results)
 
-% mean rho per experiment
-expNames = cell(length(exp)+1,1);
-for i = 1:length(exp)
- expNames(i+1) = {exp(i).expStr};
-end
-B_group		= vertcat(gnames',num2cell(B));
-horzcat		(expNames,B_group)
 
 %% STATISTICS (each experiment as sample)
-
 close all
 statsData_exp				= [];
 group_exp						= [];
@@ -157,6 +141,14 @@ end
 c_titles	= {'g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'};
 vertcat			(c_titles,num2cell(c))
+
+% mean rho per experiment
+expNames = cell(length(exp)+1,1);
+for i = 1:length(exp)
+ expNames(i+1) = {exp(i).expStr};
+end
+B_group		= vertcat(gnames',num2cell(B));
+horzcat		(expNames,B_group)
 
 %% STATISTICS T-test (each experiment as sample)
 [indx,tf]				= listdlg('ListString',gnames,'Name',...
