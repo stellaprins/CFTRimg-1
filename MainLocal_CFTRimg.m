@@ -10,7 +10,7 @@ global SITEN BINNING EXTRA
 addpath(genpath('functions'))
 
 addpath(genpath(fullfile('example','input')))
-example_quench % the name of your input file
+example_local % the name of your input file
 
 %% STRUCTURING DATA
 tic
