@@ -3,7 +3,7 @@ clear
 close all
 
 %%
-global SITEN BINNING EXTRA
+% global SITEN BINNING EXTRA
 
 %%
 

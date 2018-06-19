@@ -4,8 +4,6 @@ function [ conditionArray,redPathArray,yelPathArray ] = ...
 %   Add to 'redPathArray' and 'yelPathArray' new path names constructed for
 %   each localization image. Done for all wells in an experiment.
 
-global SITEN
-
 fileFolder = fullfile(plateStruct.baseFolder...
 	,plateStruct.folderName...
 	,'TimePoint_1');
@@ -14,10 +12,11 @@ wells = {plateStruct.condWells{:}};
 emptyCells = cellfun('isempty',wells);
 wells(emptyCells) = [];
 wellN = length(wells);
+siteN = plateStruct.localSiteN;
 
-tmpConditionArray	= cell(wellN*SITEN,1);
-tmpRedPathArray		= cell(wellN*SITEN,1);
-tmpYelPathArray		= cell(wellN*SITEN,1);
+tmpConditionArray	= cell(wellN*siteN,1);
+tmpRedPathArray		= cell(wellN*siteN,1);
+tmpYelPathArray		= cell(wellN*siteN,1);
 
 for j=1:wellN
 
@@ -37,25 +36,25 @@ for j=1:wellN
 	locationMatrix = strcmp(wells{j},plateStruct.condWells);
 	for i=1:size(plateStruct.condWells,1)
 		if sum(locationMatrix(i,:)) == 1
-			currentMutation = plateStruct.conditionStr{i};
+			currentCondition = plateStruct.conditionStr{i};
 		end
 	end
 
 % 	
-	for p = 1:SITEN
-		tmpConditionArray{(j-1)*SITEN + p} = ...
-			currentMutation;
-		tmpRedPathArray{(j-1)*SITEN + p} = ...
+	for p = 1:siteN
+		tmpConditionArray{(j-1)*siteN + p} = ...
+			currentCondition;
+		tmpRedPathArray{(j-1)*siteN + p} = ...
 			fullfile(fileFolder,redDirOutput(p).name);
-		tmpYelPathArray{(j-1)*SITEN + p} = ...
+		tmpYelPathArray{(j-1)*siteN + p} = ...
 			fullfile(fileFolder,yelDirOutput(p).name);
 		
 	end
 
 end
 
-conditionArray = [conditionArray; tmpConditionArray];
-redPathArray = [redPathArray; tmpRedPathArray];
-yelPathArray = [yelPathArray; tmpYelPathArray];
+conditionArray	= [conditionArray; tmpConditionArray];
+redPathArray		= [redPathArray; tmpRedPathArray];
+yelPathArray		= [yelPathArray; tmpYelPathArray];
 
 end

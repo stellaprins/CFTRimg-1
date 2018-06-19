@@ -10,25 +10,43 @@ function [ expStructArray ] = findImagePaths( ...
 plateN	= length(plateStructArray);
 expN		= length(expStructArray);
 
-expStr	= unique(horzcat(plateStructArray.experimentStr));
+% find the largest number of quench time points across all plates, to
+% initialize arrays
+maxQuenchTimePointN = 0;
+for i=1:plateN
+	plateStruct = plateStructArray(i);
+	maxQuenchTimePointN = max(maxQuenchTimePointN,plateStruct.quenchTimeline(end));
+end
 
+expStr	= unique(horzcat(plateStructArray.experimentStr));
 for j=1:expN
 	
 	currentExp					= expStr{j};
 	conditionArray			= cell(0);
 	plateStrArray				= cell(0);
-	test_controlArray		= cell(0);
+	
+	binningArray				= zeros(0);
 	redPathArrayLocal		= cell(0);
 	yelPathArrayLocal		= cell(0);
+	
+	test_controlArray		= cell(0);
+	timelineArray				= zeros(0,3);
+	frequencyArray			= zeros(0);
 	redPathArrayQuench	= cell(0,2);
-	yelPathArrayQuench	= cell(0,70);
+	yelPathArrayQuench	= cell(0,maxQuenchTimePointN);
 	
 	for i=1:plateN
 		plateStruct = plateStructArray(i);
 		compareExp = strcmp(plateStruct.experimentStr,currentExp);
 		
-		currentPlateStr = plateStruct.plateStr;
-		beforeArrayLength = length(conditionArray);
+		currentPlateStr		= plateStruct.plateStr;
+		currentBinning		= plateStruct.localBinning;
+		currentTimeline		= plateStruct.quenchTimeline;
+		currentFrequency	= plateStruct.quenchFrequency;
+		
+		beforeArrayLength				= length(conditionArray);
+		beforeArrayLengthLocal	= size(redPathArrayLocal,1);
+		beforeArrayLengthQuench	= size(redPathArrayQuench,1);
 		
 		if sum(compareExp == 1)
 		
@@ -37,13 +55,13 @@ for j=1:expN
 				case 'local'
 
 					[conditionArray,redPathArrayLocal,yelPathArrayLocal] = ...
-					findImagePathsLocal(plateStruct,conditionArray,...
-					redPathArrayLocal,yelPathArrayLocal);
+					findImagePathsLocal(plateStruct,conditionArray...
+					,redPathArrayLocal,yelPathArrayLocal);
 
 				case 'quench'
 
-					[conditionArray,...
-						test_controlArray,redPathArrayQuench,yelPathArrayQuench] = ...
+					[conditionArray,test_controlArray...
+						,redPathArrayQuench,yelPathArrayQuench] = ...
 					findImagePathsQuench(plateStruct,conditionArray,...
 					test_controlArray,redPathArrayQuench,yelPathArrayQuench);
 
@@ -54,20 +72,35 @@ for j=1:expN
 		
 		end
 		
-		afterArrayLength = length(conditionArray);
+		afterArrayLength				= length(conditionArray);
+		afterArrayLengthLocal		= size(redPathArrayLocal,1);
+		afterArrayLengthQuench	= size(redPathArrayQuench,1);
 		if afterArrayLength - beforeArrayLength > 0
-			plateStrArray(beforeArrayLength+1:afterArrayLength) = currentPlateStr;
+			plateStrArray(beforeArrayLength+1:afterArrayLength) ...
+				= currentPlateStr;
+		end
+		if afterArrayLengthLocal - beforeArrayLengthLocal > 0
+			binningArray(beforeArrayLengthLocal+1:afterArrayLengthLocal) = ...
+				currentBinning;
+		end
+		if afterArrayLengthQuench - beforeArrayLengthQuench > 0
+			for idx=beforeArrayLengthQuench+1:afterArrayLengthQuench
+				timelineArray(idx,:) = currentTimeline;
+			end
+			frequencyArray(beforeArrayLengthQuench+1:afterArrayLengthQuench) = ...
+				currentFrequency;
 		end
 		
 	end
 	
 	expStructArray(j).imageLocal = ...
-		createImageLocalStruct(conditionArray, plateStrArray,...
-		redPathArrayLocal,yelPathArrayLocal);
+		createImageLocalStruct(conditionArray, plateStrArray,binningArray...
+		,redPathArrayLocal,yelPathArrayLocal);
 	
 	expStructArray(j).imageQuench = ...
 		createImageQuenchStruct(conditionArray, plateStrArray,...
-		test_controlArray,redPathArrayQuench,yelPathArrayQuench);
+		test_controlArray,timelineArray,frequencyArray...
+		,redPathArrayQuench,yelPathArrayQuench);
 	
 end
 
