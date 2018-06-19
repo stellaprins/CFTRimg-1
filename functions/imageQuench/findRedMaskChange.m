@@ -4,12 +4,14 @@ function [ imageStruct ] = findRedMaskChange( imageStruct )
 %   The results is saved to the imageQuench struct under attribute
 %   'redMaskChange'.
 
-imageDim = 432;
+dummyImage = imread(imageStruct.redPath{1});
+imageDimM = size(dummyImage,1);
+imageDimN = size(dummyImage,2);
 
 redN = 2;
 
-redImage = zeros(imageDim,imageDim,redN,'double');
-cellMask = zeros(imageDim,imageDim,redN,'double');
+redImage = zeros(imageDimM,imageDimN,redN,'double');
+cellMask = zeros(imageDimM,imageDimN,redN,'double');
 
 for i=1:redN
 	redImage(:,:,i) = im2double(imread(imageStruct.redPath{i}));

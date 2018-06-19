@@ -12,10 +12,10 @@ function [ imageStruct ] = distanceMap( imageStruct )
 %		log-transformed value 'logMemDens'. The log-transformation is
 %		calculated so that the data approximates a normal distribution.
 
-global BINNING
-
 redImage = im2double(imread(imageStruct.redPath));
 yelImage = im2double(imread(imageStruct.yelPath));
+
+binning = imageStruct.binning;
 
 cellN					= imageStruct.cellN(end);
 redBackground = imageStruct.redBackground;
@@ -30,22 +30,20 @@ redMeanOutside	= zeros(cellN,1);
 yelEntireAbsolute = zeros(cellN,1);
 yelMembraneAbsolute = zeros(cellN,1);
 redEntireAbsolute = zeros(cellN,1);
-% memDens					= zeros(cellN,1);
-% logMemDens	  	= zeros(cellN,1);
 
 for i=1:cellN
 	
 	boundingBox = imageStruct.boundingBox(i,:);
-	cellMask		= boundingBoxToCellMask(redImage,boundingBox);
+	cellMask		= boundingBoxToCellMask(redImage,boundingBox,binning);
 	distanceMap = cellMaskToDistanceMap(cellMask);
 	
-	redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
-	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
+	redCropped = boundingBoxToCroppedImage(redImage,boundingBox,binning);
+	yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox,binning);
 	redCropAdj = redCropped - redBackground;
 	yelCropAdj = yelCropped - yelBackground;
 	
 	%%%%%%%
-	membraneMask = distanceMap >= 0 & distanceMap < 10*BINNING;
+	membraneMask = distanceMap >= 0 & distanceMap < 10*binning;
 	yelEntireAbsolute(i)		= sum(sum(cellMask .* yelCropAdj)) ;
 	yelMembraneAbsolute(i)	= sum(sum(membraneMask .* yelCropAdj)); 
 	redEntireAbsolute(i)		= sum(sum(cellMask .* redCropAdj)) ;
@@ -56,8 +54,6 @@ for i=1:cellN
 														/ sum(cellMask & ~membraneMask);
 	redMeanEntire(i)				= sum(cellMask .* redCropAdj) / sum(cellMask);
 	redMeanOutside(i)				= sum(~cellMask .* redCropped) / sum(~cellMask);
-% 	memDens(i)							= yelMeanMembrane(i)./redMeanEntire(i);
-% 	logMemDens(i)						= real(log10(yelMeanMembrane(i)./redMeanEntire(i)));
 	%%%%%%%
 
 end
@@ -70,8 +66,6 @@ imageStruct.redOutside			= redMeanOutside;
 imageStruct.yelEntireAbsolute		= yelEntireAbsolute;
 imageStruct.yelMembraneAbsolute	= yelMembraneAbsolute;
 imageStruct.redEntireAbsolute		= redEntireAbsolute;
-% imageStruct.memDens					= memDens;
-% imageStruct.logMemDens			= logMemDens;
 
 end
 

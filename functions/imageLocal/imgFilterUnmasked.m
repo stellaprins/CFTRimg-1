@@ -8,8 +8,9 @@ function [ imageStruct ] = imgFilterUnmasked( imageStruct )
 
 redImage = im2double(imread(imageStruct.redPath));
 
+binning = imageStruct.binning;
+
 cellN = imageStruct.cellN(end);
-% redBackground = imageStruct.redBackground;
 
 cellLogical = zeros(cellN,1);
 
@@ -17,7 +18,7 @@ for i=1:cellN
 	
 	boundBox = imageStruct.boundingBox(i,:);
 
-	cellMask = boundingBoxToCellMask(redImage,boundBox);
+	cellMask = boundingBoxToCellMask(redImage,boundBox,binning);
 	
 	cellLogical(i) = sum(cellMask(:)) > 0 & sum(cellMask(:)) < length(cellMask(:));
 

@@ -7,9 +7,9 @@ function [ imageStruct ] = imgFilterCellDimensions( imageStruct )
 %			* a large cell perimeter relative to their area
 %		This last criterion ensures that selected cells are loosely circular.
 
-global BINNING
-
 image = im2double(imread(imageStruct.redPath));
+
+binning = imageStruct.binning;
 
 cellLogical = zeros(imageStruct.cellN(end),1);
 
@@ -17,7 +17,7 @@ for idx=1:imageStruct.cellN(end)
 	
 	boundingBox = imageStruct.boundingBox(idx,:);
 
-	cellMask = boundingBoxToCellMask(image,boundingBox);
+	cellMask = boundingBoxToCellMask(image,boundingBox,binning);
 
 	[labelled, ~] = bwlabel(cellMask,8);
 	properties = regionprops(labelled,'Area','Perimeter','MajorAxisLength');
@@ -38,9 +38,9 @@ for idx=1:imageStruct.cellN(end)
 		cellPerimeter = properties(1).Perimeter;
 		
 		
-				cellLogical(idx) = cellArea/cellPerimeter > 25*BINNING...
-											& cellLength < 300*BINNING...
-											& cellArea < 40000*BINNING*BINNING...
+				cellLogical(idx) = cellArea/cellPerimeter > 25*binning...
+											& cellLength < 300*binning...
+											& cellArea < 40000*binning*binning...
 											& edgeProportion < 0.3;
 
 	end

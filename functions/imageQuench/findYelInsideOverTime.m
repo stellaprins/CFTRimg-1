@@ -9,9 +9,9 @@ function [ imageStruct ] = findYelInsideOverTime( imageStruct )
 %			* Normalized by the red intensity data.
 %			* Normalized by the point just before the first fluid addition.
 
+normTimePoint = imageStruct.timeline(1);
 
-imageDim			= 432; % for 20x objective, 5x binning
-yelN					= length(imageStruct.yelPath);
+yelN					= imageStruct.timeline(end);
 redImageStart	= im2double(imread(imageStruct.redPath{1})); 
 redImageEnd		= im2double(imread(imageStruct.redPath{2}));
 cellMaskStart = findCellMask(redImageStart);
@@ -22,7 +22,10 @@ tmpRedOutside = redImageEnd .* ~cellMask;
 redInside			= sum(tmpRedInside(:)) / sum(cellMask(:));
 redOutside		= sum(tmpRedOutside(:)) / sum(~cellMask(:));
 redSignal			= redInside - redOutside;
-yelImage			= zeros(imageDim,imageDim,yelN,'double');
+
+imageDimM			= size(redImageStart,1);
+imageDimN			= size(redImageStart,2);
+yelImage			= zeros(imageDimM,imageDimN,yelN,'double');
 yelInside			= zeros(yelN,1);
 yelOutside		= zeros(yelN,1);
 
@@ -36,7 +39,7 @@ end
 
 yelSignal   = yelInside - yelOutside;
 yelData			= yelSignal / redSignal;
-yelStandard = yelData(5);
+yelStandard = yelData(normTimePoint);
 imageStruct.yelInsideOverT  = yelData / yelStandard;
 
 % showQuenchImage( imageStruct )

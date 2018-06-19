@@ -31,7 +31,7 @@ for j=1:expN
 	
 	test_controlArray		= cell(0);
 	timelineArray				= zeros(0,3);
-	frequencyArray			= zeros(0);
+	timeStepArray				= zeros(0);
 	redPathArrayQuench	= cell(0,2);
 	yelPathArrayQuench	= cell(0,maxQuenchTimePointN);
 	
@@ -42,7 +42,7 @@ for j=1:expN
 		currentPlateStr		= plateStruct.plateStr;
 		currentBinning		= plateStruct.localBinning;
 		currentTimeline		= plateStruct.quenchTimeline;
-		currentFrequency	= plateStruct.quenchFrequency;
+		currentTimeStep		= plateStruct.quenchTimeStep;
 		
 		beforeArrayLength				= length(conditionArray);
 		beforeArrayLengthLocal	= size(redPathArrayLocal,1);
@@ -87,8 +87,8 @@ for j=1:expN
 			for idx=beforeArrayLengthQuench+1:afterArrayLengthQuench
 				timelineArray(idx,:) = currentTimeline;
 			end
-			frequencyArray(beforeArrayLengthQuench+1:afterArrayLengthQuench) = ...
-				currentFrequency;
+			timeStepArray(beforeArrayLengthQuench+1:afterArrayLengthQuench) = ...
+				currentTimeStep;
 		end
 		
 	end
@@ -99,7 +99,7 @@ for j=1:expN
 	
 	expStructArray(j).imageQuench = ...
 		createImageQuenchStruct(conditionArray, plateStrArray,...
-		test_controlArray,timelineArray,frequencyArray...
+		test_controlArray,timelineArray,timeStepArray...
 		,redPathArrayQuench,yelPathArrayQuench);
 	
 end

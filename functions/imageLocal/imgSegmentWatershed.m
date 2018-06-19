@@ -4,21 +4,21 @@ function [ imageStruct ] = imgSegmentWatershed( imageStruct )
 
 mode = 'full'; % 'full' OR 'test';
 
-global BINNING
+binning = imageStruct.binning;
 
 I					= im2double(imread(imageStruct.redPath));
 Ieq				= adapthisteq(I,'NumTiles',[20 20]);
 Ibw				= imbinarize(Ieq,'adaptive');
-closeSE		= strel('disk',4*BINNING);
+closeSE		= strel('disk',4*binning);
 Iclosed		= imclose(Ibw,closeSE);
-Icleared	= bwareaopen(Iclosed,ceil(4800*BINNING));
+Icleared	= bwareaopen(Iclosed,ceil(4800*binning));
 Ifilled		= imfill(Icleared,'holes');
-dilateSE	= strel('disk',ceil(4*BINNING));
+dilateSE	= strel('disk',ceil(4*binning));
 Idilated	= imopen(Ifilled,dilateSE);
 smallEM = imextendedmax(I, 0.9*median(I(:)));
 smallEM = imclose(smallEM, closeSE);
 smallEM = bwareaopen(smallEM, 120);
-smallEM = imerode(smallEM, ones(6*BINNING));
+smallEM = imerode(smallEM, ones(6*binning));
 largeEM = imextendedmax(I, median(I(:)));
 largeEM = imclose(largeEM, closeSE);
 largeEM = imfill(largeEM, 'holes');
