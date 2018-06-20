@@ -58,15 +58,15 @@ end
 %%
 
 figure;	
-i=[6 4 2];
-ii =[5 3 1];
+i		=		[9 7 5];
+ii	=		[8 6 4];
 	
 	subplot(2,2,1)
-	plot(B_back(i,:),'-o','lineWidth',.25)
+	plot(B(i,:),'-o','lineWidth',.25)
   xlim([1-.2,length(i)+.2])
- 	ylim([0,max(max(B_back(i,:)))+.1])
+ 	ylim([0,max(max(B(:,i)))+.1])
 	xticks(1:length(i))
-	xticklabels(cond_MemDens_plate(i))
+% 	xticklabels(cond_MemDens_plate(i))
 	xtickangle(30)
 	set(gca, 'YScale', 'log')
 	
