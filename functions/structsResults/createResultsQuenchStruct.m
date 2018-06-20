@@ -44,6 +44,18 @@ for k=1:conditionN
 		end
 	end
 end
+
+% find the largest number of quench time points across all plates, to
+% initialize arrays
+maxTimePointN = 0;
+for j=1:expN
+	expStruct = expStructArray(j);
+	wellN = length(expStruct.imageQuench);
+	for i=1:wellN
+		timePointN = size(expStruct.imageQuench(i).yelPath,2);
+		maxTimePointN = max(maxTimePointN,timePointN);
+	end
+end
 		
 for i=1:conditionN
 	
@@ -55,10 +67,10 @@ for i=1:conditionN
 	
 	resultsStructArray(i).maxGradTest						= zeros(wellTestN,1);
 	resultsStructArray(i).maxGradTestLoc				= zeros(wellTestN,1);
-	resultsStructArray(i).yelInsideOverTTest		= zeros(wellTestN,70);
+	resultsStructArray(i).yelInsideOverTTest		= zeros(wellTestN,maxTimePointN);
 	resultsStructArray(i).maxGradControl				= zeros(wellControlN,1);
 	resultsStructArray(i).maxGradControlLoc			= zeros(wellControlN,1);
-	resultsStructArray(i).yelInsideOverTControl = zeros(wellControlN,70);
+	resultsStructArray(i).yelInsideOverTControl = zeros(wellControlN,maxTimePointN);
 	
 end
 

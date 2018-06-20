@@ -4,19 +4,22 @@ function [ imageStruct ] = imgFilterEdges( imageStruct )
 %		These cells are removed due to the likelihood of them being only
 %		partially included within the larger image.
 
-global BINNING EXTRA
+binning = imageStruct.binning;
+extra = ceil(20*binning);
 
 boundingBox = imageStruct.boundingBox;
 
-imageDim = 2160*BINNING;
+dummyImage	= imread(imageStruct.redPath);
+imageDimX	= size(dummyImage,2);
+imageDimY		= size(dummyImage,1);
 
-xmin = ceil(boundingBox(:,1)) - EXTRA;
-xmax = floor(boundingBox(:,1)) + boundingBox(:,3) + EXTRA;
-ymin = ceil(boundingBox(:,2)) - EXTRA;
-ymax = floor(boundingBox(:,2)) + boundingBox(:,4) + EXTRA;
+xmin = ceil(boundingBox(:,1)) - extra;
+xmax = floor(boundingBox(:,1)) + boundingBox(:,3) + extra;
+ymin = ceil(boundingBox(:,2)) - extra;
+ymax = floor(boundingBox(:,2)) + boundingBox(:,4) + extra;
 
 cellLogical = xmin > 1 & ymin > 1 & ...
-	xmax < imageDim & ymax < imageDim;
+	xmax < imageDimX & ymax < imageDimY;
 
 cellN = sum(cellLogical);
 newBoundingBox = zeros(cellN,4);

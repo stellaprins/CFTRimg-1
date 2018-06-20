@@ -1,5 +1,5 @@
 
-saveLocalResultsHere  = fullfile('~','Desktop','resultsLocal');
+saveLocalResultsFolder = fullfile('~','Desktop','resultsLocal');
 
 conditionN = length(resultsLocal);
 conditionsSummary = cell(conditionN + 1,3);
@@ -17,10 +17,10 @@ disp(conditionsSummary)
 
 structsToKeep = ones(1,length(resultsLocal));
 
-structsToKeep(2) = 0;
-structsToKeep(4) = 0;
-structsToKeep(6) = 0;
-structsToKeep(5) = 0;
+% structsToKeep(2) = 0;
+% structsToKeep(4) = 0;
+% structsToKeep(6) = 0;
+% structsToKeep(5) = 0;
 
 structsToKeep = logical(structsToKeep);
 
@@ -28,6 +28,10 @@ disp(structsToKeep)
 
 resultsLocal = resultsLocal(structsToKeep);
 conditionN = length(resultsLocal);
+
+%% OUTPUT TO EXCEL
+
+outputResultsLocalToExcel(resultsLocal,saveLocalResultsFolder)
 
 
 %% DESCRIPTIVES (each cell as sample)
@@ -42,6 +46,7 @@ end
  mean_MemDens_cellN			= cell(length(resultsLocal),1);
  median_MemDens_cellN		= cell(length(resultsLocal),1);
  CI_LL_MemDens_cellN		= cell(length(resultsLocal),1);
+ CI_UL_MemDens_cellN		= cell(length(resultsLocal),1);
  N_MemDens_cellN				= cell(length(resultsLocal),1);
 for i=1:length(resultsLocal)			
 	x					= resultsLocal(i).logMemDens;							% log transformed rho CFTR membrane
@@ -62,11 +67,7 @@ results			=	horzcat(cond_MemDens_cellN,normCond_MemDens_cellN,...
 							N_MemDens_cellN,mean_MemDens_cellN,...
 						  CI_LL_MemDens_cellN,CI_UL_MemDens_cellN, median_MemDens_cellN);
 vertcat			 (titles,results)
-% if ispc == true
-% 	xlswrite(saveLocalResultsHere,results)
-% elseif isunix==true
-% 	outputResultsLocalToExcelMAC(resultsLocal,saveLocalResultsHere)
-% end
+
 
 %% STATISTICS (each cell as sample)
 
@@ -99,6 +100,7 @@ for i=1:length(resultsLocal)																								% for the number of conditio
 	B(1:length(meanMemDens),i) = 10.^meanMemDens;															% back transformed mean per plate
 end
  cond_MemDens_expN			= cell(length(resultsLocal),1);
+ normCond_MemDens_expN	= cell(length(resultsLocal),1);
  mean_MemDens_expN			= cell(length(resultsLocal),1);
  median_MemDens_expN		= cell(length(resultsLocal),1);
  CI_LL_MemDens_expN			= cell(length(resultsLocal),1);
@@ -154,7 +156,9 @@ vertcat			(c_titles,num2cell(c))
 %% STATISTICS T-test (each experiment as sample)
 [indx,tf]				= listdlg('ListString',gnames,'Name',...
 								'select two groups for T-test','ListSize',[300 300]);
-[h,p,ci,stats]	= ttest(B(:,indx(1)),B(:,indx(2))) %
+[~,p,ci,stats]	= ttest(B(:,indx(1)),B(:,indx(2))); %
+
+fprintf('p value for comparison = %.3f\n',p)
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
 figure;

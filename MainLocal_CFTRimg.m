@@ -1,16 +1,12 @@
+
 clc
 clear
 close all
 
-%%
-global SITEN BINNING EXTRA
-
-%%
-
 addpath(genpath('functions'))
 
-addpath(genpath(fullfile('example','input')))
-example_quench % the name of your input file
+addpath(genpath(fullfile('example','input'))) % location of your input folder
+example_local % the name of your input file
 
 %% STRUCTURING DATA
 tic

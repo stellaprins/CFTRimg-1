@@ -1,17 +1,19 @@
+
 clc
 clear
 close all
 
 addpath(genpath('functions'))
 
-addpath(genpath(fullfile('example','input'))) %% include the location of your input folder
+addpath(genpath(fullfile('example','input'))) % location of your input folder
 example_quench % the name of your input file
 
 %% STRUCTURING DATA
 tic
 exp		= createExpStruct(plate);			% creates an empty struct for each plate
 exp		= findImagePaths(plate,exp);	% collects the path names for each image
-expN	= length(exp);							% and creates a struct for each image
+expN	= length(exp);								% and creates a struct for each image
+
 disp('Completed setting up data structures')
 time(1) = toc;
 

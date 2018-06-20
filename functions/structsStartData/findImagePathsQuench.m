@@ -8,7 +8,12 @@ function [ conditionArray,test_controlArray,redPathArray,yelPathArray] = ...
 %   localization images, and requires an additional function to construct
 %   path name.
 
-redTimePoints = {'1','70'};
+maxTimePointN = size(yelPathArray,2);
+
+timePointN = plateStruct.quenchTimeline(end);
+strTimePointN = num2str(timePointN);
+
+redTimePoints = {num2str(1),strTimePointN};
 
 wellsTest = {plateStruct.condWells{:}};
 emptyCellsTest = cellfun('isempty',wellsTest);
@@ -23,9 +28,9 @@ wellsControlN = length(wellsControl);
 tmpTestArray						= cell(wellsTestN,1);
 tmpControlArray					= cell(wellsControlN,1);
 tmpRedPathArrayTest			= cell(wellsTestN,2);
-tmpYelPathArrayTest			= cell(wellsTestN,70);
+tmpYelPathArrayTest			= cell(wellsTestN,maxTimePointN);
 tmpRedPathArrayControl	= cell(wellsControlN,2);
-tmpYelPathArrayControl	= cell(wellsControlN,70);
+tmpYelPathArrayControl	= cell(wellsControlN,maxTimePointN);
 
 tmpConditionArray				= cell(wellsTestN,1);
 

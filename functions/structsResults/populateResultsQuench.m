@@ -15,18 +15,23 @@ for k=1:conditionN
 		wellN = length(expStructArray(j).imageQuench);
 		for i=1:wellN
 			well = expStructArray(j).imageQuench(i);
+			timePointN = length(well.yelInsideOverT);
 			if strcmp(well.condition,currentCondition)
 				switch well.test_control
 					case 'test'
 						res.maxGradTest(countTest)							= well.maxGradIodine;
 						res.maxGradTestLoc(countTest)						= well.maxGradLocation;
-						res.yelInsideOverTTest(countTest,:)			= well.yelInsideOverT';
+						for t=1:timePointN
+							res.yelInsideOverTTest(countTest,t)		= well.yelInsideOverT(t);
+						end
 						countTest																= countTest + 1;
 					case 'control'
-						res.maxGradControl(countControl)				= well.maxGradIodine;
-						res.maxGradControlLoc(countControl)			= well.maxGradLocation;
-						res.yelInsideOverTControl(countControl,:)	= well.yelInsideOverT';
-						countControl														= countControl + 1;
+						res.maxGradControl(countControl)						= well.maxGradIodine;
+						res.maxGradControlLoc(countControl)					= well.maxGradLocation;
+						for t=1:timePointN
+							res.yelInsideOverTControl(countControl,t)	= well.yelInsideOverT(t);
+						end
+						countControl																= countControl + 1;
 				end
 			end
 		end
