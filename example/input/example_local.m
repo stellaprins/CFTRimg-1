@@ -16,8 +16,8 @@ plate(1).plateStr				= {'exp1 37'};
 	plate(1).local_quench = 'local';
 	plate(1).localBinning			= 1/2; % for 2*2 binning
 	plate(1).localSiteN				= 1; % number of image sites per well
-	plate(1).quenchTimeline		= 0; % set as zero if not applicable
-	plate(1).quenchFrequency	= 0;
+	plate(1).quenchTimeStep		= 0; % set as zero if not applicable
+	plate(1).quenchTimeline		= 0;
 
 	plate(1).folderName   = 'plate1_local'; % name of the folder in which the data is	
 	plate(1).baseFolder	  = fullfile('example','data'); % filepath need to check
