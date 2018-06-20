@@ -1,6 +1,6 @@
 
-saveLocalResultsFolder = fullfile('~','Desktop','resultsLocal');
 
+saveLocalResultsFolder = fullfile('~','Desktop','resultsLocal');
 conditionN = length(resultsLocal);
 conditionsSummary = cell(conditionN + 1,3);
 conditionsSummary(1,:) = {'index','condition','normalized to'};
@@ -33,7 +33,6 @@ conditionN = length(resultsLocal);
 
 outputResultsLocalToExcel(resultsLocal,saveLocalResultsFolder)
 
-
 %% DESCRIPTIVES (each cell as sample)
 
 for i=1:length(resultsLocal)																								% for all conditions
@@ -49,14 +48,14 @@ end
  CI_UL_MemDens_cellN		= cell(length(resultsLocal),1);
  N_MemDens_cellN				= cell(length(resultsLocal),1);
 for i=1:length(resultsLocal)			
-	x					= resultsLocal(i).logMemDens;							% log transformed rho CFTR membrane
+	x					= resultsLocal(i).logMemDens;									% log transformed rho CFTR membrane
 	SEM				= std(x)/sqrt(length(x));											% Standard Error (after log transform)
 	ts				= tinv([0.025  0.975],length(x)-1);						% T-Score (for 95% Confidence Interval)									
 	cond_MemDens_cellN{i,:}			= resultsLocal(i).condition;
 	normCond_MemDens_cellN{i,:} = resultsLocal(i).normCondition;
 	mean_MemDens_cellN{i,:}			= 10^mean(x);
 	median_MemDens_cellN{i,:}		= 10^median(x);
-	CI_LL_MemDens_cellN{i,:}		= 10.^(mean(x) + ts(1)*SEM);			% 95% Confidence Interval 
+	CI_LL_MemDens_cellN{i,:}		= 10.^(mean(x) + ts(1)*SEM); % 95% Confidence Interval 
 	CI_UL_MemDens_cellN{i,:}		= 10.^(mean(x) + ts(2)*SEM);	
 	N_MemDens_cellN{i,:}				= length(x);
 end
@@ -129,11 +128,10 @@ results			=	horzcat(cond_MemDens_expN, 	normCond_MemDens_expN,N_MemDens_expN,...
 							mean_MemDens_expN,STDEV_MemDens_expN,...
 							sem_MemDens_expN,CI_LL_MemDens_expN,...
 							CI_UL_MemDens_expN,median_MemDens_expN);
-vertcat(titles,results)
+vertcat			 (titles,results)
 
 
 %% STATISTICS (each experiment as sample)
-
 close all
 statsData_exp				= [];
 group_exp						= [];
@@ -152,6 +150,14 @@ end
 c_titles	= {'g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'};
 vertcat			(c_titles,num2cell(c))
+
+% mean rho per experiment
+expNames = cell(length(exp)+1,1);
+for i = 1:length(exp)
+ expNames(i+1) = {exp(i).expStr};
+end
+B_group		= vertcat(gnames',num2cell(B));
+horzcat		(expNames,B_group)
 
 %% STATISTICS T-test (each experiment as sample)
 [indx,tf]				= listdlg('ListString',gnames,'Name',...
@@ -218,17 +224,11 @@ end
 %% CORRELATION PLOTS
 
 close all
-% figure
 for i=1:length(resultsLocal)
   subplot(ceil(sqrt((conditionN/2))),round(sqrt((conditionN*2))),i);
 	plotLocalRedYelCorr(resultsLocal(i),'entire');
 	hold on
 end
-
-% for i=1:length(resultsLocal)
-% 	figure
-% 	plotLocalSizeRhoCorr(resultsLocal(i),exp);
-% end
 
 
 %% IMAGE DISPLAY with all selected cells boxed
@@ -254,7 +254,6 @@ imwrite(redFrame.cdata,'image.jpg')
 % localDisplayImage(exp(x).imageLocal(y),'yel')
 % figure
 % localDisplayImage(exp(x).imageLocal(y),'blend')
-
 
 %% CELL DISPLAY
 % close all
