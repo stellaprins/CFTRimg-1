@@ -46,6 +46,7 @@ end
  mean_MemDens_cellN			= cell(length(resultsLocal),1);
  median_MemDens_cellN		= cell(length(resultsLocal),1);
  CI_LL_MemDens_cellN		= cell(length(resultsLocal),1);
+ CI_UL_MemDens_cellN		= cell(length(resultsLocal),1);
  N_MemDens_cellN				= cell(length(resultsLocal),1);
 for i=1:length(resultsLocal)			
 	x					= resultsLocal(i).logMemDens;							% log transformed rho CFTR membrane
@@ -99,6 +100,7 @@ for i=1:length(resultsLocal)																								% for the number of conditio
 	B(1:length(meanMemDens),i) = 10.^meanMemDens;															% back transformed mean per plate
 end
  cond_MemDens_expN			= cell(length(resultsLocal),1);
+ normCond_MemDens_expN	= cell(length(resultsLocal),1);
  mean_MemDens_expN			= cell(length(resultsLocal),1);
  median_MemDens_expN		= cell(length(resultsLocal),1);
  CI_LL_MemDens_expN			= cell(length(resultsLocal),1);
@@ -154,7 +156,9 @@ vertcat			(c_titles,num2cell(c))
 %% STATISTICS T-test (each experiment as sample)
 [indx,tf]				= listdlg('ListString',gnames,'Name',...
 								'select two groups for T-test','ListSize',[300 300]);
-[h,p,ci,stats]	= ttest(B(:,indx(1)),B(:,indx(2))) %
+[~,p,ci,stats]	= ttest(B(:,indx(1)),B(:,indx(2))); %
+
+fprintf('p value for comparison = %.3f\n',p)
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
 figure;
