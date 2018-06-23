@@ -1,6 +1,7 @@
 %% RESULTS SUMMARY
 
-saveLocalResultsFolder = fullfile('~','Desktop','resultsLocal');
+desktopDir = getDesktopDir();
+saveLocalResultsFolder = fullfile(desktopDir,'resultsLocal');
 conditionN = length(resultsLocal);
 conditionsSummary = cell(conditionN + 1,3);
 conditionsSummary(1,:) = {'index','condition','normalized to'};
@@ -144,7 +145,7 @@ for i=1:length(resultsLocal)
 	G										=	findgroups(vertcat(resultsLocal(i).cellLocation{:,2}));	% define experiment groups 
 	meanMemDens					= splitapply(@mean,resultsLocal(i).logMemDens,G);					% mean log transformed normalised rho per plate (rows) per condition (colums)
 	meanMemDens_back   	= 10.^meanMemDens;																				% back transformation
-	statsData_exp       = vertcat(statsData_exp,meanMemDens_back);
+	statsData_exp       = vertcat(statsData_exp,meanMemDens);
  	group     					= repmat(strcat({resultsLocal(i).condition},{' norm '},...
 												{resultsLocal(i).normCondition}),length(meanMemDens),1);
 	group_exp						= vertcat(group_exp,group);
@@ -167,9 +168,9 @@ horzcat		(expNames,B_group)
 %% STATISTICS T-test (each experiment as sample)
 [indx,tf]				= listdlg('ListString',gnames,'Name',...
 								'select two groups for T-test','ListSize',[300 300]);
-[~,p,ci,stats]	= ttest(B(:,indx(1)),B(:,indx(2))); %
+[~,p,ci,stats]	= ttest(log10(B(:,indx(1))),log10(B(:,indx(2)))); %
 
-fprintf('p value for comparison = %.3f\n',p)
+fprintf('p value for comparison = %.5f\n',p)
 
 %% QQ-PLOTS & FREQUENCY DISTRIBUTIONS (each cell as sample)
 figure;
