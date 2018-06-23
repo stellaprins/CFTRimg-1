@@ -64,19 +64,20 @@ fullTable = cell2table(fullResults,'VariableNames',fullHeader);
 
 dateFormat = 'yyyy_mm_dd_HHMM';
 dateStr = datestr(now,dateFormat); 
-fullFileName = strcat('fullLocalResults_',dateStr,'.csv');
 
 if exist(saveLocationFolder,'dir') ~= 7
 	mkdir(saveLocationFolder)
 end
 
 if ispc == true
+	fullFileName = strcat('fullLocalResults_',dateStr,'.xlsx');
 	xlswrite(fullfile(saveLocationFolder,fullFileName),fullCellArray)
 elseif isunix == true
+	fullFileName = strcat('fullLocalResults_',dateStr,'.csv');
 	writetable(fullTable,fullfile(saveLocationFolder,fullFileName))
 end
 
-
+disp('Finished writing to file')
 
 
 % create summary table
