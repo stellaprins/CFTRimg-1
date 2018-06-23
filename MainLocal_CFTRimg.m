@@ -64,12 +64,12 @@ for j=1:expN
 end
 
 % move key values into temporary a structure for normalizing
-tempResultsLocal = createNormalizeStruct(exp,normConditionStr);
-tempResultsLocal = normalizeResultsWT(tempResultsLocal,normConditionStr);
+normExp = createNormalizeStruct(exp);
+normExp = normalizeResultsWT(normExp);
 
 % move normalized results into a structure ready to output results
-resultsLocal = createResultsLocalStruct(tempResultsLocal);
-resultsLocal = populateResultsLocal(resultsLocal,tempResultsLocal);
+resultsLocal = createResultsLocalStruct(normExp);
+resultsLocal = populateResultsLocal(resultsLocal,normExp);
 		
 time(5)				= toc;
 
