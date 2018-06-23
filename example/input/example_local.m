@@ -1,8 +1,6 @@
 
 saveWorkspaceHere = fullfile('~','Desktop','example_local');
 
-normConditionStr	= {'WT 37'};
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 plateN	= 3; % number of plates
@@ -10,8 +8,9 @@ plate		= createPlateStruct(plateN);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-plate(1).experimentStr	= {'1'};
-plate(1).plateStr				= {'exp1 37'};
+plate(1).experimentStr		= {'1'};
+plate(1).plateStr					= {'exp1 37'};
+plate(1).normConditionStr	= {'WT 37'};
 
 	plate(1).local_quench = 'local';
 	plate(1).localBinning			= 1/2; % for 2*2 binning
@@ -29,8 +28,9 @@ plate(1).plateStr				= {'exp1 37'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 
-plate(2).experimentStr	= {'2'};
-plate(2).plateStr				= {'exp2 37'};
+plate(2).experimentStr		= {'2'};
+plate(2).plateStr					= {'exp2 37'};
+plate(2).normConditionStr	= {'WT 37'};
 
 	plate(2).local_quench = 'local';
 	plate(2).localBinning			= 1/2; % for 2*2 binning
@@ -48,8 +48,9 @@ plate(2).plateStr				= {'exp2 37'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-plate(3).experimentStr	= {'2'};
-plate(3).plateStr				= {'exp1 37'};
+plate(3).experimentStr		= {'2'};
+plate(3).plateStr					= {'exp2 37'};
+plate(3).normConditionStr	= {'WT 37'};
 
 	plate(3).local_quench = 'local';
 	plate(3).localBinning			= 1/2; % for 2*2 binning

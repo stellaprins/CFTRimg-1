@@ -1,30 +1,35 @@
-
+%% RESULTS SUMMARY
 
 saveLocalResultsFolder = fullfile('~','Desktop','resultsLocal');
 conditionN = length(resultsLocal);
 conditionsSummary = cell(conditionN + 1,3);
 conditionsSummary(1,:) = {'index','condition','normalized to'};
+fullConditionNames = cell(conditionN,1);
 
 for i=1:conditionN
 	conditionsSummary{i+1,1} = i;
 	conditionsSummary{i+1,2} = resultsLocal(i).condition;
 	conditionsSummary{i+1,3} = resultsLocal(i).normCondition;
+	
+	fullConditionNames(i) = strcat({resultsLocal(i).condition},{' norm '},...
+		{resultsLocal(i).normCondition});
 end
 
 disp(conditionsSummary)
 
 %% DELETE UNNECESSARY CONDITIONS
 
-structsToKeep = ones(1,length(resultsLocal));
+[idxToDelete,~]= listdlg('ListString',fullConditionNames...
+	,'Name','Select conditions to delete'...
+	,'ListSize',[300 300]...
+	,'PromptString','Use CTRL or CMD to select multiple conditions.');
 
-% structsToKeep(2) = 0;
-% structsToKeep(4) = 0;
-% structsToKeep(6) = 0;
-% structsToKeep(5) = 0;
-
-structsToKeep = logical(structsToKeep);
-
-disp(structsToKeep)
+structsToKeep = true([1 length(resultsLocal)]);
+if ~isempty(idxToDelete)
+	for i=1:length(idxToDelete)
+		structsToKeep(idxToDelete(i)) = false;
+	end
+end
 
 resultsLocal = resultsLocal(structsToKeep);
 conditionN = length(resultsLocal);
@@ -279,7 +284,7 @@ end
 %% OUTPUT CELLS TO FILE
 
 tic;
-saveLocation			= fullfile('~','Desktop','example_cells');
+saveLocation			= fullfile('~','Desktop','resultsLocal','example_cells');
 fprintf						('Saving cell images...\n')
 labelAndSaveCells (resultsLocal,exp,saveLocation)
 fprintf						('Done\n')

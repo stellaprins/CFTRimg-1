@@ -5,25 +5,32 @@ function resultsStructArray = createResultsLocalStruct( normStructArray )
 
 normStructN = length(normStructArray);
 
-% create cell array of normalize conditions
-normConditions = cell(0,1);
-for i=1:normStructN
-	normConditions = unique(vertcat(normConditions,...
-		normStructArray(i).normCondition));
+% create cell array of {condition norm normCondition) across all experiments
+fullConditions		= cell(0,1);
+for j=1:normStructN
+	normStruct = normStructArray(j);
+	tmpConditionN = length(normStruct.condition);
+	clear tmpFullCondition
+	tmpFullConditions = normStruct.condition;
+	for i=1:tmpConditionN
+		tmpFullConditions(i) = strcat(normStruct.condition(i),{' norm '},normStruct.normCondition);
+	end
+	fullConditions = unique(vertcat(fullConditions,tmpFullConditions));
 end
-normCondN = length(normConditions);
+fullConditions = fullConditions';
+fullConditionN = length(fullConditions);
 
-% create cell array of conditions across all experiments
-conditions = cell(0,1);
-for i=1:normStructN
-	conditions = unique(vertcat(conditions,normStructArray(i).condition));
+fullConditionsSplit = cell(fullConditionN,2);
+for i=1:fullConditionN
+	newStr = split(fullConditions{i},' norm ');
+	fullConditionsSplit{i,1} = char(newStr(1));
+	fullConditionsSplit{i,2} = char(newStr(2));
 end
-conditions = conditions';
-conditionN = length(conditions);
 
 resultsTemplate = struct(...
 			'condition',''...
 			,'normCondition',''...
+			,'expStr',{{}}...
 			,'cellLocation',{{}}...
 			,'yelMembrane',[]...
 			,'yelEntire',[]...
@@ -33,46 +40,48 @@ resultsTemplate = struct(...
 			,'redEntireAbsolute',[]...
 			,'memDens',[]...
 			,'logMemDens',[]...
+			,'expN',[]...
 			,'localCellN',[]);
 		
 % find out how many cells per condition/normCondition across all
 % experiments
-cellsPerConditionExp = zeros(normCondN,conditionN);
-for k=1:conditionN
-	currentCond = conditions{k};
-	for j=1:normCondN
-		currentNormCond = normConditions{j};
-		for i=1:normStructN
-			compareCond = strcmp(currentCond,normStructArray(i).condition) & ...
-				strcmp(currentNormCond,normStructArray(i).normCondition);
-			cellsPerConditionExp(j,k) = cellsPerConditionExp(j,k) + sum(compareCond);
+cellsPerFullConditionExp	= zeros(fullConditionN);
+expPerFullConditionExp		= zeros(fullConditionN);
+for j=1:fullConditionN
+	currentCond = fullConditionsSplit{j,1};
+	currentNormCond = fullConditionsSplit{j,2};
+	for i=1:normStructN
+		compareCond = strcmp(currentCond,normStructArray(i).condition) & ...
+			strcmp(currentNormCond,normStructArray(i).normCondition);
+		cellsPerFullConditionExp(j) = cellsPerFullConditionExp(j) + sum(compareCond);
+		if sum(compareCond) > 0
+			expPerFullConditionExp(j)		= expPerFullConditionExp(j) + 1;
 		end
 	end
 end
 
 % fill results structs with empty arrays
-for j=1:normCondN
-	currentNormCond = normConditions{j};
-	for i=1:conditionN
-		resultsStruct = resultsTemplate;
-									
-		resultsStruct.condition			= conditions{i};
-		resultsStruct.normCondition	= currentNormCond;
-		cellN												= cellsPerConditionExp(j,i);
-		resultsStruct.localCellN		= cellN;
+for i=1:fullConditionN
+	resultsStruct = resultsTemplate;
 
-		resultsStruct.cellLocation				= cell(cellN,4);
-		resultsStruct.yelMembrane					= zeros(cellN,1);
-		resultsStruct.yelEntire						= zeros(cellN,1);
-		resultsStruct.redEntire						= zeros(cellN,1);
-		resultsStruct.yelMembraneAbsolute = zeros(cellN,1);
-		resultsStruct.yelEntireAbsolute		= zeros(cellN,1);
-		resultsStruct.redEntireAbsolute		= zeros(cellN,1);
-		resultsStruct.memDens							= zeros(cellN,1);
-		resultsStruct.logMemDens					= zeros(cellN,1);
-		
-		resultsStructArray((j-1)*conditionN + i) = resultsStruct;
-	end
+	resultsStruct.condition			= fullConditionsSplit{i,1};
+	resultsStruct.normCondition	= fullConditionsSplit{i,2};
+	cellN												= cellsPerFullConditionExp(i);
+	resultsStruct.localCellN		= cellN;
+	resultsStruct.expN					= expPerFullConditionExp(i);
+
+	resultsStruct.cellLocation				= cell(cellN,4);
+	resultsStruct.expStr							= cell(cellN,1);
+	resultsStruct.yelMembrane					= zeros(cellN,1);
+	resultsStruct.yelEntire						= zeros(cellN,1);
+	resultsStruct.redEntire						= zeros(cellN,1);
+	resultsStruct.yelMembraneAbsolute = zeros(cellN,1);
+	resultsStruct.yelEntireAbsolute		= zeros(cellN,1);
+	resultsStruct.redEntireAbsolute		= zeros(cellN,1);
+	resultsStruct.memDens							= zeros(cellN,1);
+	resultsStruct.logMemDens					= zeros(cellN,1);
+
+	resultsStructArray(i) = resultsStruct;
 end
 	
 end

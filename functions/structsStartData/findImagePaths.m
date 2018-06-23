@@ -22,6 +22,7 @@ expStr	= unique(horzcat(plateStructArray.experimentStr));
 for j=1:expN
 	
 	currentExp					= expStr{j};
+	normConditionArray	= cell(0);
 	conditionArray			= cell(0);
 	plateStrArray				= cell(0);
 	
@@ -39,6 +40,7 @@ for j=1:expN
 		plateStruct = plateStructArray(i);
 		compareExp = strcmp(plateStruct.experimentStr,currentExp);
 		
+		currentNormCond		= plateStruct.normConditionStr;
 		currentPlateStr		= plateStruct.plateStr;
 		currentBinning		= plateStruct.localBinning;
 		currentTimeline		= plateStruct.quenchTimeline;
@@ -69,6 +71,8 @@ for j=1:expN
 					fprintf(strcat('In plateStruct %d, exp(%d).local_quench',...
 						' must be either "local" or "quench"\n'),i,i)
 			end
+			
+			normConditionArray = unique(horzcat(normConditionArray,currentNormCond));
 		
 		end
 		
@@ -94,13 +98,15 @@ for j=1:expN
 	end
 	
 	expStructArray(j).imageLocal = ...
-		createImageLocalStruct(conditionArray, plateStrArray,binningArray...
+		createImageLocalStruct(conditionArray,plateStrArray,binningArray...
 		,redPathArrayLocal,yelPathArrayLocal);
 	
 	expStructArray(j).imageQuench = ...
 		createImageQuenchStruct(conditionArray, plateStrArray,...
 		test_controlArray,timelineArray,timeStepArray...
 		,redPathArrayQuench,yelPathArrayQuench);
+	
+	expStructArray(j).normConditionStr = normConditionArray;
 	
 end
 

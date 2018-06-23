@@ -10,6 +10,7 @@ plate		= createPlateStruct(plateN);
 
 plate(1).experimentStr  = {'1'};
 plate(1).plateStr				= {'exp1 37'};
+plate(1).normConditionStr	= {};
 
 	plate(1).local_quench = 'quench';
 	plate(1).localBinning			= 0; % set as zero if not applicable

@@ -1,12 +1,10 @@
-function normStructArray = createNormalizeStruct( ...
-	expStructArray , normConditionStr )
+function normStructArray = createNormalizeStruct( expStructArray )
 %CREATE_NORMALIZE_STRUCT initializes empty structs for data in preparation
 %for the normalization to WT process
 %   The structs are dummy, temporary structures to store the data while it
 %   is being normalized.
 
 expN = length(expStructArray);
-normCondN = length(normConditionStr);
 
 normalizeTemplate = struct(...
 			'condition',{{}}...
@@ -20,51 +18,47 @@ normalizeTemplate = struct(...
 			,'redEntireAbsolute',[]...
 			,'memDens',[]...
 			,'logMemDens',[]);
-
 		
-for k=1:normCondN
-	currentNormCond = normConditionStr{k};
-	for j=1:expN
 
-		expStruct = expStructArray(j);
+for j=1:expN
 
-		normStruct = normalizeTemplate;
-		normStruct.normCondition = currentNormCond;
+	expStruct = expStructArray(j);
 
-		for i=1:length(expStruct.imageLocal)
+	normStruct = normalizeTemplate;
+	normStruct.normCondition = expStruct.normConditionStr;
 
-			cellN = expStruct.imageLocal(i).cellN(end);
-			tmpCondition(1:cellN,1) = {expStruct.imageLocal(i).condition};
-			normStruct.condition = ...
-				vertcat(normStruct.condition,tmpCondition);
+	for i=1:length(expStruct.imageLocal)
 
-			clear tmpCondition
+		cellN = expStruct.imageLocal(i).cellN(end);
+		tmpCondition(1:cellN,1) = {expStruct.imageLocal(i).condition};
+		normStruct.condition = ...
+			vertcat(normStruct.condition,tmpCondition);
 
-			normStruct.cellLocation = vertcat(normStruct.cellLocation...
-				,expStruct.imageLocal(i).cellLocation);
-			normStruct.yelMembrane = vertcat(normStruct.yelMembrane...
-				,expStruct.imageLocal(i).yelMembrane);
-			normStruct.yelEntire = vertcat(normStruct.yelEntire...
-				,expStruct.imageLocal(i).yelEntire);
-			normStruct.redEntire = vertcat(normStruct.redEntire...
-				,expStruct.imageLocal(i).redEntire);
-			normStruct.yelMembraneAbsolute = ...
-				vertcat(normStruct.yelMembraneAbsolute...
-				,expStruct.imageLocal(i).yelMembraneAbsolute);	
-			normStruct.yelEntireAbsolute = ...
-				vertcat(normStruct.yelEntireAbsolute...
-				,expStruct.imageLocal(i).yelEntireAbsolute);
-			normStruct.redEntireAbsolute = ...
-				vertcat(normStruct.redEntireAbsolute...
-				,expStruct.imageLocal(i).redEntireAbsolute);
+		clear tmpCondition
 
+		normStruct.cellLocation = vertcat(normStruct.cellLocation...
+			,expStruct.imageLocal(i).cellLocation);
+		normStruct.yelMembrane = vertcat(normStruct.yelMembrane...
+			,expStruct.imageLocal(i).yelMembrane);
+		normStruct.yelEntire = vertcat(normStruct.yelEntire...
+			,expStruct.imageLocal(i).yelEntire);
+		normStruct.redEntire = vertcat(normStruct.redEntire...
+			,expStruct.imageLocal(i).redEntire);
+		normStruct.yelMembraneAbsolute = ...
+			vertcat(normStruct.yelMembraneAbsolute...
+			,expStruct.imageLocal(i).yelMembraneAbsolute);	
+		normStruct.yelEntireAbsolute = ...
+			vertcat(normStruct.yelEntireAbsolute...
+			,expStruct.imageLocal(i).yelEntireAbsolute);
+		normStruct.redEntireAbsolute = ...
+			vertcat(normStruct.redEntireAbsolute...
+			,expStruct.imageLocal(i).redEntireAbsolute);
 
-		end
-		
-		normStructArray((k-1)*expN + j) = normStruct;
 
 	end
-	
+
+	normStructArray(j) = normStruct;
+
 end
 
 end
