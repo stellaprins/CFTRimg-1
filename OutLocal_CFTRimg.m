@@ -108,13 +108,15 @@ for j=1:length(resultsLocal)
 		data_expN(cellIdx+i,1) = strcat({resultsLocal(j).condition},{' norm '},...
 												{resultsLocal(j).normCondition});										% full condition
 		data_expN(cellIdx+i,2) = resultsLocal(j).cellLocation(i,1);							% experiment str
-		data_expN{cellIdx+i,3} = 10^resultsLocal(j).logMemDens(i);							% logMemDens_back
+		data_expN{cellIdx+i,3} = resultsLocal(j).logMemDens(i);									% logMemDens
 	end
 	cellIdx = cellIdx + cellN;
 end
 
 [G,conditionGroups,expGroups]	=	findgroups(data_expN(:,1),data_expN(:,2));
-meanMemDens			= splitapply(@mean,vertcat(data_expN{:,3}),G);
+stats_meanMemDens	= splitapply(@mean,vertcat(data_expN{:,3}),G);
+meanMemDens	= splitapply(@mean,vertcat(data_expN{:,3}),G);
+meanMemDens = 10.^meanMemDens;
 [condG,conditionNames] = findgroups(conditionGroups);
 [expG,expNames] = findgroups(expGroups);
 conditionN = length(conditionNames);
@@ -142,7 +144,7 @@ vertcat			 (titles,results)
 %% STATISTICS (each experiment as sample)
 close all
 
-[~,tbl,stats]		= anova1(meanMemDens, conditionGroups);
+[~,tbl,stats]		= anova1(stats_meanMemDens, conditionGroups);
 [c,m,~,gnames]  = multcompare(stats,'CType','dunn-sidak');
 c_titles	= {'g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'};
