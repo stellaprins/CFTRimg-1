@@ -27,7 +27,7 @@ for k=1:resultsStructN
 				if locationVec(i) == 1
 
 					resultsStruct.cellLocation(count,:)				= normStruct.cellLocation(i,:);
-					resultsStruct.expStr(count)								= normStruct.cellLocation(i,1);
+% 					resultsStruct.expStr(count)								= normStruct.cellLocation(i,1);
 					resultsStruct.yelMembrane(count)					= normStruct.yelMembrane(i);
 					resultsStruct.yelEntire(count)						= normStruct.yelEntire(i);
 					resultsStruct.redEntire(count)						= normStruct.redEntire(i);

@@ -1,10 +1,10 @@
-function normStructArray = createNormalizeStruct( expStructArray )
+function normStructArray = createNormalizeStruct( plateStructArray )
 %CREATE_NORMALIZE_STRUCT initializes empty structs for data in preparation
 %for the normalization to WT process
 %   The structs are dummy, temporary structures to store the data while it
 %   is being normalized.
 
-expN = length(expStructArray);
+plateN = length(plateStructArray);
 
 normalizeTemplate = struct(...
 			'condition',{{}}...
@@ -20,39 +20,39 @@ normalizeTemplate = struct(...
 			,'logMemDens',[]);
 		
 
-for j=1:expN
+for j=1:plateN
 
-	expStruct = expStructArray(j);
+	plateStruct = plateStructArray(j);
 
 	normStruct = normalizeTemplate;
-	normStruct.normCondition = expStruct.normConditionStr;
+	normStruct.normCondition = plateStruct.normConditionStr;
 
-	for i=1:length(expStruct.imageLocal)
+	for i=1:length(plateStruct.image)
 
-		cellN = expStruct.imageLocal(i).cellN(end);
-		tmpCondition(1:cellN,1) = {expStruct.imageLocal(i).condition};
+		cellN = plateStruct.image(i).cellN(end);
+		tmpCondition(1:cellN,1) = {plateStruct.image(i).conditionStr};
 		normStruct.condition = ...
 			vertcat(normStruct.condition,tmpCondition);
 
 		clear tmpCondition
 
 		normStruct.cellLocation = vertcat(normStruct.cellLocation...
-			,expStruct.imageLocal(i).cellLocation);
+			,plateStruct.image(i).cellLocation);
 		normStruct.yelMembrane = vertcat(normStruct.yelMembrane...
-			,expStruct.imageLocal(i).yelMembrane);
+			,plateStruct.image(i).yelMembrane);
 		normStruct.yelEntire = vertcat(normStruct.yelEntire...
-			,expStruct.imageLocal(i).yelEntire);
+			,plateStruct.image(i).yelEntire);
 		normStruct.redEntire = vertcat(normStruct.redEntire...
-			,expStruct.imageLocal(i).redEntire);
+			,plateStruct.image(i).redEntire);
 		normStruct.yelMembraneAbsolute = ...
 			vertcat(normStruct.yelMembraneAbsolute...
-			,expStruct.imageLocal(i).yelMembraneAbsolute);	
+			,plateStruct.image(i).yelMembraneAbsolute);	
 		normStruct.yelEntireAbsolute = ...
 			vertcat(normStruct.yelEntireAbsolute...
-			,expStruct.imageLocal(i).yelEntireAbsolute);
+			,plateStruct.image(i).yelEntireAbsolute);
 		normStruct.redEntireAbsolute = ...
 			vertcat(normStruct.redEntireAbsolute...
-			,expStruct.imageLocal(i).redEntireAbsolute);
+			,plateStruct.image(i).redEntireAbsolute);
 
 
 	end
