@@ -1,5 +1,5 @@
 function [ conditionArray,test_controlArray,redPathArray,yelPathArray] = ...
-	findImagePathsQuench(plateStruct,conditionArray,test_controlArray ...
+	findImagePaths_quench(inputStruct,conditionArray,test_controlArray ...
 	,redPathArray,yelPathArray)
 %FIND_IMAGE_PATHS_QUENCH construct path names for quenching images
 %   Add to 'redPathArray' and 'yelPathArray' new path names constructed for
@@ -10,17 +10,17 @@ function [ conditionArray,test_controlArray,redPathArray,yelPathArray] = ...
 
 maxTimePointN = size(yelPathArray,2);
 
-timePointN = plateStruct.quenchTimeline(end);
+timePointN = inputStruct.timeline(end);
 strTimePointN = num2str(timePointN);
 
 redTimePoints = {num2str(1),strTimePointN};
 
-wellsTest = {plateStruct.condWells{:}};
+wellsTest = {inputStruct.condWells{:}};
 emptyCellsTest = cellfun('isempty',wellsTest);
 wellsTest(emptyCellsTest) = [];
 wellsTestN = length(wellsTest);
 
-wellsControl = {plateStruct.condWellsControl{:}};
+wellsControl = {inputStruct.condWellsControl{:}};
 emptyCellsControl = cellfun('isempty',wellsControl);
 wellsControl(emptyCellsControl) = [];
 wellsControlN = length(wellsControl);
@@ -38,17 +38,17 @@ for j=1:wellsTestN
 
 	% construct the path names for the test condition wells
 	[tmpRedPathArrayTest,tmpYelPathArrayTest] = ...
-		constructPathNameQuench(plateStruct,wellsTest,j,redTimePoints...
+		constructPathName_quench(inputStruct,wellsTest,j,redTimePoints...
 		,tmpRedPathArrayTest,tmpYelPathArrayTest);
 	
 	% create constant array of 'test' labels
 	tmpTestArray{j} = 'test';
 	
 	% find current mutation for this well
-	locationMatrix = strcmp(wellsTest{j},plateStruct.condWells);
-	for i=1:size(plateStruct.condWells,1)
+	locationMatrix = strcmp(wellsTest{j},inputStruct.condWells);
+	for i=1:size(inputStruct.condWells,1)
 		if sum(locationMatrix(i,:)) == 1
-			tmpConditionArray{j} = plateStruct.conditionStr{i};
+			tmpConditionArray{j} = inputStruct.conditionStr{i};
 		end
 	end
 
@@ -62,17 +62,17 @@ for j=1:wellsControlN
  
 	% construct the path names for the control condition wells
 	[tmpRedPathArrayControl,tmpYelPathArrayControl] = ...
-		constructPathNameQuench(plateStruct,wellsControl,j,redTimePoints...
+		constructPathName_quench(inputStruct,wellsControl,j,redTimePoints...
 		,tmpRedPathArrayControl,tmpYelPathArrayControl);
 	
 	% create constant array of 'control' labels
 	tmpControlArray{j} = 'control';
 	
 	% find current mutation for this well
-	locationMatrix = strcmp(wellsControl{j},plateStruct.condWellsControl);
-	for i=1:size(plateStruct.condWellsControl,1)
+	locationMatrix = strcmp(wellsControl{j},inputStruct.condWellsControl);
+	for i=1:size(inputStruct.condWellsControl,1)
 		if sum(locationMatrix(i,:)) == 1
-			tmpConditionArray{j} = plateStruct.conditionStr{i};
+			tmpConditionArray{j} = inputStruct.conditionStr{i};
 		end
 	end
 

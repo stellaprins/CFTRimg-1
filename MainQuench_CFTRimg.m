@@ -10,20 +10,20 @@ example_quench % the name of your input file
 
 %% STRUCTURING DATA
 tic
-exp		= createExpStruct(plate);			% creates an empty struct for each plate
-exp		= findImagePaths(plate,exp);	% collects the path names for each image
-expN	= length(exp);								% and creates a struct for each image
+plate		= createPlateStruct_quench(input);		% creates an empty struct for each plate
+plate		= populatePlate_quench(input,plate);	% collects the path names for each image
+plateN	= length(plate);											% and creates a struct for each image
 
 disp('Completed setting up data structures')
 time(1) = toc;
 
 %% QUENCHING ANALYSIS
-for j=1:expN
-	quenchImageN = size(exp(j).imageQuench,1);
+for j=1:plateN
+	quenchImageN = size(plate(j).well,1);
 	for i=1:quenchImageN
- 		exp(j).imageQuench(i) = findRedMaskChange(exp(j).imageQuench(i));
-		exp(j).imageQuench(i) = findYelInsideOverTime(exp(j).imageQuench(i));
-		exp(j).imageQuench(i) = calculateConcIodine(exp(j).imageQuench(i));
+ 		plate(j).well(i) = findRedMaskChange(plate(j).well(i));
+		plate(j).well(i) = findYelInsideOverTime(plate(j).well(i));
+		plate(j).well(i) = calculateConcIodine(plate(j).well(i));
 	end
 end
 disp		('Completed quenching analysis')
@@ -31,8 +31,8 @@ time(2) = toc;
 
 %% CREATE RESULTS STRUCTS
 
-		resultsQuench = createResultsQuenchStruct(exp);
-		resultsQuench = populateResultsQuench(resultsQuench,exp);
+		resultsQuench = createResultsQuenchStruct(plate);
+		resultsQuench = populateResultsQuench(resultsQuench,plate);
 
 time(3) = toc;
 disp('Full analysis completed')
