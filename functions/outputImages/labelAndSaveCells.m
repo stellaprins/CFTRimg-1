@@ -1,4 +1,4 @@
-function labelAndSaveCells( resultsStructArray ,expStructArray ...
+function labelAndSaveCells( resultsStructArray ,plateStructArray ...
 	,saveLocation )
 %LABEL_AND_SAVE_CELLS save each cell image (red and yel) to file labelled with rho value
 
@@ -14,22 +14,22 @@ for j=1:resultsStructN
 	
 	for i=1:cellN
 		
-		expIdx = resultsStruct.cellLocation{i,2};
+		plateIdx = resultsStruct.cellLocation{i,2};
 		imageIdx = resultsStruct.cellLocation{i,3};
 		bBoxIdx = resultsStruct.cellLocation{i,4};
 		
 		rhoVal = resultsStruct.memDens(i);
 		
 		[redCellImage, yelCellImage] = ...
-		cellWithBorder(expStructArray(expIdx).imageLocal(imageIdx),bBoxIdx);
+		cellWithBorder(plateStructArray(plateIdx).image(imageIdx),bBoxIdx);
 
 		textStr = sprintf('rho = %0.3f',rhoVal);
 		
 		redTextImage = insertText(redCellImage,[1 1],textStr,'textcolor','white','boxcolor','black','FontSize',10);
 		yelTextImage = insertText(yelCellImage,[1 1],textStr,'textcolor','white','boxcolor','black','FontSize',10);
 		
-		redFilename = sprintf('red-%d_%d_%d.jpg',expIdx,imageIdx,bBoxIdx);
-		yelFilename = sprintf('yel-%d-%d-%d.jpg',expIdx,imageIdx,bBoxIdx);
+		redFilename = sprintf('red-%d_%d_%d.jpg',plateIdx,imageIdx,bBoxIdx);
+		yelFilename = sprintf('yel-%d-%d-%d.jpg',plateIdx,imageIdx,bBoxIdx);
 		
 		imwrite( redTextImage, fullfile(saveLocation,folderStr,redFilename) , 'jpg' )
 		imwrite( yelTextImage, fullfile(saveLocation,folderStr,yelFilename) , 'jpg' )

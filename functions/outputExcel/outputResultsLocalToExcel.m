@@ -18,8 +18,8 @@ for i=1:conditionN
 	totalCellN = totalCellN + resultsStruct.localCellN;
 end
 
-plateStr						= cell(totalCellN,1);
-expIdx							= cell(totalCellN,1);
+expStr							= cell(totalCellN,1);
+plateIdx						= cell(totalCellN,1);
 condition						= cell(totalCellN,1);
 normCondition				= cell(totalCellN,1);
 yelMembrane					= cell(totalCellN,1);
@@ -36,8 +36,8 @@ for j=1:conditionN
 	resultsStruct = resultsStructArray(j);
 	localCellN = resultsStruct.localCellN;
 	
-	plateStr(cntr:cntr+localCellN-1) = resultsStruct.cellLocation(:,1);
-	expIdx(cntr:cntr+localCellN-1) = resultsStruct.cellLocation(:,2);
+	expStr(cntr:cntr+localCellN-1) = resultsStruct.cellLocation(:,1);
+	plateIdx(cntr:cntr+localCellN-1) = resultsStruct.cellLocation(:,2);
 	condition(cntr:cntr+localCellN-1) = {resultsStruct.condition};
 	normCondition(cntr:cntr+localCellN-1) = {resultsStruct.normCondition};
 	yelMembrane(cntr:cntr+localCellN-1) = num2cell(resultsStruct.yelMembrane(:));
@@ -52,10 +52,10 @@ for j=1:conditionN
 	cntr = cntr + localCellN;
 end
 
-fullResults = horzcat(plateStr,expIdx,condition,normCondition,yelMembrane...
+fullResults = horzcat(expStr,plateIdx,condition,normCondition,yelMembrane...
 	,yelEntire,redEntire,yelMembraneAbsolute,yelEntireAbsolute...
 	,redEntireAbsolute,memDens,logMemDens);
-fullHeader = {'plateStr', 'expIdx', 'condition', 'normCondition'...
+fullHeader = {'expStr', 'plateIdx', 'condition', 'normCondition'...
 	, 'yelMembrane', 'yelEntire', 'redEntire', 'yelMembraneAbsolute'...
 	, 'yelEntireAbsolute', 'redEntireAbsolute', 'memDens', 'logMemDens'};
 
