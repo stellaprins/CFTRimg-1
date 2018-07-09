@@ -38,9 +38,12 @@ for i=1:yelN
 end
 
 yelSignal   = yelInside - yelOutside;
-yelData			= yelSignal / redSignal;
-yelStandard = yelData(normTimePoint);
-imageStruct.yelInsideOverT  = yelData / yelStandard;
+
+% yelData			= yelSignal / redSignal;
+% yelStandard = yelData(normTimePoint);
+% imageStruct.yelInsideOverT  = yelData / yelStandard;
+yelStandard = yelSignal(normTimePoint);
+imageStruct.yelInsideOverT  = yelSignal / yelStandard;
 
 % showQuenchImage( imageStruct )
 
