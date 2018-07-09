@@ -1,59 +1,49 @@
-function plotYelOverTimeCollated( conditionStruct )
+function plotYelOverTimeCollated( resultsStruct )
 %UNTITLED20 Summary of this function goes here
 %   Detailed explanation goes here
 
-yelN = 70;
+colors          = get(groot,'DefaultAxesColorOrder');
 
-testN			= conditionStruct.quenchImageTestN;
-controlN	= conditionStruct.quenchImageControlN;
+yelTest					= (resultsStruct.yelInsideOverTTest)';
+yelControl			= resultsStruct.yelInsideOverTControl';
 
-yelTest					= zeros(yelN,testN);
-yelControl			= zeros(yelN,testN);
+meanYelTest         = mean((yelTest),2);
+meanYelTest					= meanYelTest(5:70);
+meanYelControl      = mean((yelControl),2);
+meanYelControl			= meanYelControl(5:70);
+errYelTest          = std((yelTest),0,2);
+errYelTest					= errYelTest(5:70);
+errYelControl       = std((yelControl),0,2);
+errYelControl				= errYelControl(5:70);
 
-countTest			= 1;
-countControl	= 1;
-for i=1:(testN+controlN)
-	
-	if strcmp(conditionStruct.imageQuench(i).test_control,'test')
-		
-		yelTest(:,countTest) = conditionStruct.imageQuench(i).yelInsideOverT;
-		countTest = countTest + 1;
-		
-	elseif strcmp(conditionStruct.imageQuench(i).test_control,'control')
-		
-		yelControl(:,countControl) = conditionStruct.imageQuench(i).yelInsideOverT;
-		countControl = countControl + 1;
-		
-	end
-	
-end
-	
-meanYelTest = mean(yelTest,2);
-meanYelControl = mean(yelControl,2);
-errYelTest = std(yelTest,0,2);
-errYelControl = std(yelControl,0,2);
-
-x=1:70;
-
-shadedErrorBar(x,meanYelTest,errYelTest...
-	,'lineprops','-r','transparent',1);
-hold on;
+x = 0:2:138;
+x = x(1:66);
 shadedErrorBar(x,meanYelControl,errYelControl...
-	,'lineprops','-b','transparent',1);
-p1 = plot(nan,nan,'-r');
-p2 = plot(nan,nan,'-b');
-plot([4.5 5],[0 1.3],':k')
-plot([24.5 24.5],[0 1.3],':k')
+	,'lineprops',{'.','color',colors(5,:),'linewidth',0.8});
+hold on;
+shadedErrorBar(x,meanYelTest(),errYelTest()...
+	,'lineprops',{'.','linewidth',0.8});
+p1 = plot(nan,nan,'-','color',colors(5,:),'linewidth',1);
+p2 = plot(nan,nan,'-', 'linewidth',1);
+plot([0 0],[0 1.3],':k','markersize',1)
+plot([40 40],[0 1.3],':k','markersize',1)
+% a1=annotation('textbox',[0.165 0.22 0.05 0.05],'string',sprintf('Iodide\naddition'),'fitboxtotext','on');
+% a2=annotation('textbox',[0.38 0.22 0.05 0.05],'string',sprintf('Forskolin\naddition'),'fitboxtotext','on');
 ylim([0 1.3])
-xlim([0 70])
-title(conditionStruct.mutation)
-xlabel('Time point')
-ylabel(sprintf('Norm. mean YFP signal\nwithin cells'))
+xlim([-5 140])
 
-legend([p1 p2],'test','control','location','southeast')
+title(resultsStruct.condition)
+ax = gca;
+ax.FontSize = 14;
+xlhand = get(gca,'xlabel');
+set(xlhand,'string','Time (s)','fontsize',18)
+ylhand = get(gca,'ylabel');
+set(ylhand,'string','F/F_{max}','fontsize',18)
 
-set(gca,'fontsize',16)
-
+% legend([p1 p2],'DMSO','DMSO + Forskolin','location','northeast')
+% set(gca,'fontsize',10)
+% a1.FontSize = 10;
+% a2.FontSize = 10;
 
 end
 

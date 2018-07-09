@@ -1,42 +1,59 @@
-function plotLocalRedYelCorr( conditionStruct,yelRegion )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function out = plotLocalRedYelCorr( resultsStruct,yelRegion )
+%PLOT_LOCAL_RED_YEL_CORR scatter plot of yelRegion against redEntire
+%   The user can choose to either plot yelEntire against redEntire, or
+%   yelMembrane against redEntire by changing the second parameter
+%   'yelRegion'.
+%
+%		This function creates a scatter plot and also outputs the correlation
+%		statistics, R the Pearson correlation coefficient, the slope of the
+%		linear line of best fit and MSE, the mean-squared error.
 
-mutation = conditionStruct.mutation{1};
-redEntire = vertcat(conditionStruct.imageLocal.redEntire);
-
-if strcmp(yelRegion,'entire')
-	yelData		= vertcat(conditionStruct.imageLocal.yelEntire);
-elseif strcmp(yelRegion,'membrane')
-	yelData		= vertcat(conditionStruct.imageLocal.yelMembrane);
-elseif strcmp(yelRegion,'interior')
-	yelData		= vertcat(conditionStruct.imageLocal.yelInterior);
+redEntire   = resultsStruct.redEntire;
+switch yelRegion
+	case 'entire'
+		yelData		= resultsStruct.yelEntire;
+	case 'membrane'
+		yelData		= resultsStruct.yelMembrane;
 end
-	
-pointN = length(redEntire);
+
+maxX = max(redEntire) * 1;
+[slope, ~, stats] = glmfit(redEntire,yelData,'normal','constant','off');
 
 R = corrcoef(redEntire,yelData);
-r = R(1,2);
+if size(R) == [2 2]
+	r = R(1,2);
+	else
+	r = 1;
+end
+    
+MSE = sum(stats.resid .^2) / length(stats);
 
-redSTD = std(redEntire);
-yelSTD = std(yelData);
+stats = [r slope MSE];
 
-slope = r*(yelSTD/redSTD);
-intercept = mean(yelData) - slope*mean(redEntire);
+plot(redEntire,yelData,'.r')
+hold on
+set(gca,'fontsize',10)
+plot([0 maxX],[0 maxX*slope],'-')
+ylhand = get(gca,'ylabel');
+switch yelRegion
+	case 'entire'
+		set(ylhand,'string','F_{YFP,cell}','fontsize',10)
+	case 'membrane'
+		set(ylhand,'string','F_{YFP,membrane}','fontsize',10)
+end
+xlhand = get(gca,'xlabel');
+set(xlhand,'string','F_{mCh,cell}','fontsize',10)
+% dim = [0.2 0.5 0.3 0.3];
+% str = {sprintf('R = %.2f\nslope = %.2f\nMSE = %.5f',stats(1),stats(2),stats(3))};
+% annotation('textbox',dim,'String',str,'FitBoxToText','on');
+xlim([0 8])
+ylim([0 20])
+titleStr = strcat({resultsStruct.condition},...
+	{'\nnorm '},{resultsStruct.normCondition});
+title(sprintf(titleStr{1}),'fontsize',10)
 
-dim = [.65 .7 .2 .2];
-str = sprintf('R = %0.5f\nslope = %0.5f\nintercept = %0.5f\npoints=%d'...
-	,r,slope,intercept,pointN);
+condition = {resultsStruct.condition};
 
-plot(redEntire,yelData,'bo'), hold on
-lsline
-title(sprintf('%s - %s',mutation,yelRegion))
-xlabel('Mean mCherry fluorescence')
-ylabel('Mean YFP fluorescence')
-xlim([0 0.06])
-ylim([0 0.042])
-annotation('textbox',dim,'String',str,'FitBoxToText','on','fontsize',13);
-
-set(gca,'fontsize',16)
+out = vertcat(condition,num2cell(stats'));
 
 end

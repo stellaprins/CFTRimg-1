@@ -5,21 +5,23 @@ function plotFOverDistance( imageStruct,idx )
 redImage = imread(imageStruct.redPath);
 yelImage = imread(imageStruct.yelPath);
 
-% yelBackground = imageStruct.yelBackground;
-% redBackground = imageStruct.redBackground;
+yelBackground = imageStruct.yelBackground * 65535; 
+redBackground = imageStruct.redBackground * 65535;
+% 65535 is the max F of a uint16 image
 
 boundingBox = imageStruct.boundingBox(idx,:);
+binning			= imageStruct.binning;
 
-redCropped = boundingBoxToCroppedImage(redImage,boundingBox);
-yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox);
+redCropped = boundingBoxToCroppedImage(redImage,boundingBox,binning) - redBackground;
+yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox,binning) - yelBackground;
 
-cellMask = boundingBoxToCellMask(redImage,boundingBox);
+cellMask = boundingBoxToCellMask(redImage,boundingBox,binning);
 
 if sum(cellMask(:)) == 0
 	return
 end
 
-distanceMap = makeDistanceMap(cellMask);
+distanceMap = cellMaskToDistanceMap(cellMask);
 distanceGroups = distanceMap - min(distanceMap(:)) + 1;
 distanceLabels = unique(distanceMap) + (unique(distanceMap) >= 0);
 
@@ -33,26 +35,35 @@ yMaxRight = max(redMeanData) + 0.1*range(redMeanData);
 xMin = -50; % min(distanceLabels);
 xMax = 50; % max(distanceLabels);
 
-horzLine = [xMin:1:xMax]';
-vertLine = [yMinLeft:0.0001:yMaxLeft]';
+horzLine	= linspace(xMin,xMax,3)';
+vertLine	= linspace(yMinLeft,yMaxLeft,3)';
+
+horzZeros = zeros(length(horzLine),1);
+vertZeros = zeros(length(vertLine),1);
+vertOnes	= ones(length(vertLine),1);
 
 % axes('fontsize',18)
 yyaxis left
-plot(distanceLabels, yelMeanData ...
-	,zeros(length(vertLine),1),vertLine ...
-	,10*ones(length(vertLine),1),vertLine ...
-	,horzLine,zeros(length(horzLine),1))
+plot(distanceLabels, yelMeanData)
 xlim([xMin xMax])
 ylim([yMinLeft yMaxLeft])
 xlabel('Distance from the cell membrane (pixels)')
 ylabel('Mean YFP fluorescence')
 
+hold on
+plot(vertZeros,vertLine,'k--') 
+plot(10*vertOnes,vertLine,'k:','linewidth',1.2)
+plot(horzLine,horzZeros,'k-')
+
 yyaxis right
 plot(distanceLabels, redMeanData)
 ylim([yMinRight yMaxRight])
 ylabel('Mean mCherry fluorescence')
-	
 
+title('Fluorescence over distance')
+
+set(gca,'fontsize',16)
+set(gca,'activepositionproperty','outerposition')
 
 end
 
