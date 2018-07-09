@@ -1,6 +1,6 @@
-function  imageStruct = createImageStruct_local( conditionArray, ...
+function  imageStruct = createImageStruct( conditionArray, ...
 	binningArray,redPathArray,yelPathArray )
-%CREATE_IMAGE_STRUCT_LOCAL initializes empty structs for each localisation image
+%CREATE_IMAGE_STRUCT initializes empty structs for each localisation image
 %   Defines all attributes of image struct and assigns initial data
 %   to appropriate attributes.
 
