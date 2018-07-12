@@ -9,8 +9,6 @@ function plotAxes = localAddRectangleToImage( plotAxes, boundingBoxes )
 %		boundingBox = [topLeftXval topLeftYval width height], though not
 %		integers.
 
-global BINNING
-
 for i = 1:size(boundingBoxes,1)
 	currentBB = boundingBoxes(i,:);
 	rectBB(1) = floor(currentBB(1)) ;
@@ -19,7 +17,7 @@ for i = 1:size(boundingBoxes,1)
 	rectBB(4) = currentBB(4) ;
 	rectangle(plotAxes,'Position',rectBB,...
 				'EdgeColor','w',...
-		'LineWidth', 1.5*BINNING,...
+		'LineWidth', 1.5,...
 		'LineStyle','-')
 	hold on
 end

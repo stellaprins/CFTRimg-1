@@ -1,13 +1,12 @@
-function  imageStruct = createImageLocalStruct( conditionArray, ...
-	plateStrArray,binningArray,redPathArray , yelPathArray )
-%CREATE_IMAGE_LOCAL_STRUCT initializes empty structs for each localisation image
-%   Defines all attributes of image_local struct and assigns initial data
+function  imageStruct = createImageStruct( conditionArray, ...
+	binningArray,redPathArray,yelPathArray )
+%CREATE_IMAGE_STRUCT initializes empty structs for each localisation image
+%   Defines all attributes of image struct and assigns initial data
 %   to appropriate attributes.
 
 pathN = length(redPathArray);
 imageTemplate = struct(...
-			'condition',''...
-			,'plateStr',''...
+			'conditionStr',''...
 			,'redPath',''...
 			,'yelPath',''...
 			,'binning',[]...
@@ -30,11 +29,10 @@ imageTemplate = struct(...
 imageStruct(1:pathN,1) = imageTemplate;
 
 for i=1:pathN
-	imageStruct(i).redPath		= redPathArray{i};
-	imageStruct(i).yelPath		= yelPathArray{i};
-	imageStruct(i).condition	= conditionArray{i};
- 	imageStruct(i).plateStr		= plateStrArray{i};
-	imageStruct(i).binning		= binningArray(i);
+	imageStruct(i).redPath			= redPathArray{i};
+	imageStruct(i).yelPath			= yelPathArray{i};
+	imageStruct(i).conditionStr	= conditionArray{i};
+	imageStruct(i).binning			= binningArray{i};
 end
 
 end

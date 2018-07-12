@@ -1,7 +1,8 @@
 
-saveQuenchResultsHere       = fullfile('~','Desktop','resultsQuench');
-saveQuenchingTimelineHere   = fullfile('~','Desktop','timelineQuench');
-%%
+desktopDir = getDesktopDir();
+saveQuenchResultsHere       = fullfile(desktopDir,'resultsQuench');
+saveQuenchingTimelineHere   = fullfile(desktopDir,'timelineQuench');
+
 conditionN = length(resultsQuench);
 
 %% QUENCHING OUTPUT 1
@@ -117,7 +118,7 @@ close all
 
 count1	 = 1;
 for i=1:conditionN
-	for k					= count1: (count1+length(resultsQuench(i).maxGradTest)-1);
+	for k					= count1: (count1+length(resultsQuench(i).maxGradTest)-1)
 	groupQ_FORS(k)	= {resultsQuench(i).condition};
 	end
 	count1					= count1 + length(resultsQuench(i).maxGradTest);

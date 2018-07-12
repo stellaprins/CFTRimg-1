@@ -6,70 +6,72 @@ close all
 addpath(genpath('functions'))
 
 addpath(genpath(fullfile('example','input'))) % location of your input folder
-example_local % the name of your input file
+example_local																	% the name of your input file
 
 %% STRUCTURING DATA
 tic
-exp		= createExpStruct(plate);			% creates an empty struct for each plate
-exp		= findImagePaths(plate,exp);	% collects the path names for each image
-expN	= length(exp);								% and creates a struct for each image
+plate		= createPlateStruct_local(input);			% creates an empty struct for each plate,
+plate		= populatePlate_local(input,plate);		% moves appropriate data into plate struct
+plateN	= length(plate);											% and creates a struct for each image
 
 disp('Completed setting up data structures')
 time(1) = toc;
 
 %% SEGMENTATION
 close all
-for j = 1:expN
-	localImageN = length(exp(j).imageLocal);
-	for i = 1:localImageN
-		exp(j).imageLocal(i) = imgSegmentWatershed(exp(j).imageLocal(i));
+for j = 1:plateN
+	imageN = length(plate(j).image);
+	for i = 1:imageN
+		plate(j).image(i) = imgSegmentWatershed(plate(j).image(i));
 	end
 end
-store		= exp;
+storeSegmented = plate;
 disp		('Completed image segmentation')
 time(2)	= toc;
 
 %% FILTERING
-exp = store;
-for j = 1:expN
-	localImageN = length(exp(j).imageLocal);
-	for i = 1:localImageN
-		exp(j).imageLocal(i).cellN = exp(j).imageLocal(i).cellN(1);
- 		exp(j).imageLocal(i) = imgFilterEdges(exp(j).imageLocal(i));
- 		exp(j).imageLocal(i) = imgFilterUnmasked(exp(j).imageLocal(i));
-		exp(j).imageLocal(i) = imgFilterCellDimensions(exp(j).imageLocal(i));
+plate = storeSegmented;
+for j = 1:plateN
+	imageN = length(plate(j).image);
+	for i = 1:imageN
+		plate(j).image(i).cellN = plate(j).image(i).cellN(1);
+ 		plate(j).image(i) = imgFilterEdges(plate(j).image(i));
+ 		plate(j).image(i) = imgFilterUnmasked(plate(j).image(i));
+		plate(j).image(i) = imgFilterCellDimensions(plate(j).image(i));
 	end
 end
+storeFiltered = plate;
 disp		('Completed cell filtering')
 time(3) = toc;
 
 %% DISTANCE MAP
-	for j = 1:expN
-		localImageN = length(exp(j).imageLocal);
-		for i = 1:localImageN
-			exp(j).imageLocal(i) = imgFindBackground(exp(j).imageLocal(i));
-			exp(j).imageLocal(i) = distanceMap(exp(j).imageLocal(i));
+plate = storeFiltered;
+	for j = 1:plateN
+		imageN = length(plate(j).image);
+		for i = 1:imageN
+			plate(j).image(i) = imgFindBackground(plate(j).image(i));
+			plate(j).image(i) = distanceMap(plate(j).image(i));
 		end
 	end
 disp		('Completed localization distance maps')
 time(4) = toc;
 
 %% CREATE RESULTS STRUCTS
-for j=1:expN
-	localImageN = length(exp(j).imageLocal);
-	for i=1:localImageN
-		exp(j).imageLocal(i) = filterNegativeMetric(exp(j).imageLocal(i));
-		exp(j).imageLocal(i) = logCellLocation(exp(j).imageLocal(i),j,i);
+for j=1:plateN
+	imageN = length(plate(j).image);
+	for i=1:imageN
+		plate(j).image(i) = filterNegativeMetric(plate(j).image(i));
 	end
+	plate(j) = logCellLocation(plate(j),j);
 end
 
 % move key values into temporary a structure for normalizing
-normExp = createNormalizeStruct(exp);
-normExp = normalizeResultsWT(normExp);
+normPlate = createNormalizeStruct(plate);
+normPlate = normalizeResultsWT(normPlate);
 
 % move normalized results into a structure ready to output results
-resultsLocal = createResultsLocalStruct(normExp);
-resultsLocal = populateResultsLocal(resultsLocal,normExp);
+resultsLocal = createResultsLocalStruct(normPlate);
+resultsLocal = populateResultsLocal(resultsLocal,normPlate);
 		
 time(5)				= toc;
 

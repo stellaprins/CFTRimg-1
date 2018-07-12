@@ -108,13 +108,15 @@ for j=1:length(resultsLocal)
 		data_expN(cellIdx+i,1) = strcat({resultsLocal(j).condition},{' norm '},...
 												{resultsLocal(j).normCondition});										% full condition
 		data_expN(cellIdx+i,2) = resultsLocal(j).cellLocation(i,1);							% experiment str
-		data_expN{cellIdx+i,3} = 10^resultsLocal(j).logMemDens(i);							% logMemDens_back
+		data_expN{cellIdx+i,3} = resultsLocal(j).logMemDens(i);									% logMemDens
 	end
 	cellIdx = cellIdx + cellN;
 end
 
 [G,conditionGroups,expGroups]	=	findgroups(data_expN(:,1),data_expN(:,2));
-meanMemDens			= splitapply(@mean,vertcat(data_expN{:,3}),G);
+stats_meanMemDens	= splitapply(@mean,vertcat(data_expN{:,3}),G);
+meanMemDens	= splitapply(@mean,vertcat(data_expN{:,3}),G);
+meanMemDens = 10.^meanMemDens;
 [condG,conditionNames] = findgroups(conditionGroups);
 [expG,expNames] = findgroups(expGroups);
 conditionN = length(conditionNames);
@@ -142,7 +144,7 @@ vertcat			 (titles,results)
 %% STATISTICS (each experiment as sample)
 close all
 
-[~,tbl,stats]		= anova1(meanMemDens, conditionGroups);
+[~,tbl,stats]		= anova1(stats_meanMemDens, conditionGroups);
 [c,m,~,gnames]  = multcompare(stats,'CType','dunn-sidak');
 c_titles	= {'g1', 'g2', 'LL mean dif CI', 'mean dif(g1-g2)',...
 						'UL mean dif CI','P-value'};
@@ -240,19 +242,19 @@ end
 %% IMAGE DISPLAY with all selected cells boxed
 close all
 
-x=1; % experiment number
+x=1; % plate number
 y=1; % image number
 
 fprintf('\nImage %d in exp %d has %d cells.\n'...
-	,y,x,exp(x).imageLocal(y).cellN(end))
+	,y,x,plate(x).image(y).cellN(end))
 
-BB = zeros(exp(x).imageLocal(y).cellN(end),4);
-for ii= 1:exp(x).imageLocal(y).cellN(end)
-	BB(ii,:)=exp(x).imageLocal(y).boundingBox(ii,:);
+BB = zeros(plate(x).image(y).cellN(end),4);
+for ii= 1:plate(x).image(y).cellN(end)
+	BB(ii,:)=plate(x).image(y).boundingBox(ii,:);
 end
 
 figure
-redAxes		= localDisplayImage(exp(x).imageLocal(y),'red');
+redAxes		= localDisplayImage(plate(x).image(y),'red');
 redAxes		= localAddRectangleToImage(redAxes,BB);
 redFrame	= getframe(redAxes);
 imwrite(redFrame.cdata,'image.jpg')
@@ -263,30 +265,32 @@ imwrite(redFrame.cdata,'image.jpg')
 
 %% CELL DISPLAY
 % close all
-x=1; % exp index
+x=1; % plate index
 y=1; % image index
 z=1:3; % cell index
 
-fprintf('\nImage %d in exp %d has %d cells.\n',y,x,exp(x).imageLocal(y).cellN(end))
+fprintf('\nImage %d in exp %d has %d cells.\n',y,x,plate(x).image(y).cellN(end))
 
 for i=z
 	figure('position',[400 400 500 600])
 	subplot(3,3,1)
-	cellDisplay(exp(x).imageLocal(y),'red',i)
+	cellDisplay(plate(x).image(y),'red',i)
 	subplot(3,3,2)
-	cellDisplay(exp(x).imageLocal(y),'yel',i)
+	cellDisplay(plate(x).image(y),'yel',i)
 	subplot(3,3,3)
-	cellDisplay(exp(x).imageLocal(y),'bw',i)
-	subplot(3,1,[2,3],'position',[0.12 0.1 0.74 0.54])
-	plotFOverDistance(exp(x).imageLocal(y),i)
+	cellDisplay(plate(x).image(y),'bw',i)
+	subplot(3,1,[2,3])
+	plotFOverDistance(plate(x).image(y),i)
 end
 
 
 %% OUTPUT CELLS TO FILE
 
-tic;
-saveLocation			= fullfile('~','Desktop','resultsLocal','example_cells');
-fprintf						('Saving cell images...\n')
-labelAndSaveCells (resultsLocal,exp,saveLocation)
-fprintf						('Done\n')
-toc
+if isToolboxAvailable('Computer Vision System Toolbox','error')
+	tic;
+	saveLocation			= fullfile('~','Desktop','resultsLocal','example_cells');
+	fprintf						('Saving cell images...\n')
+	labelAndSaveCells (resultsLocal,plate,saveLocation)
+	fprintf						('Done\n')
+	toc
+end

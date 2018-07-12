@@ -1,68 +1,60 @@
 
-saveWorkspaceHere = fullfile('~','Desktop','example_local');
+desktopDir = getDesktopDir();
+saveWorkspaceHere = fullfile(desktopDir,'example_local');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-plateN	= 3; % number of plates
-plate		= createPlateStruct(plateN);
+inputFolderN	= 3;																		% number of input folders
+input					= createInputStruct_local(inputFolderN);	% create empty structs
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-plate(1).experimentStr		= {'1'};
-plate(1).plateStr					= {'exp1 37'};
-plate(1).normConditionStr	= {'WT 37'};
+input(1).plateStr						= {'plate1'};			% string labelling the plate
+input(1).experimentStr			= {'exp1'};				% string for grouping plates
 
-	plate(1).local_quench = 'local';
-	plate(1).localBinning			= 1/2; % for 2*2 binning
-	plate(1).localSiteN				= 1; % number of image sites per well
-	plate(1).quenchTimeStep		= 0; % set as zero if not applicable
-	plate(1).quenchTimeline		= 0;
-
-	plate(1).folderName   = 'plate1_local'; % name of the folder in which the data is	
-	plate(1).baseFolder	  = fullfile('example','data'); % filepath need to check
-	plate(1).filePrefix   = 'plate1_local_'; % filename before B02_etc
-
-	plate(1).conditionStr = {'WT 37','F508del 37'};
-		plate(1).condWells(1,1:2) = {'B02','E02'}; % delete the wells that we didn't record
-		plate(1).condWells(2,1:2) = {'B03','E03'};
+	input(1).folderName				= 'plate1_local'; % name of the data folder
+	input(1).baseFolder				= fullfile('example','data'); % path of data folder
+	input(1).filePrefix				= 'plate1_local_'; % filename of each image before B02_etc
+	
+	input(1).conditionStr			= {'WT','F508del'};
+		input(1).condWells(1,1:2) = {'B02','E02'}; % the wells for cond 1, 'WT'
+		input(1).condWells(2,1:2) = {'B03','E03'}; % the wells for cond 2, 'F508del'
+		
+	input(1).normConditionStr	= {'WT'};				% condition to normalize to
+	input(1).pixelBinning			= 1/2;					% 1/2 for 2*2 pixel binning
+	input(1).siteN						= 1;						% number of image sites per well
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 
-plate(2).experimentStr		= {'2'};
-plate(2).plateStr					= {'exp2 37'};
-plate(2).normConditionStr	= {'WT 37'};
+input(2).plateStr						= {'plate2'};
+input(2).experimentStr			= {'exp2'};
 
-	plate(2).local_quench = 'local';
-	plate(2).localBinning			= 1/2; % for 2*2 binning
-	plate(2).localSiteN				= 1;
-	plate(2).quenchTimeline		= 0; % set as zero if not applicable
-	plate(2).quenchFrequency	= 0;
+	input(2).folderName				= 'plate2a_local';
+	input(2).baseFolder				= fullfile('example','data');
+	input(2).filePrefix				= 'plate2_local_';
 
-	plate(2).folderName		= 'plate2a_local';
-	plate(2).baseFolder	  = fullfile('example','data');
-	plate(2).filePrefix   = 'plate2_local_';
-
-	plate(2).conditionStr = {'WT 37','F508del 37'};
-		plate(2).condWells(1,1) = {'B02'};
-		plate(2).condWells(2,1) = {'B03'};
+	input(2).conditionStr			= {'WT','F508del'};
+		input(2).condWells(1,1)		= {'B02'};
+		input(2).condWells(2,1)		= {'B03'};
+		
+	input(2).normConditionStr	= {'WT'};
+	input(2).pixelBinning			= 1/2;
+	input(2).siteN						= 1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-plate(3).experimentStr		= {'2'};
-plate(3).plateStr					= {'exp2 37'};
-plate(3).normConditionStr	= {'WT 37'};
+input(3).plateStr						= {'plate2'};
+input(3).experimentStr			= {'exp2'};
 
-	plate(3).local_quench = 'local';
-	plate(3).localBinning			= 1/2; % for 2*2 binning
-	plate(3).localSiteN				= 1;
-	plate(3).quenchTimeline		= 0; % set as zero if not applicable
-	plate(3).quenchFrequency	= 0;
+	input(3).folderName				= 'plate2b_local';
+	input(3).baseFolder				= fullfile('example','data');
+	input(3).filePrefix				= 'plate2_local_';
 
-	plate(3).folderName   = 'plate2b_local';
-	plate(3).baseFolder	  = fullfile('example','data');
-	plate(3).filePrefix   = 'plate2_local_';
-
-	plate(3).conditionStr = {'WT 37'};
-		plate(3).condWells(1,1) = {'E02'};
+	input(3).conditionStr			= {'WT'};
+		input(3).condWells(1,1)		= {'E02'};
+		
+	input(3).normConditionStr	= {'WT'};
+	input(3).pixelBinning			= 1/2;
+	input(3).siteN						= 1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

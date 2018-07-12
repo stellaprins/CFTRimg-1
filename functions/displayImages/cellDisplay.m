@@ -9,7 +9,8 @@ switch colorStr
 		redMap      = [map(:,1),zeros(256,1),zeros(256,1)];
 		image       = ind2rgb(imX,redMap);
 		boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
-		cropped     = boundingBoxToCroppedColor(image,boundingBox);
+		binning			= imageStruct.binning;
+		cropped     = boundingBoxToCroppedColor(image,boundingBox,binning);
 		imshow(cropped,redMap,'InitialMagnification','fit')
  %		set(gca,'position',[0 0 1 1])
  		title('mCherry')
@@ -19,14 +20,16 @@ switch colorStr
 		yelMap      = [map(:,1),map(:,1),zeros(256,1)];
 		image       = ind2rgb(imX,yelMap);
 		boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
-		cropped     = boundingBoxToCroppedColor(image,boundingBox);
+		binning			= imageStruct.binning;
+		cropped     = boundingBoxToCroppedColor(image,boundingBox,binning);
 		imshow(cropped,yelMap,'InitialMagnification','fit')
 % 		set(gca,'position',[0 0 1 1])
  		title('YFP')
 	case 'bw'
 		image       = im2double(imread(imageStruct.redPath));
 		boundingBox = imageStruct.boundingBox(boundingBox_idx,:);
-		cellMask    = boundingBoxToCellMask(image,boundingBox);
+		binning			= imageStruct.binning;
+		cellMask    = boundingBoxToCellMask(image,boundingBox,binning);
 		imshow(cellMask,[],'InitialMagnification','fit')
  %		set(gca,'position',[0 0 1 1])
   		title('BW component')

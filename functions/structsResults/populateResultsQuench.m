@@ -1,22 +1,22 @@
 function resultsStructArray = populateResultsQuench( resultsStructArray...
-	,expStructArray)
+	,plateStructArray)
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
 conditionN	= length(resultsStructArray);
-expN			= length(expStructArray);
+plateN			= length(plateStructArray);
 
 for k=1:conditionN
 	res = resultsStructArray(k);
 	currentCondition = res.condition;
 	countTest			= 1;
 	countControl	= 1;
-	for j=1:expN
-		wellN = length(expStructArray(j).imageQuench);
+	for j=1:plateN
+		wellN = length(plateStructArray(j).well);
 		for i=1:wellN
-			well = expStructArray(j).imageQuench(i);
+			well = plateStructArray(j).well(i);
 			timePointN = length(well.yelInsideOverT);
-			if strcmp(well.condition,currentCondition)
+			if strcmp(well.conditionStr,currentCondition)
 				switch well.test_control
 					case 'test'
 						res.maxGradTest(countTest)							= well.maxGradIodine;

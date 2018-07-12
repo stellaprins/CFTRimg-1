@@ -10,11 +10,12 @@ redBackground = imageStruct.redBackground * 65535;
 % 65535 is the max F of a uint16 image
 
 boundingBox = imageStruct.boundingBox(idx,:);
+binning			= imageStruct.binning;
 
-redCropped = boundingBoxToCroppedImage(redImage,boundingBox) - redBackground;
-yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox) - yelBackground;
+redCropped = boundingBoxToCroppedImage(redImage,boundingBox,binning) - redBackground;
+yelCropped = boundingBoxToCroppedImage(yelImage,boundingBox,binning) - yelBackground;
 
-cellMask = boundingBoxToCellMask(redImage,boundingBox);
+cellMask = boundingBoxToCellMask(redImage,boundingBox,binning);
 
 if sum(cellMask(:)) == 0
 	return
@@ -62,6 +63,7 @@ ylabel('Mean mCherry fluorescence')
 title('Fluorescence over distance')
 
 set(gca,'fontsize',16)
+set(gca,'activepositionproperty','outerposition')
 
 end
 
