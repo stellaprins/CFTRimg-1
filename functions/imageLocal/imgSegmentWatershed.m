@@ -4,7 +4,7 @@ function [ imageStruct ] = imgSegmentWatershed( imageStruct )
 
 mode = 'full'; % 'full' OR 'test';
 
-binning = imageStruct.binning;
+binning		= imageStruct.binning;
 
 I					= im2double(imread(imageStruct.redPath));
 Ieq				= adapthisteq(I,'NumTiles',[20 20]);
@@ -15,29 +15,24 @@ Icleared	= bwareaopen(Iclosed,ceil(4800*binning));
 Ifilled		= imfill(Icleared,'holes');
 dilateSE	= strel('disk',ceil(4*binning));
 Idilated	= imopen(Ifilled,dilateSE);
-smallEM = imextendedmax(I, 0.9*median(I(:)));
-smallEM = imclose(smallEM, closeSE);
-smallEM = bwareaopen(smallEM, 120);
-smallEM = imerode(smallEM, ones(6*binning));
-largeEM = imextendedmax(I, median(I(:)));
-largeEM = imclose(largeEM, closeSE);
-largeEM = imfill(largeEM, 'holes');
-largeEM = bwareaopen(largeEM, 1200);
+smallEM		= imextendedmax(I, 0.9*median(I(:)));
+smallEM		= imclose(smallEM, closeSE);
+smallEM		= bwareaopen(smallEM, 120*binning);
+smallEM		= imerode(smallEM, ones(6*binning));
+largeEM		= imextendedmax(I, median(I(:)));
+largeEM		= imclose(largeEM, closeSE);
+largeEM		= imfill(largeEM, 'holes');
+largeEM		= bwareaopen(largeEM, 1200*binning);
 BGmarkers = largeEM | Idilated;
 
 if strcmp(mode,'test')
-	IbwPerim = bwperim(BGmarkers);
-	overlay = imoverlay(Ieq, IbwPerim|smallEM, [.3 1 .3]);
+	IbwPerim	= bwperim(BGmarkers);
+	overlay		= imoverlay(Ieq, IbwPerim|smallEM, [.3 1 .3]);
 end
 
 complement	= imcomplement(I);
 Imod				= imimposemin(complement, ~BGmarkers | smallEM);
 L						= watershed(Imod);
-
-
-if strcmp(mode,'test')
- 	showWatershedProcess(imageStruct,Ibw,BGmarkers,smallEM,overlay,label2rgb(L))
-end
 
 properties = regionprops(L,'BoundingBox','Area');
 
@@ -52,6 +47,5 @@ for i=1:length(properties)
 end
 
 imageStruct.cellN(1,1) = counter - 1;
-
 end
 
